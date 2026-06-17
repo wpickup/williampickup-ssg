@@ -29,6 +29,19 @@
         </div>
       </header>
 
+<%- if hero_photo -%>
+      <section class="home-hero">
+        <figure class="gallery-item gallery-item--wide">
+          <a href="<%= root %>photos/<%= hero_photo.slug %>.html" class="image-wrap">
+            <img src="<%= hero_photo.image_url %>" alt="<%= h(hero_photo.image_alt.to_s) %>" loading="lazy">
+          </a>
+<%- if hero_photo.caption -%>
+          <figcaption><%= h(hero_photo.caption) %></figcaption>
+<%- end -%>
+        </figure>
+      </section>
+<%- end -%>
+
       <section class="home-now container" aria-label="Now">
         <div class="now-strip now-strip--grid">
           <a href="<%= root %>now.html" class="now-strip__label" aria-label="Now page">Now</a>

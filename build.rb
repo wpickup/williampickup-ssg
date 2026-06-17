@@ -391,9 +391,10 @@ def build
 
   # Home
   featured_posts = posts.select(&:featured).first(6)
+  hero_photo     = photos.find(&:featured)
   write(File.join(OUT_DIR, 'index.html'),
     r.render('home', posts: posts.first(6), featured_posts: featured_posts,
-             now_data: now_data, now_books: now_books, root: ''))
+             now_data: now_data, now_books: now_books, hero_photo: hero_photo, root: ''))
 
   # Archive
   years = posts.map(&:year).compact.uniq.sort.reverse
