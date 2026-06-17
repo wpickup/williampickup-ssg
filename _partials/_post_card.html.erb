@@ -3,7 +3,7 @@
   topic_lbl      = renderer.topic_label(primary_topic)
   all_topics_str = post.topics.join(';')
   all_tags_str   = post.tags.join(';')
-  img            = publit_srcset(post.image_url, post.image_focal_point) if post.use_featured_image && post.image_url
+  img            = publit_srcset(post.image_url, post.image_focal_point) if post.image_url
 -%>
 <li class="post-card<%= " cat--#{primary_topic}" if primary_topic %>" data-category="<%= all_topics_str %>" data-tags="<%= all_tags_str %>" data-featured="<%= post.featured %>">
 <%- if img -%>
