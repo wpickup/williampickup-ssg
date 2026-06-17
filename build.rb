@@ -320,6 +320,12 @@ def load_now_data
   YAML.safe_load(File.read(path), permitted_classes: [Date]) || {}
 end
 
+def load_blogroll_data
+  path = File.join(DATA_DIR, 'blogroll.yml')
+  return {} unless File.exist?(path)
+  YAML.safe_load(File.read(path)) || {}
+end
+
 def write(path, content)
   FileUtils.mkdir_p(File.dirname(path))
   File.write(path, content, encoding: 'utf-8')
@@ -336,7 +342,8 @@ def build
   photos   = load_photos
   books    = load_books
   pages    = load_pages
-  now_data = load_now_data
+  now_data      = load_now_data
+  blogroll_data = load_blogroll_data
 
   puts "Loaded: #{posts.length} posts, #{photos.length} photos, #{books.length} books, #{pages.length} pages"
 
@@ -424,7 +431,8 @@ def build
 
   # Static pages (bio, blogroll, etc.)
   pages.each do |page|
-    html = r.render(page.template, page: page, root: '')
+    extras = page.template == 'blogroll' ? { blogroll_data: blogroll_data } : {}
+    html = r.render(page.template, { page: page, root: '' }.merge(extras))
     write(File.join(OUT_DIR, "#{page.slug}.html"), html)
   end
 
