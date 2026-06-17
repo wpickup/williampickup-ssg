@@ -1,0 +1,88 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Writing — #{SITE_TITLE}"
+  description   = 'Notes and essays on making, reading, and slow living.'
+  canonical_url = "#{SITE_URL}/blog.html"
+  og_type       = 'website'
+  og_title      = nil
+  og_image      = nil
+  date_iso      = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+  <noscript><style>.blog-filters { display: none; }</style></noscript>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow">Notes &amp; essays</p>
+        <h1 class="page-hero__title">Writing</h1>
+        <p class="page-hero__intro">
+          Writing on books, places, making, photography and ideas that caught my attention.
+          Some pieces are essays, some are notes, and some are simply things I wanted to keep hold of.
+        </p>
+      </header>
+      <p class="page-crosslink container">
+        Books often lead to notes, and photographs sometimes do too, so you may also want to visit
+        the <a href="<%= root %>reading.html">Reading page</a> or the <a href="<%= root %>gallery.html">Gallery</a>.
+      </p>
+
+      <section class="writing-paths container" aria-labelledby="writing-paths-title">
+        <div class="writing-paths__inner">
+          <p class="writing-paths__eyebrow" id="writing-paths-title">Browse by theme</p>
+          <div class="writing-paths__grid">
+            <a class="writing-paths__item" href="#books-ideas" data-filter-link="books-ideas">
+              <h2>Books &amp; Ideas</h2>
+              <p>Notes on reading, artists, photography, and the things that stay in the mind.</p>
+            </a>
+            <a class="writing-paths__item" href="#learning-making" data-filter-link="learning-making">
+              <h2>Making</h2>
+              <p>Workshop projects, tools, learning, and the practical pleasure of making things well.</p>
+            </a>
+            <a class="writing-paths__item" href="#places-experiences" data-filter-link="places-experiences">
+              <h2>Places</h2>
+              <p>Travel, movement, and observations gathered along the way.</p>
+            </a>
+            <a class="writing-paths__item" href="#simple-living" data-filter-link="simple-living">
+              <h2>Simple Living</h2>
+              <p>Health, garden, habits, and the ongoing appeal of making rather than buying.</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <nav class="blog-filters container" aria-label="Filter posts by category">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="simple-living">Simple Living</button>
+        <button class="filter-btn" data-filter="books-ideas">Books &amp; Ideas</button>
+        <button class="filter-btn" data-filter="learning-making">Learning &amp; Making</button>
+        <button class="filter-btn" data-filter="places-experiences">Places</button>
+        <button class="filter-btn" data-filter="health-wellbeing">Wellbeing</button>
+      </nav>
+
+      <p class="tag-filter-notice container" id="tagFilterNotice" hidden>
+        Tagged: <strong id="tagFilterLabel"></strong> &mdash; <span id="tagFilterCount"></span>
+        <button class="tag-filter-clear" onclick="clearTagFilter()">&#215; clear</button>
+      </p>
+
+      <ol class="blog-list" reversed aria-label="All posts">
+<%- posts.each do |post| -%>
+        <%= renderer.partial('post_card', post: post, root: root) %>
+<%- end -%>
+      </ol>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+  <script data-goatcounter="https://stats.williampickup.org/count" async src="https://stats.williampickup.org/count.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= h(page_title) %></title>
+<%- if description -%>
+  <meta name="description" content="<%= h(description) %>">
+<%- end -%>
+  <meta property="og:type" content="<%= og_type || 'website' %>">
+  <meta property="og:title" content="<%= h(og_title || page_title) %>">
+<%- if description -%>
+  <meta property="og:description" content="<%= h(description) %>">
+<%- end -%>
+  <meta property="og:url" content="<%= canonical_url %>">
+<%- if og_image -%>
+  <meta property="og:image" content="<%= og_image %>">
+<%- end -%>
+<%- if og_type == 'article' -%>
+  <meta property="article:published_time" content="<%= date_iso %>">
+  <meta property="article:author" content="<%= SITE_URL %>/bio.html">
+<%- end -%>
+  <link rel="canonical" href="<%= canonical_url %>">
+  <link rel="stylesheet" href="<%= root %>css/site.css">
+  <meta property="og:site_name" content="<%= SITE_TITLE %>">
+  <meta property="og:locale" content="en_AU">
+  <link rel="alternate" type="application/rss+xml" title="<%= SITE_TITLE %> RSS Feed" href="<%= root %>Feeds/rss.xml">
+  <link rel="icon" type="image/svg+xml" href="<%= root %>favicon.svg">
+  <!-- IndieWeb -->
+  <link rel="me" href="https://github.com/wpickup">
+  <link rel="webmention" href="https://webmention.io/williampickup.org/webmention">
+  <link rel="pingback" href="https://webmention.io/williampickup.org/xmlrpc">

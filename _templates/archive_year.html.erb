@@ -1,0 +1,41 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "#{year} — #{SITE_TITLE}"
+  description   = "Posts from #{year}."
+  canonical_url = "#{SITE_URL}/archive/#{year}.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+  sorted        = posts.sort_by(&:date)
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow"><a href="<%= root %>archive.html" style="color:inherit;">Archive</a></p>
+        <h1 class="page-hero__title"><%= year %></h1>
+      </header>
+      <div class="archive-content container">
+        <ol class="archive-list" reversed>
+<%- sorted.each do |post| -%>
+          <li class="archive-row">
+  <time class="archive-row__date"><%= post.date&.strftime('%-d %B') %></time>
+  <a class="archive-row__title" href="<%= root %>posts/<%= post.slug %>.html"><%= h(post.title) %></a>
+</li>
+<%- end -%>
+        </ol>
+      </div>
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

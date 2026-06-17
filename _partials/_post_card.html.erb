@@ -1,0 +1,33 @@
+<%
+  primary_topic  = post.primary_topic
+  topic_lbl      = renderer.topic_label(primary_topic)
+  all_topics_str = post.topics.join(';')
+  all_tags_str   = post.tags.join(';')
+  img            = publit_srcset(post.image_url, post.image_focal_point) if post.use_featured_image && post.image_url
+-%>
+<li class="post-card<%= " cat--#{primary_topic}" if primary_topic %>" data-category="<%= all_topics_str %>" data-tags="<%= all_tags_str %>" data-featured="<%= post.featured %>">
+<%- if img -%>
+  <a href="<%= root %>posts/<%= post.slug %>.html" class="post-card__image" tabindex="-1" aria-hidden="true">
+    <img
+      src="<%= img[:src] %>"
+      srcset="<%= img[:srcset] %>"
+      sizes="(max-width: 480px) 100vw, (max-width: 700px) 50vw, 33vw"
+      alt=""
+      width="700" height="467"
+      loading="lazy"<%= img[:style] %>>
+  </a>
+<%- end -%>
+  <div class="post-card__body">
+    <div class="post-card__meta">
+      <span class="post-card__cat"><%= h(topic_lbl) %></span>
+      <time class="post-card__date" datetime="<%= post.date_iso %>"><%= post.date_display %></time>
+      <span class="post-card__read-time"><%= post.reading_time.sub(' read', '') %></span>
+    </div>
+    <h3 class="post-card__title">
+      <a href="<%= root %>posts/<%= post.slug %>.html"><%= h(post.title) %></a>
+    </h3>
+<%- if post.description -%>
+    <p class="post-card__excerpt"><%= h(post.description) %></p>
+<%- end -%>
+  </div>
+</li>

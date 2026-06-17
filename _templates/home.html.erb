@@ -1,0 +1,71 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = SITE_TITLE
+  description   = SITE_DESC
+  canonical_url = "#{SITE_URL}/"
+  og_type       = 'website'
+  og_title      = nil
+  og_image      = nil
+  date_iso      = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="home-masthead container">
+        <div class="home-masthead__name">
+          <h1>William<br><em>Pickup</em></h1>
+        </div>
+        <div class="home-masthead__intro">
+          <p><%= SITE_DESC %></p>
+        </div>
+      </header>
+
+      <section class="home-entry container" aria-labelledby="start-title">
+        <div class="home-entry-grid">
+          <article class="home-entry-card">
+            <h2 id="start-title">Start here</h2>
+            <ul>
+<%- featured_posts.each do |post| -%>
+              <li><a href="<%= root %>posts/<%= post.slug %>.html"><%= h(post.title) %></a><%- if post.description -%> &mdash; <p><%= h(post.description) %></p><%- end -%></li>
+<%- end -%>
+            </ul>
+          </article>
+          <article class="home-entry-card">
+            <h2>Visual work</h2>
+            <ul>
+              <li><a href="<%= root %>gallery/highlights.html">Gallery highlights</a> &mdash; selected photographs and observations.</li>
+              <li><a href="<%= root %>gallery.html">Portfolio</a> &mdash; visual work, projects, and the more image-led side of the site.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="home-posts container" aria-label="Recent writing">
+        <div class="home-posts__header">
+          <span class="home-posts__label">Recent writing</span>
+          <a href="<%= root %>blog.html" class="home-posts__all">All writing</a>
+        </div>
+        <ul class="home-posts__grid">
+<%- posts.each do |post| -%>
+          <%= renderer.partial('post_card', post: post, root: root) %>
+<%- end -%>
+        </ul>
+      </section>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+  <script data-goatcounter="https://stats.williampickup.org/count" async src="https://stats.williampickup.org/count.js"></script>
+</body>
+</html>

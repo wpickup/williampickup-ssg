@@ -1,0 +1,126 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "#{post.title} — #{SITE_TITLE}"
+  description   = post.description
+  canonical_url = post.url
+  og_type       = 'article'
+  og_title      = post.title
+  og_image      = post.image_url
+  date_iso      = post.date_iso
+  img           = publit_srcset(post.image_url, post.image_focal_point) if post.use_featured_image && post.image_url
+  primary_topic = post.primary_topic
+  topic_lbl     = renderer.topic_label(primary_topic)
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "<%= h(post.title) %>",
+    "description": "<%= h(post.description.to_s) %>",
+    "url": "<%= post.url %>",
+    "datePublished": "<%= post.date_iso %>",
+    "author": {
+      "@type": "Person",
+      "name": "<%= AUTHOR_NAME %>",
+      "url": "<%= SITE_URL %>/bio.html"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "<%= AUTHOR_NAME %>",
+      "url": "<%= SITE_URL %>"
+    }<%- if post.image_url -%>,
+    "image": "<%= post.image_url %>"
+<%- end -%>
+  }
+  </script>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <article class="<%= post.css_classes %>">
+      <span class="p-author h-card" hidden><a class="p-name u-url" href="<%= SITE_URL %>"><%= AUTHOR_NAME %></a></span>
+
+      <div class="post-page">
+
+        <header class="post-header">
+          <div class="post-header__meta">
+<%- if primary_topic -%>
+            <span class="post-header__cat"><a href="<%= root %>topics/<%= primary_topic %>.html"><%= h(topic_lbl) %></a></span>
+<%- end -%>
+            <span class="post-header__date-cats">
+              <time class="dt-published" datetime="<%= post.date_iso %>"><%= post.date&.strftime('%-d %B') %> <a href="<%= root %>archive/<%= post.year %>.html"><%= post.year %></a></time><%- unless post.categories.empty? -%> &mdash; in <%= post.categories.map { |c| %(<a href="#{root}categories/#{c}.html">#{h(c)}</a>) }.join(', ') %><%- end -%>
+            </span>
+<%- unless post.topics.empty? -%>
+            <span class="post-header__topics">
+              Topics: <span class="blog-topics"><%= post.topics.map { |t| %(<a href="#{root}topics/#{t}.html">#{h(renderer.topic_label(t))}</a>) }.join(' | ') %></span>
+            </span>
+<%- end -%>
+            <span class="post-header__read-time"><%= post.reading_time %></span>
+          </div>
+          <h1 class="post-header__title p-name"><%= h(post.title) %></h1>
+<%- if post.lede -%>
+          <p class="post-header__lede"><%= h(post.lede) %></p>
+<%- end -%>
+        </header>
+
+<%- if img -%>
+        <figure class="post-hero-image">
+          <img
+            src="<%= img[:src] %>"
+            srcset="<%= img[:srcset] %>"
+            sizes="(max-width: 860px) 100vw, 860px"
+            alt=""
+            width="1050" height="700"
+            loading="eager"
+            fetchpriority="high"<%= img[:style] %>>
+          <figcaption></figcaption>
+        </figure>
+<%- end -%>
+
+        <div class="post-body e-content<%= ' sidenotes-container' if post.has_sidenotes %>">
+          <%= post.content_html %>
+        </div>
+
+        <footer class="post-footer">
+<%- unless post.tags.empty? -%>
+          <nav class="post-tags" aria-label="Post tags"><%= post.tags.map { |t| %(<a href="#{root}blog.html##{t}">#{h(t)}</a>) }.join('') %></nav>
+<%- end -%>
+          <a href="<%= root %>blog.html" class="post-back">All writing</a>
+        </footer>
+
+        <section class="webmentions" id="webmentions" hidden
+                 data-url="<%= post.url %>">
+        </section>
+
+      </div>
+    </article>
+
+    <nav class="post-nav" aria-label="Post navigation">
+<%- if prev_post -%>
+      <a href="<%= root %>posts/<%= prev_post.slug %>.html" class="post-nav__item post-nav__item--prev">
+        <span class="post-nav__label">&#x2190; Previous</span>
+        <span class="post-nav__title"><%= h(prev_post.title) %></span>
+      </a>
+<%- end -%>
+<%- if next_post -%>
+      <a href="<%= root %>posts/<%= next_post.slug %>.html" class="post-nav__item post-nav__item--next">
+        <span class="post-nav__label">Next &#x2192;</span>
+        <span class="post-nav__title"><%= h(next_post.title) %></span>
+      </a>
+<%- end -%>
+    </nav>
+
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/Blogger-Peer-Review/quotebacks@1/quoteback.js"></script>
+  <script data-goatcounter="https://stats.williampickup.org/count" async src="https://stats.williampickup.org/count.js"></script>
+</body>
+</html>

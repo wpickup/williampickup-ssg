@@ -1,0 +1,34 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Archive — #{SITE_TITLE}"
+  description   = 'All posts, browsable by year.'
+  canonical_url = "#{SITE_URL}/archive.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+      <header class="page-hero container">
+        <h1 class="page-hero__title">Archive</h1>
+      </header>
+      <div class="archive-content container">
+<%- years.each do |year| -%>
+        <h2><a href="<%= root %>archive/<%= year %>.html"><%= year %></a></h2>
+<%- end -%>
+      </div>
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>
