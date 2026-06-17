@@ -15,7 +15,7 @@ topics:
 image_url: https://media.publit.io/file/16880875769960.jpg
 use_featured_image: true
 has_sidenotes: true
-featured: true
+featured: false
 draft: false
 ---
 
