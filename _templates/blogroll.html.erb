@@ -14,7 +14,8 @@
 <%= renderer.partial('head',
       page_title: page_title, description: description,
       canonical_url: canonical_url, og_type: og_type, og_title: og_title,
-      og_image: og_image, date_iso: date_iso, root: root) %>
+      og_image: og_image, date_iso: date_iso, root: root,
+      extra_css: ['blogroll.css']) %>
 </head>
 <body>
 <%= renderer.partial('header', root: root) %>

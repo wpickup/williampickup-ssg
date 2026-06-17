@@ -19,6 +19,9 @@
 <%- end -%>
   <link rel="canonical" href="<%= canonical_url %>">
   <link rel="stylesheet" href="<%= root %>css/site.css">
+<%- Array(defined?(extra_css) ? extra_css : nil).each do |sheet| -%>
+  <link rel="stylesheet" href="<%= root %>css/<%= sheet %>">
+<%- end -%>
   <meta property="og:site_name" content="<%= SITE_TITLE %>">
   <meta property="og:locale" content="en_AU">
   <link rel="alternate" type="application/rss+xml" title="<%= SITE_TITLE %> RSS Feed" href="<%= root %>Feeds/rss.xml">
