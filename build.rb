@@ -28,7 +28,7 @@ TEMPLATES_DIR = File.join(__dir__, '_templates')
 PARTIALS_DIR  = File.join(__dir__, '_partials')
 SITE_SRC      = File.expand_path('~/Sites/williampickup.org')
 STATIC_DIRS   = %w[css javascript fonts].map { |d| File.join(SITE_SRC, d) }
-STATIC_FILES  = %w[favicon.svg].map { |f| File.join(SITE_SRC, f) }
+STATIC_FILES  = %w[favicon.svg WP-at-Stromlo.webp].map { |f| File.join(SITE_SRC, f) }
 
 TOPIC_LABELS = {
   'books-ideas'        => 'Books and Ideas',
@@ -437,7 +437,9 @@ def build
   puts "\nAssets:"
   STATIC_DIRS.each do |src|
     next unless Dir.exist?(src)
-    FileUtils.cp_r(src, File.join(OUT_DIR, File.basename(src)))
+    dest = File.join(OUT_DIR, File.basename(src))
+    FileUtils.rm_rf(dest)
+    FileUtils.cp_r(src, dest)
     puts "  #{File.basename(src)}/"
   end
   STATIC_FILES.each do |src|
