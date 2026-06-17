@@ -9,6 +9,9 @@
   date_iso      = photo.date_iso
   is_publit     = photo.image_url.to_s.include?('publit.io')
   img           = is_publit ? publit_srcset(photo.image_url, photo.focal_point) : nil
+  back_series   = photo.series ? photo.series : nil
+  back_label    = back_series == 'highlights' ? 'highlights' : 'Gallery'
+  back_url      = back_series == 'highlights' ? "#{root}gallery/highlights.html" : "#{root}gallery.html"
 -%>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,43 +26,69 @@
   <div class="page-body">
     <main id="main-content">
 
-      <figure class="photo-page<%= " photo-page--#{photo.image_size}" if photo.image_size && photo.image_size != 'standard' %>">
-<%- if img -%>
-        <img
-          src="<%= img[:src] %>"
-          srcset="<%= img[:srcset] %>"
-          sizes="(max-width: 860px) 100vw, 860px"
-          alt="<%= h(photo.image_alt) %>"
-          loading="eager"
-          fetchpriority="high"<%= img[:style] %>>
-<%- elsif photo.image_url -%>
-        <img src="<%= photo.image_url %>" alt="<%= h(photo.image_alt) %>" loading="eager">
-<%- end -%>
-<%- if photo.caption -%>
-        <figcaption><%= h(photo.caption) %></figcaption>
-<%- end -%>
-      </figure>
+      <article class="gallery-image-page container">
 
-      <div class="photo-info container">
-        <h1 class="photo-info__title"><%= h(photo.title) %></h1>
-        <div class="photo-info__meta">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="<%= root %>gallery.html">Portfolio</a>
+<%- if back_series == 'highlights' -%>
+          <span class="breadcrumb__sep" aria-hidden="true">&#x203A;</span>
+          <a href="<%= root %>gallery/highlights.html">highlights</a>
+<%- end -%>
+          <span class="breadcrumb__sep" aria-hidden="true">&#x203A;</span>
+          <span class="breadcrumb__current"><%= h(photo.title) %></span>
+        </nav>
+
+        <figure class="gallery-image-page__figure">
+<%- if img -%>
+          <img
+            src="<%= img[:src] %>"
+            srcset="<%= img[:srcset] %>"
+            sizes="(max-width: 860px) 100vw, 860px"
+            alt="<%= h(photo.image_alt.to_s) %>"
+            loading="eager"
+            fetchpriority="high"<%= img[:style] %>>
+<%- elsif photo.image_url -%>
+          <img src="<%= photo.image_url %>" alt="<%= h(photo.image_alt.to_s) %>" loading="eager" fetchpriority="high">
+<%- end -%>
+<%- if photo.image_alt -%>
+          <figcaption><%= h(photo.image_alt) %></figcaption>
+<%- end -%>
+        </figure>
+
+        <div class="gallery-image-page__info">
+          <h1 class="gallery-image-page__title"><%= h(photo.title) %></h1>
+
+          <dl class="gallery-image-page__exif">
 <%- if photo.date -%>
-          <span class="photo-info__date"><%= photo.date.strftime('%-d %B %Y') %></span>
+            <div class="exif-row">
+              <dt>Date</dt>
+              <dd><time datetime="<%= photo.date_iso %>"><%= photo.date.strftime('%-d %B %Y') %></time></dd>
+            </div>
 <%- end -%>
 <%- if photo.location -%>
-          <span class="photo-info__location"><%= h(photo.location) %></span>
+            <div class="exif-row">
+              <dt>Location</dt>
+              <dd><%= h(photo.location) %></dd>
+            </div>
 <%- end -%>
 <%- if photo.camera -%>
-          <span class="photo-info__camera"><%= h(photo.camera) %></span>
+            <div class="exif-row">
+              <dt>Camera</dt>
+              <dd><%= h(photo.camera) %></dd>
+            </div>
 <%- end -%>
-        </div>
+          </dl>
+
 <%- unless photo.content_html.empty? -%>
-        <div class="photo-info__body">
-          <%= photo.content_html %>
-        </div>
+          <div class="gallery-image-page__text">
+            <%= photo.content_html %>
+          </div>
 <%- end -%>
-        <a href="<%= root %>gallery.html" class="post-back">All photographs</a>
-      </div>
+
+          <a href="<%= back_url %>" class="gallery-image-page__back">&#x2190; <%= h(back_label) %></a>
+        </div>
+
+      </article>
 
     </main>
 <%= renderer.partial('footer', root: root) %>

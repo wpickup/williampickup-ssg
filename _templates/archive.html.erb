@@ -19,12 +19,18 @@
   <div class="page-body">
     <main id="main-content">
       <header class="page-hero container">
+        <p class="page-hero__eyebrow">All posts</p>
         <h1 class="page-hero__title">Archive</h1>
       </header>
       <div class="archive-content container">
+        <ul class="archive-years">
 <%- years.each do |year| -%>
-        <h2><a href="<%= root %>archive/<%= year %>.html"><%= year %></a></h2>
+          <li class="archive-year-item">
+            <a href="<%= root %>archive/<%= year %>.html" class="archive-year-link"><%= year %></a>
+            <span class="archive-year-count"><%= posts.count { |p| p.year == year } %> posts</span>
+          </li>
 <%- end -%>
+        </ul>
       </div>
     </main>
 <%= renderer.partial('footer', root: root) %>

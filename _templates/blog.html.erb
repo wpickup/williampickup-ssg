@@ -73,7 +73,7 @@
         <button class="tag-filter-clear" onclick="clearTagFilter()">&#215; clear</button>
       </p>
 
-      <ol class="blog-list" reversed aria-label="All posts">
+      <ol class="blog-list" reversed aria-label="Posts">
 <%- posts.each do |post| -%>
         <%= renderer.partial('post_card', post: post, root: root) %>
 <%- end -%>

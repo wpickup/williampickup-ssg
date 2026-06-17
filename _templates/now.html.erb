@@ -42,7 +42,11 @@
         <section class="now-section" aria-labelledby="now-reading">
           <h2 class="now-section__label" id="now-reading">Reading</h2>
           <div class="now-section__content">
-            <p class="book-links"><%= now_books.map { |b| %(<a href="#{root}reading/#{b.slug}.html">#{h(b.title)}</a>) }.join('') %></p>
+            <ul class="book-list">
+<%- now_books.each do |book| -%>
+              <%= renderer.partial('book_entry', book: book, root: root) %>
+<%- end -%>
+            </ul>
           </div>
         </section>
 <%- end -%>
