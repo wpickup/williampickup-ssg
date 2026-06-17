@@ -1,0 +1,57 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Highlights — Gallery — #{SITE_TITLE}"
+  description   = 'A selection of favourite photographs.'
+  canonical_url = "#{SITE_URL}/gallery/highlights.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="<%= root %>gallery.html">Gallery</a>
+          <span class="breadcrumb__sep" aria-hidden="true">&#x203A;</span>
+          <span class="breadcrumb__current">Highlights</span>
+        </nav>
+        <h1 class="page-hero__title">Highlights</h1>
+        <p class="page-hero__meta"><%= photos.length %> photographs</p>
+      </header>
+
+      <div class="gallery-grid container">
+<%- photos.each do |photo| -%>
+        <figure class="gallery-item<%= " gallery-item--#{photo.image_size}" if photo.image_size && photo.image_size != 'standard' %>">
+          <a href="<%= root %>photos/<%= photo.slug %>.html" class="image-wrap">
+<%- if photo.image_url&.include?('publit.io') -%>
+            <img
+              src="<%= publit_width(photo.image_url, 700) %>"
+              alt="<%= h(photo.image_alt) %>"
+              loading="lazy">
+<%- elsif photo.image_url -%>
+            <img src="<%= photo.image_url %>" alt="<%= h(photo.image_alt) %>" loading="lazy">
+<%- end -%>
+          </a>
+<%- if photo.title -%>
+          <figcaption><%= h(photo.title) %><%- if photo.date -%> &mdash; <%= photo.date.strftime('%B %Y') %><%- end -%></figcaption>
+<%- end -%>
+        </figure>
+<%- end -%>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

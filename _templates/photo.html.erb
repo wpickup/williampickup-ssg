@@ -1,0 +1,69 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "#{photo.title} — #{SITE_TITLE}"
+  description   = photo.caption
+  canonical_url = photo.url
+  og_type       = 'website'
+  og_title      = photo.title
+  og_image      = photo.image_url
+  date_iso      = photo.date_iso
+  is_publit     = photo.image_url.to_s.include?('publit.io')
+  img           = is_publit ? publit_srcset(photo.image_url, photo.focal_point) : nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <figure class="photo-page<%= " photo-page--#{photo.image_size}" if photo.image_size && photo.image_size != 'standard' %>">
+<%- if img -%>
+        <img
+          src="<%= img[:src] %>"
+          srcset="<%= img[:srcset] %>"
+          sizes="(max-width: 860px) 100vw, 860px"
+          alt="<%= h(photo.image_alt) %>"
+          loading="eager"
+          fetchpriority="high"<%= img[:style] %>>
+<%- elsif photo.image_url -%>
+        <img src="<%= photo.image_url %>" alt="<%= h(photo.image_alt) %>" loading="eager">
+<%- end -%>
+<%- if photo.caption -%>
+        <figcaption><%= h(photo.caption) %></figcaption>
+<%- end -%>
+      </figure>
+
+      <div class="photo-info container">
+        <h1 class="photo-info__title"><%= h(photo.title) %></h1>
+        <div class="photo-info__meta">
+<%- if photo.date -%>
+          <span class="photo-info__date"><%= photo.date.strftime('%-d %B %Y') %></span>
+<%- end -%>
+<%- if photo.location -%>
+          <span class="photo-info__location"><%= h(photo.location) %></span>
+<%- end -%>
+<%- if photo.camera -%>
+          <span class="photo-info__camera"><%= h(photo.camera) %></span>
+<%- end -%>
+        </div>
+<%- unless photo.content_html.empty? -%>
+        <div class="photo-info__body">
+          <%= photo.content_html %>
+        </div>
+<%- end -%>
+        <a href="<%= root %>gallery.html" class="post-back">All photographs</a>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

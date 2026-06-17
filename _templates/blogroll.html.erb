@@ -1,0 +1,37 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Blogroll — #{SITE_TITLE}"
+  description   = page.description
+  canonical_url = "#{SITE_URL}/blogroll.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow">Links</p>
+        <h1 class="page-hero__title">Blogroll</h1>
+        <p class="page-hero__intro"><%= h(page.description.to_s) %></p>
+      </header>
+
+      <div class="blogroll-body container">
+        <%= page.content_html %>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

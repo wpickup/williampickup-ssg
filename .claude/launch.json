@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ssg-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4567", "--directory", "/Users/will/Sites/williampickup-ssg/_out"],
+      "port": 4567
+    }
+  ]
+}

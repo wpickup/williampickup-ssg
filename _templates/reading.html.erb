@@ -1,0 +1,63 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Reading — #{SITE_TITLE}"
+  description   = 'Books that have stayed with me — notes on reading.'
+  canonical_url = "#{SITE_URL}/reading.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow">Reading</p>
+        <h1 class="page-hero__title">Books</h1>
+        <p class="page-hero__intro">
+          Books are one of the main threads running through this site. Some stay with me because of their ideas,
+          some because of their images, and some because they help me pay attention to places, materials,
+          and ways of living.
+        </p>
+      </header>
+      <p class="page-crosslink container">
+        Some books here have prompted pieces in <a href="<%= root %>blog.html">Writing</a>.
+      </p>
+
+      <div class="book-archive container">
+<%- unless reading_books.empty? -%>
+        <section class="book-archive__section">
+          <h2 class="book-archive__year">Currently reading</h2>
+          <ul class="book-grid">
+<%- reading_books.each do |book| -%>
+            <%= renderer.partial('book_entry', book: book, root: root) %>
+<%- end -%>
+          </ul>
+        </section>
+<%- end -%>
+<%- unless read_books.empty? -%>
+        <section class="book-archive__section">
+          <h2 class="book-archive__year">Read</h2>
+          <ul class="book-grid">
+<%- read_books.each do |book| -%>
+            <%= renderer.partial('book_entry', book: book, root: root) %>
+<%- end -%>
+          </ul>
+        </section>
+<%- end -%>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

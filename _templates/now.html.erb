@@ -1,0 +1,77 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Now — #{SITE_TITLE}"
+  description   = 'What William Pickup is doing now.'
+  canonical_url = "#{SITE_URL}/now.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+  sections      = now_data['sections'] || {}
+  updated       = now_data['updated'] ? Date.parse(now_data['updated'].to_s) : nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow"><a href="https://nownownow.com/about" style="color:inherit;">/now</a></p>
+        <h1 class="page-hero__title">What I'm up to</h1>
+      </header>
+
+      <div class="now-body container">
+<%- if updated -%>
+        <p class="now-updated">Updated <%= updated.strftime('%B %Y') %></p>
+<%- end -%>
+
+<%- if sections['making'] -%>
+        <section class="now-section" aria-labelledby="now-making">
+          <h2 class="now-section__label" id="now-making">Making</h2>
+          <div class="now-section__content"><p><%= h(sections['making']) %></p></div>
+        </section>
+<%- end -%>
+
+<%- unless now_books.empty? -%>
+        <section class="now-section" aria-labelledby="now-reading">
+          <h2 class="now-section__label" id="now-reading">Reading</h2>
+          <div class="now-section__content">
+            <p class="book-links"><%= now_books.map { |b| %(<a href="#{root}reading/#{b.slug}.html">#{h(b.title)}</a>) }.join('') %></p>
+          </div>
+        </section>
+<%- end -%>
+
+<%- if sections['travelling'] -%>
+        <section class="now-section" aria-labelledby="now-travelling">
+          <h2 class="now-section__label" id="now-travelling">Travelling</h2>
+          <div class="now-section__content"><p><%= h(sections['travelling']) %></p></div>
+        </section>
+<%- end -%>
+
+<%- if sections['growing'] -%>
+        <section class="now-section" aria-labelledby="now-growing">
+          <h2 class="now-section__label" id="now-growing">Growing</h2>
+          <div class="now-section__content"><p><%= h(sections['growing']) %></p></div>
+        </section>
+<%- end -%>
+
+<%- if sections['thinking_about'] -%>
+        <section class="now-section" aria-labelledby="now-thinking">
+          <h2 class="now-section__label" id="now-thinking">Thinking about</h2>
+          <div class="now-section__content"><p><%= h(sections['thinking_about']) %></p></div>
+        </section>
+<%- end -%>
+
+      </div>
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

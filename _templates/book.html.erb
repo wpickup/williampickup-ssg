@@ -1,0 +1,58 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "#{book.title} — #{SITE_TITLE}"
+  description   = "#{book.title} by #{book.author}"
+  canonical_url = book.url
+  og_type       = 'website'
+  og_title      = book.title
+  og_image      = book.cover_src
+  date_iso      = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <div class="book-page container">
+        <div class="book-page__cover">
+<%- if book.cover_src -%>
+          <img
+            src="<%= book.cover_src %>"
+<%- if book.cover_srcset -%>
+            srcset="<%= book.cover_srcset %>"
+            sizes="180px"
+<%- end -%>
+            alt="<%= h(book.title) %>"
+            width="180" height="270"
+            loading="eager">
+<%- end -%>
+        </div>
+        <div class="book-page__info">
+          <h1 class="book-page__title"><%= h(book.title) %></h1>
+          <p class="book-page__author"><%= h(book.author.to_s) %></p>
+<%- if book.status == 'read' && book.date_read -%>
+          <p class="book-page__date-read">Read <%= book.date_read.strftime('%B %Y') %></p>
+<%- end -%>
+<%- unless book.content_html.empty? -%>
+          <div class="book-page__notes">
+            <%= book.content_html %>
+          </div>
+<%- end -%>
+          <a href="<%= root %>reading.html" class="post-back">All books</a>
+        </div>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

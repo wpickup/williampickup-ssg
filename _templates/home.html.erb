@@ -4,9 +4,8 @@
   description   = SITE_DESC
   canonical_url = "#{SITE_URL}/"
   og_type       = 'website'
-  og_title      = nil
-  og_image      = nil
-  date_iso      = nil
+  og_title      = nil; og_image = nil; date_iso = nil
+  sections      = now_data['sections'] || {}
 -%>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,6 +28,33 @@
           <p><%= SITE_DESC %></p>
         </div>
       </header>
+
+      <section class="home-now container" aria-label="Now">
+        <div class="now-strip now-strip--grid">
+          <a href="<%= root %>now.html" class="now-strip__label" aria-label="Now page">Now</a>
+          <dl class="now-strip__items">
+<%- if sections['making'] -%>
+            <div class="now-strip__item">
+              <dt>Making</dt>
+              <dd><%= h(sections['making']) %></dd>
+            </div>
+<%- end -%>
+<%- unless now_books.empty? -%>
+            <div class="now-strip__item">
+              <dt>Reading</dt>
+              <dd class="book-links"><%= now_books.map { |b| %(<a href="#{root}reading/#{b.slug}.html">#{h(b.title)}</a>) }.join('') %></dd>
+            </div>
+<%- end -%>
+<%- if sections['travelling'] -%>
+            <div class="now-strip__item">
+              <dt>Travelling</dt>
+              <dd><%= h(sections['travelling']) %></dd>
+            </div>
+<%- end -%>
+          </dl>
+          <a href="<%= root %>now.html" class="now-strip__more">Full now page</a>
+        </div>
+      </section>
 
       <section class="home-entry container" aria-labelledby="start-title">
         <div class="home-entry-grid">

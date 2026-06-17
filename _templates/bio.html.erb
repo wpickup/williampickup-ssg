@@ -1,0 +1,46 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "About — #{SITE_TITLE}"
+  description   = page.description
+  canonical_url = "#{SITE_URL}/bio.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow">About</p>
+        <h1 class="page-hero__title">William<br><em>Pickup</em></h1>
+      </header>
+
+      <div class="h-card bio-body container">
+        <a class="p-name u-url" href="<%= SITE_URL %>" hidden>William Pickup</a>
+        <a class="u-email" href="mailto:<%= AUTHOR_EMAIL %>" hidden><%= AUTHOR_EMAIL %></a>
+        <div class="bio-text p-note">
+          <%= page.content_html %>
+          <div class="bio-divider" role="presentation"></div>
+          <nav class="bio-nav" style="display:flex;flex-wrap:wrap;gap:2rem;align-items:center;">
+            <a href="mailto:<%= AUTHOR_EMAIL %>" class="contact-link">Get in touch</a>
+            <a href="<%= root %>now.html" class="contact-link">What I'm doing now</a>
+            <a href="<%= root %>blogroll.html" class="contact-link">Blogroll</a>
+          </nav>
+        </div>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

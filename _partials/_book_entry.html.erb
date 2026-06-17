@@ -1,0 +1,19 @@
+<li class="book-entry">
+  <a href="<%= root %>reading/<%= book.slug %>.html" class="book-entry__cover" tabindex="-1" aria-hidden="true">
+<%- if book.cover_src -%>
+    <img
+      src="<%= book.cover_src %>"
+<%- if book.cover_srcset -%>
+      srcset="<%= book.cover_srcset %>"
+      sizes="52px"
+<%- end -%>
+      alt="<%= h(book.title) %>"
+      width="180" height="270"
+      loading="lazy">
+<%- end -%>
+  </a>
+  <div class="book-entry__info">
+    <p class="book-entry__title"><a href="<%= root %>reading/<%= book.slug %>.html"><%= h(book.title) %></a></p>
+    <p class="book-entry__author"><%= h(book.author.to_s) %></p>
+  </div>
+</li>

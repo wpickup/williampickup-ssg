@@ -1,0 +1,60 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Gallery — #{SITE_TITLE}"
+  description   = 'Photographs from travels, walks, and the occasional moment I wanted to keep.'
+  canonical_url = "#{SITE_URL}/gallery.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+  cover_photo   = highlights.first
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow">Photographs</p>
+        <h1 class="page-hero__title">Gallery</h1>
+        <p class="page-hero__intro">
+          Photographs from travels, walks, and the occasional moment I wanted to keep.
+          Some collections live here on the site, while older work still sits on Flickr.
+        </p>
+      </header>
+      <p class="page-crosslink container">
+        Some of these photographs connect with pieces in <a href="<%= root %>blog.html">Writing</a>, while others simply sit here on their own.
+      </p>
+
+      <section class="gallery-index container" aria-labelledby="gallery-current-title">
+        <div class="gallery-section-head">
+          <p class="gallery-section-head__eyebrow" id="gallery-current-title">On this site</p>
+        </div>
+        <div class="gallery-cards">
+          <article class="gallery-card">
+<%- if cover_photo&.image_url -%>
+            <a href="<%= root %>gallery/highlights.html" class="gallery-card__cover" aria-label="View Highlights gallery">
+              <img src="<%= publit_width(cover_photo.image_url, 700) %>" alt="Highlights" loading="lazy">
+              <span class="gallery-card__count"><%= highlights.length %> photos</span>
+            </a>
+<%- end -%>
+            <div class="gallery-card__info">
+              <h3><a href="<%= root %>gallery/highlights.html">Highlights</a></h3>
+              <p class="gallery-card__desc">A selection of favourite photographs.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

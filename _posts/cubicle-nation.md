@@ -6,7 +6,7 @@ description: Pamela Slim's Escape from Cubicle Nation finally makes it to the sh
   — a book long anticipated after following her blog. A guide for anyone considering
   trading corporate employment for work that better reflects who they are.
 categories:
-- cubicle
+
 - Books
 tags:
 - books
