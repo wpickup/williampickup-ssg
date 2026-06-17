@@ -2,12 +2,13 @@
   <header class="site-header">
     <div class="header-inner">
       <a href="<%= root %>index.html" class="site-title">William Pickup</a>
+<%- nav = defined?(current) ? current : nil -%>
       <nav class="main-nav" aria-label="Primary navigation">
         <ul>
-          <li><a href="<%= root %>blog.html">Writing</a></li>
-          <li><a href="<%= root %>gallery.html">Gallery</a></li>
-          <li><a href="<%= root %>now.html">Now</a></li>
-          <li><a href="<%= root %>bio.html">About</a></li>
+          <li><a href="<%= root %>blog.html"<%= ' aria-current="page"' if nav == 'writing' %>>Writing</a></li>
+          <li><a href="<%= root %>gallery.html"<%= ' aria-current="page"' if nav == 'gallery' %>>Gallery</a></li>
+          <li><a href="<%= root %>now.html"<%= ' aria-current="page"' if nav == 'now' %>>Now</a></li>
+          <li><a href="<%= root %>bio.html"<%= ' aria-current="page"' if nav == 'about' %>>About</a></li>
         </ul>
       </nav>
       <button class="theme-toggle" aria-label="Toggle colour theme" title="Toggle light/dark">

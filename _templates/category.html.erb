@@ -15,7 +15,7 @@
       og_image: og_image, date_iso: date_iso, root: root) %>
 </head>
 <body>
-<%= renderer.partial('header', root: root) %>
+<%= renderer.partial('header', root: root, current: 'writing') %>
   <div class="page-body">
     <main id="main-content">
       <header class="page-hero container">
@@ -34,7 +34,7 @@
 <%- end -%>
       </ol>
     </main>
-<%= renderer.partial('footer', root: root) %>
+<%= renderer.partial('footer', root: root, current: 'writing') %>
   </div>
   <script defer src="<%= root %>javascript/main.js"></script>
 </body>

@@ -1,15 +1,16 @@
       <footer class="site-footer">
       <nav class="footer-nav" aria-label="Footer navigation">
+<%- nav = defined?(current) ? current : nil -%>
         <div class="footer-nav__group">
-          <a href="<%= root %>blog.html">Writing</a>
-          <a href="<%= root %>gallery.html">Gallery</a>
-          <a href="<%= root %>now.html">Now</a>
-          <a href="<%= root %>reading.html">Reading</a>
-          <a href="<%= root %>bio.html">About</a>
+          <a href="<%= root %>blog.html"<%= ' aria-current="page"' if nav == 'writing' %>>Writing</a>
+          <a href="<%= root %>gallery.html"<%= ' aria-current="page"' if nav == 'gallery' %>>Gallery</a>
+          <a href="<%= root %>now.html"<%= ' aria-current="page"' if nav == 'now' %>>Now</a>
+          <a href="<%= root %>reading.html"<%= ' aria-current="page"' if nav == 'reading' %>>Reading</a>
+          <a href="<%= root %>bio.html"<%= ' aria-current="page"' if nav == 'about' %>>About</a>
         </div>
         <div class="footer-nav__group">
-          <a href="<%= root %>archive.html">Archive</a>
-          <a href="<%= root %>blogroll.html">Blogroll</a>
+          <a href="<%= root %>archive.html"<%= ' aria-current="page"' if nav == 'archive' %>>Archive</a>
+          <a href="<%= root %>blogroll.html"<%= ' aria-current="page"' if nav == 'blogroll' %>>Blogroll</a>
           <a href="<%= root %>search.html">Search</a>
           <a href="<%= root %>Feeds/rss.xml">RSS</a>
           <a href="mailto:<%= AUTHOR_EMAIL %>">Contact</a>
