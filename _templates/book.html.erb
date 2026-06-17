@@ -22,32 +22,49 @@
     <main id="main-content">
 
       <div class="book-page container">
-        <div class="book-page__cover">
+        <article class="book-entry-page">
+
+          <div class="book-entry-page__header">
+            <div class="book-entry-page__cover">
 <%- if book.cover_src -%>
-          <img
-            src="<%= book.cover_src %>"
+              <img
+                src="<%= book.cover_src %>"
 <%- if book.cover_srcset -%>
-            srcset="<%= book.cover_srcset %>"
-            sizes="180px"
+                srcset="<%= book.cover_srcset %>"
+                sizes="(max-width: 560px) 7rem, 180px"
 <%- end -%>
-            alt="<%= h(book.title) %>"
-            width="180" height="270"
-            loading="eager">
+                alt="Cover of <%= h(book.title) %>"
+                class="book-cover"
+                loading="eager">
 <%- end -%>
-        </div>
-        <div class="book-page__info">
-          <h1 class="book-page__title"><%= h(book.title) %></h1>
-          <p class="book-page__author"><%= h(book.author.to_s) %></p>
-<%- if book.status == 'read' && book.date_read -%>
-          <p class="book-page__date-read">Read <%= book.date_read.strftime('%B %Y') %></p>
+            </div>
+            <div class="book-entry-page__meta">
+              <h1 class="book-entry-page__title"><%= h(book.title) %></h1>
+              <p class="book-entry-page__author"><%= h(book.author.to_s) %></p>
+<%- if book.isbn -%>
+              <p class="book-entry-page__isbn">ISBN <%= h(book.isbn) %></p>
 <%- end -%>
+            </div>
+          </div>
+
 <%- unless book.content_html.empty? -%>
-          <div class="book-page__notes">
+          <div class="book-entry-page__note">
             <%= book.content_html %>
           </div>
 <%- end -%>
-          <a href="<%= root %>reading.html" class="post-back">All books</a>
-        </div>
+
+          <footer class="book-entry-page__footer">
+            <div class="book-find-links">
+              <span class="book-find-links__label">Find this book</span>
+<%- if book.isbn -%>
+              <a href="https://www.booktopia.com.au/search.ep?keywords=<%= CGI.escape(book.title.to_s) %>" class="book-find-link" target="_blank" rel="noopener">Booktopia</a>
+              <a href="https://www.worldcat.org/isbn/<%= h(book.isbn) %>" class="book-find-link" target="_blank" rel="noopener">WorldCat library search</a>
+<%- end -%>
+            </div>
+            <a href="<%= root %>reading.html" class="book-back">&#x2190; Reading history</a>
+          </footer>
+
+        </article>
       </div>
 
     </main>
