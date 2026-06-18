@@ -14,7 +14,6 @@ tags:
 - sustainability
 topics:
 - simple-living
-draft: false
 ---
 
 [Eating Locally: Backyard Chickens][treehugger] at [Treehugger.com][treehugger 2].

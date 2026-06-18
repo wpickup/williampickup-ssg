@@ -13,7 +13,6 @@ tags:
 topics:
 - books-ideas
 - systems-thinking
-draft: false
 ---
 
 Tim Bray on [Occupying Wall Street][tbray]:

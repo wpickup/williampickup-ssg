@@ -13,7 +13,6 @@ topics:
 - books-ideas
 image_url: https://media.publit.io/file/51OOEyvZVXL.jpg
 use_featured_image: true
-draft: false
 ---
 
 Douglass Rushkoff is always worth reading, here is a rousing speech he gave to Occupy Wallstreet  

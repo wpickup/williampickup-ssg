@@ -15,7 +15,6 @@ tags:
 topics:
 - simple-living
 image_url: https://media.publit.io/file/2012-02-28-sleep-apnea-and-sonomed.jpg
-draft: false
 ---
 
 This [article][bbc] from the BBC describes a sleeping pattern involving two sleeps of about 4 hours with a period of wakefulness in between, known as segmented sleep. It seems there is evidence that this was the normal sleep pattern until the night was pushed back by street lighting at the end of the 16th century.

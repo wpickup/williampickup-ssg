@@ -12,7 +12,6 @@ tags:
 - books
 topics:
 - books-ideas
-draft: false
 ---
 
 I have been reading two books by [Douglas Rushkoff][rushkoff]: "Program or Be Programmed" and "Life Inc". These books have well reasoned arguments that encourage a subversive approach to two pervasive elements of modern life:

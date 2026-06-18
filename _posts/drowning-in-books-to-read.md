@@ -14,7 +14,6 @@ topics:
 image_url: https://media.publit.io/file/book-pile.jpeg
 image_focal_point: center bottom
 use_featured_image: true
-draft: false
 ---
 
 I love books, i enjoy being given them at this time of&#xa0;the year and I enjoy&#xa0;buying them at any time. Unfortunately I sometimes fall behind with reading them.

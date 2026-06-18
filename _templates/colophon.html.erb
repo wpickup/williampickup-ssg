@@ -1,0 +1,41 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Colophon — #{SITE_TITLE}"
+  description   = page.description
+  canonical_url = "#{SITE_URL}/colophon.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root, current: 'colophon') %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow">Behind the site</p>
+        <h1 class="page-hero__title">Colophon</h1>
+        <p class="page-hero__lede"><%= h(page.description.to_s) %></p>
+      </header>
+
+      <div class="colophon-body container">
+        <%= page.content_html %>
+
+        <div class="colophon-meta">
+          <p>This is version <a href="<%= root %>now.html">&lsquo;<%= COPYRIGHT_YEAR.to_s[-2..] %></a> of the site &mdash; rebuilt whenever something changes.</p>
+        </div>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root, current: 'colophon') %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

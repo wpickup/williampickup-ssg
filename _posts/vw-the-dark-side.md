@@ -12,7 +12,6 @@ tags:
 - sustainability
 topics:
 - books-ideas
-draft: false
 ---
 
 Sophisticated campaign orchestrated by Greenpeace using the same Star Wars theme that featured in the latest VW ads. The aim was to raise pressure on Volkswagen to put more effort into bringing its green technology to bear across its fleet.

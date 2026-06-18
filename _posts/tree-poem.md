@@ -12,7 +12,6 @@ tags:
 topics:
 - books-ideas
 image_url: https://media.publit.io/file/2021-10-22-tree-poems-1.jpg
-draft: false
 ---
 
 KINSHIP

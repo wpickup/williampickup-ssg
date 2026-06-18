@@ -11,7 +11,6 @@ tags:
 topics:
 - books-ideas
 - systems-thinking
-draft: false
 ---
 
 Some fascinating ideas explored at the Annual Edge contributions for the most deep, elegant or beautiful explanation.

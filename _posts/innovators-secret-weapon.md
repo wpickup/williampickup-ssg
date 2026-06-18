@@ -12,7 +12,6 @@ tags:
 - mindfulness
 topics:
 - health-wellbeing
-draft: false
 ---
 
 Great post from [Jarie Bolander][47hats] on the habits that enable innovation. Very timely for me as I am in the process of creating a day off a week to allow time to grow a new venture.

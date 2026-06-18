@@ -1,0 +1,42 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Search — #{SITE_TITLE}"
+  description   = page.description
+  canonical_url = "#{SITE_URL}/search.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+  <link rel="stylesheet" href="<%= root %>pagefind/pagefind-ui.css">
+</head>
+<body>
+<%= renderer.partial('header', root: root, current: 'search') %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <h1 class="page-hero__title">Search</h1>
+      </header>
+
+      <div class="container" style="max-width: 48rem; padding-top: 2rem; padding-bottom: 4rem;">
+        <div id="search"></div>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root, current: 'search') %>
+  </div>
+  <script src="<%= root %>javascript/main.js" defer></script>
+  <script src="<%= root %>pagefind/pagefind-ui.js" defer></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      new PagefindUI({ element: '#search', showSubResults: false });
+    });
+  </script>
+</body>
+</html>

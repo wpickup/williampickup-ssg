@@ -12,7 +12,6 @@ tags:
 topics:
 - places-experiences
 image_url: https://media.publit.io/file/2008-05-17-krinklewood-biodynamic-wine.jpg
-draft: false
 ---
 
 The [Krinklewood][krinklewood] vineyard was recently given a positive review in the local media so I thought I would give it a try. We would have gotten around to it anyway as we are very keen on organic and biodynamic wines. So last night I picked up a bottle of the [2007 Verdelho][krinklewood] which we tried with some high quality lebanese food at a local restaurant. Wow, this is a delicious wine. I haven't drunk much Verdelho and was not sure whether I would find it interesting. So we were pleasantly surprised to find a light crisp taste with definite citrus/passionfruit characters. To my palate it was not unlike a mild sauvignon blanc. Highly recommended and very good value at around $A21. Importantly there were no negative effects the next morning :) 

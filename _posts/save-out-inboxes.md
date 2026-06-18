@@ -11,7 +11,6 @@ tags:
 - tech
 topics:
 - systems-thinking
-draft: false
 ---
 
 Chris Anderson's [Email Charter][emailcharter] is well worth checking out and following. I especially like rule 2 — Short and Slow is not Rude.

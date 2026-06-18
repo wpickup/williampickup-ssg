@@ -19,7 +19,6 @@ use_featured_image: true
 series: Tokyo Ceramics Guide
 related_posts:
 - Ceramic Destinations in Tokyo
-draft: false
 ---
 
 There are some excellent galleries in Sydney that focus on displaying the work of local artists and providing exhibition space.

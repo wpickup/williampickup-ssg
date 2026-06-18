@@ -15,7 +15,6 @@ topics:
 - systems-thinking
 image_url: https://img.youtube.com/vi/qDI2oF1bASk/0.jpg
 use_featured_image: true
-draft: false
 ---
 
 Mastering Archimate has worked with T36 in the creation of an excellent video that shows why Enterprise Architecture is important.

@@ -13,7 +13,6 @@ tags:
 topics:
 - learning-making
 image_url: https://media.publit.io/file/2013-07-08-we-should-build-mandolins-3.jpg
-draft: false
 ---
 
 Here is another beautiful video celebrating craftsmanship.

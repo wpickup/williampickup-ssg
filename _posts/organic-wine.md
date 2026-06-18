@@ -13,7 +13,6 @@ topics:
 - learning-making
 - places-experiences
 - simple-living
-draft: false
 ---
 
 Here in Australia we have a vibrant wine industry including an increasing number of vineyards producing organic and/or biodynamic wine. We are especially keen on the wines from Mudgee in central NSW. This is a dry inland region that is ideal for organic growing due to the lack of humidity which reduces the amount of mould and fungus problems compared to locations closer to the coast, these are generally treated using chemical sprays. One of the oldest is [Botobolar][botobolar], they produce a range of affordable wines that are great examples of big red's, not too subtle but good value drinking. The vineyard is unirrigated and has been much affected by drought in recent years, sometimes picking no grapes at all for a season. 

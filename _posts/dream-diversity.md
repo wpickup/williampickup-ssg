@@ -12,7 +12,6 @@ tags:
 - permaculture
 topics:
 - books-ideas
-draft: false
 ---
 
 Great post from HBR that calls out the danger of simplifying your dreams down to a narrow outcome that can setup a black and white success or failure scenario. One tool they describe to help avoid this is the "folder of gratitude"

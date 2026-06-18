@@ -16,7 +16,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/how-to-live-with-introverts-by-romanjones-d4tfoyo.jpg
 use_featured_image: true
-draft: false
 ---
 
 Insightful guide to living with an introvert, rings true and definitely worth a look.

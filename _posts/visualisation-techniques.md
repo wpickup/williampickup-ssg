@@ -14,7 +14,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/PeriodicVisualisations.jpg
 use_featured_image: true
-draft: false
 ---
 
 [This][visual-literacy] is interesting, an interactive compilation of data visualisation techniques.

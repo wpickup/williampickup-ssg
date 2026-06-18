@@ -11,7 +11,6 @@ tags:
 - culture
 topics:
 - books-ideas
-draft: false
 ---
 
 [Tom Malone on collective intelligence and the &#x201c;genetic&#x201d; structure of groups][niemanlab]

@@ -19,7 +19,6 @@ featured: true
 series: Tokyo Ceramics Guide
 related_posts:
 - Ceramics Destinations in Kyoto
-draft: false
 ---
 
 The most popular post on Slowlane has been [Ceramics Destinations in Kyoto][1], this post seeks to provide the same information for a Tokyo visitor.

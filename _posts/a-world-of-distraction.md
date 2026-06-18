@@ -10,7 +10,6 @@ tags:
 - mindfulness
 topics:
 - simple-living
-draft: false
 ---
 
 Really good material here from [Becoming Minimalist][becomingminimalist].

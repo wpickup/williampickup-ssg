@@ -20,7 +20,6 @@ featured: true
 series: Tokyo Ceramics Guide
 related_posts:
 - Ceramic Destinations in Tokyo
-draft: false
 ---
 
 The following are worth considering if you are in Kyoto and interested in Ceramics.

@@ -12,7 +12,6 @@ tags:
 topics:
 - books-ideas
 image_url: https://media.publit.io/file/2012-01-18-read-one-book-per-week.jpg
-draft: false
 ---
 
 I will have to adopt an approach like [Joshua Beck at Becoming Minimalist][becomingminimalist] if I am to reduce my reading backlog. Not to mention keeping up to date with exciting new books like those in the [Tournament of Books][themorningnews].

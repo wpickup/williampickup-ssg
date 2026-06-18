@@ -10,7 +10,6 @@ tags:
 - tech
 topics:
 - systems-thinking
-draft: false
 ---
 
 This is right on the money — so to speak.

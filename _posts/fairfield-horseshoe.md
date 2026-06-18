@@ -13,7 +13,6 @@ topics:
 - places-experiences
 image_url: https://media.publit.io/file/Ambleside-Fairfield-Horshoe-final-ascent.jpg
 use_featured_image: true
-draft: false
 ---
 
 We had a long and rewarding day walking the Fairfield Horseshoe in the hills around Ambleside. It was mid September 2011 and the weather blessed us with clear skies and warm temperatures which added up to fantastic views.   

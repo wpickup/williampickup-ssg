@@ -14,7 +14,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/41WKy8RxHqL.jpg
 use_featured_image: true
-draft: false
 ---
 
 I am reading a new book by [Gary Marcus][garymarcus] a scientist who in his professional life studies languages and cognitive science. In this book he explores the research behind the popular belief that its much more difficult for adults to learn a musical instrument compared to the ease with which children can pick it up. Gary had always harboured a desire to learn the guitar and the book follows his own journey to learn the guitar in his 40&#x2019;s as he seeks to debunk the assumed wisdom that says its really to late for him to become competent.

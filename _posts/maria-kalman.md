@@ -14,7 +14,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/frontpage-foodrules.jpg
 use_featured_image: true
-draft: false
 ---
 
 [Steve Zeoli][wordpress] posted a link to the work of [Maira Kalman][mairakalman] in the NY Times, in this case an enlightening graphic celebration of the inventiveness of Benjamin Franklin. This post was part of a series — "[The Pursuit of Happiness (2009)][mairakalman 2]" — a year long exploration of American History and democracy beginning with a story on the inauguration of Barack Obama.

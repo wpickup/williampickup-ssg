@@ -13,7 +13,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/2011-11-29-a-book-apart.jpg
 use_featured_image: true
-draft: false
 ---
 
 Just bought [a bundle][1] from [A Book Apart][2], excellent value - especially as eBooks.  

@@ -15,7 +15,6 @@ topics:
 - places-experiences
 image_url: https://media.publit.io/file/shakahauchi.jpg
 use_featured_image: true
-draft: false
 ---
 
 Just returned from a concert that was the major public event of the 5th World Shakuhachi Festival. This gathering was a rare opportunity to see and hear some of the worlds foremost players and was an extraordinary experience. Tonight's concert featured pieces played on Shakuhachi, Koto, Shamisen and harp. A musical and accomplished Australian Aboriginal welcome ceremony was performed by Matthew Doyle. A mass playing of Temuke by the festival participants was a highlight.

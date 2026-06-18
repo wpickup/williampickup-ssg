@@ -11,7 +11,6 @@ tags:
 - mindfulness
 topics:
 - health-wellbeing
-draft: false
 ---
 
 The blog Putting Things Off had a thought-provoking post about changing the way we work — unfortunately the site is no longer online.

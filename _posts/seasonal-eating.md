@@ -12,7 +12,6 @@ tags:
 - sustainability
 topics:
 - simple-living
-draft: false
 ---
 
 The way to keep the food miles down is to eat in sync with what's in season for your region. Its a simple idea that would once have been the only option for most people. In modern first world countries it now requires an effort to know what is in season and to track down local producers. If you have a local farmers market then patronise it well so the producers keep going to the trouble of turning up.

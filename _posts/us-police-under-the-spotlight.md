@@ -14,7 +14,6 @@ topics:
 - books-ideas
 image_url: https://media.publit.io/file/ghandi-book.jpg
 use_featured_image: true
-draft: false
 ---
 
 A video of a US policeman calmly capsicum spraying unarmed sitting protestors has created an international storm. [James Fallows][theatlantic] has exhaustive coverage and Mark Bernstein summarises the story with key links and adds his own view in this excellent post&#xa0;[Shame][markbernstein]

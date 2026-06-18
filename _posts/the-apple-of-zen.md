@@ -12,7 +12,6 @@ tags:
 - mindfulness
 topics:
 - health-wellbeing
-draft: false
 ---
 
 Steve Jobs practised Zen — this dharma talk from teacher Peg Syverson at [Appamada][appamada] considers Steve's legacy and how to apply his approach to our lives.

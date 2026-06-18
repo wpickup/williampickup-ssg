@@ -14,7 +14,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/bread-Z.jpg
 use_featured_image: true
-draft: false
 ---
 
 The latest issue of [Resurgence][resurgence] has arrived and it looks a beauty. A quick skim reveals the usual combination of thoughtful articles and fabulous images.

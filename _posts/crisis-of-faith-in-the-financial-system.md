@@ -13,7 +13,6 @@ tags:
 - permaculture
 topics:
 - books-ideas
-draft: false
 ---
 
 [Crisis of Faith in the Financial System][hbr]

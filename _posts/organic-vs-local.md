@@ -14,7 +14,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/apple-bins-600.jpg
 use_featured_image: true
-draft: false
 ---
 
 These days we have a reasonable range of organic food available to us locally whether through the supermarket, our local shops and/or box deliveries. However, in common with nearly all modern food, much of it travels substantial distances before it gets to us. In addition it is often out of season for our local environs. This has created a modern conundrum where shoppers seeking to buy organic must often choose a product with many air and road miles included in its true cost of availability. From a purity of food perspective the decision is easy, always choose the organic or biodynamic product. But if you are concerned about your carbon debt or eating in season, its sometimes seems that buying locally grown non organic is a better choice. This dilemma is nicely captured in a cartoon by Mike Adams at naturalnews.com which goes into some detail to explain the options.

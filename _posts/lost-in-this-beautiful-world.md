@@ -13,7 +13,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/LostInThisBeautifulWorld.jpg
 use_featured_image: true
-draft: false
 ---
 
 I have been enjoying the album [Lost in this beautiful world][apple] by [Jon Lacey][jonlacey]. It's a melodic piano and guitar driven folk album with an authentic feel, partly due to the raw quality of Jon's voice. The songs are introspective and engaging.

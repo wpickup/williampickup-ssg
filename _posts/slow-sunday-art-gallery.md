@@ -16,7 +16,6 @@ topics:
 - places-experiences
 image_url: https://media.publit.io/file/Cazneaux1.gif
 use_featured_image: true
-draft: false
 ---
 
 We wandered along to the [Art Gallery of NSW][artgallery] today for our Slow Sunday. I wanted to take another look at the Harold Cazneaux exhibition. It is the most inspiring collection of photographic images. Wonderful use of light and location, especially when you consider the equipment that he was using compared to what we have available today. The images are highly atmospheric and clearly present themselves as art.

@@ -12,7 +12,6 @@ tags:
 - books
 topics:
 - books-ideas
-draft: false
 ---
 
 I am a great fan of subversive media that seeks to tell truths that do not sit easily in the tomes of the major outlets, being dictated as they are by large advertising revenue and the need to appeal to as wide an audience as possible.

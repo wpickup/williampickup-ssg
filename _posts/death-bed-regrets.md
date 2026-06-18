@@ -11,7 +11,6 @@ tags:
 - mindfulness
 topics:
 - health-wellbeing
-draft: false
 ---
 
 Profound — timely.

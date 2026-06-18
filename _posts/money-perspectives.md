@@ -12,7 +12,6 @@ tags:
 - sustainability
 topics:
 - books-ideas
-draft: false
 ---
 
 The May/June issue of [Resurgence][resurgence] has arrived and it looks very interesting.

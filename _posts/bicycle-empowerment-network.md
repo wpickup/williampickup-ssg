@@ -6,7 +6,7 @@ description: Its Blog Action Day - my plug is for BEN the Bicycle Empowerment Ne
   of Namibia. Established by Australian Michael Linke who had previously edited Australian
   Cyclist.
 categories:
-
+- bicycle
 - Culture
 tags:
 - culture
@@ -17,7 +17,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/2008-10-15-ben-bicycle-empowerment-network.jpg
 use_featured_image: true
-draft: false
 ---
 
 Its Blog Action Day - my plug is for [BEN][benbikes] the Bicycle Empowerment Network of Namibia.  

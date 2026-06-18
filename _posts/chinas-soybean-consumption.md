@@ -17,7 +17,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/amazon-soy-farming-harvesters.jpg
 use_featured_image: true
-draft: false
 ---
 
 [Disturbing article][permaculturenews] by [Lester Brown][earth-policy] on the [PRI website][permaculturenews 2]

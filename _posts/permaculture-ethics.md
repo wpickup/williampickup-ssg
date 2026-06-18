@@ -11,7 +11,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/Permaculture2.jpg
 use_featured_image: true
-draft: false
 ---
 
 I have been interested in [Permaculture][wikipedia] since 1980 when I stumbled upon a copy of Permaculture 2 in our local bookshop (the same shop also introduced me to [The One Straw Revolution][onestrawrevolution] and [Ecotopia][wikipedia 2]&#xa0;around the same time).

@@ -16,7 +16,6 @@ image_url: https://media.publit.io/file/daily-rituals-1000-1500.png
 use_featured_image: true
 related_posts:
 - How to accomplish more by doing less
-draft: false
 ---
 
 Great [infographic post][1] at [infowetrust][2] via the [Huffington Post][3] and [macademic][4] that shows the daily ritual of interesting historical figures. Smoking, coffee and beer appear frequently.

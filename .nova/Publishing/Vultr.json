@@ -1,0 +1,9 @@
+{
+  "ignoredFilePatterns" : [
+    ".DS_Store"
+  ],
+  "localPath" : "_out",
+  "remotePath" : "\/var\/www\/htdocs\/williampickup.org",
+  "server" : "Vultr",
+  "usesPublishing" : true
+}

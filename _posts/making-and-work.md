@@ -14,7 +14,6 @@ topics:
 - learning-making
 - places-experiences
 - simple-living
-draft: false
 ---
 
 I describe myself as a Maker, for me the term is a indicator of where my inspiration and satisfaction are found. This has generally been realised in the workshop making objects with wood and more recently clay. Its harder to find in the work I do as a Solution and Enterprise architect. Aspects are definitely present, as myself or my team are generally involved with a larger to team to create and implement a new software capability. However as I have moved more into management it has been becoming a more distant aspect of daily work life.

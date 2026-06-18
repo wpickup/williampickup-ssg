@@ -12,7 +12,6 @@ tags:
 - books
 topics:
 - books-ideas
-draft: false
 ---
 
 Seth Godin published a [free ebook][sethsblog], "What Matters Now". It contains over 70 short essays from today's leading thinkers. Definitely worth a read. I found resonances in many of the entries however the following extract from Howard Mann caught my attention as it's a phenomenon I see growing daily.  

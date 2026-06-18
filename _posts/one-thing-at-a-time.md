@@ -11,7 +11,6 @@ tags:
 - mindfulness
 topics:
 - simple-living
-draft: false
 ---
 
 [The Magic of Doing One Thing at a Time][harvardbusiness]:

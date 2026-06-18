@@ -14,7 +14,6 @@ topics:
 - learning-making
 - places-experiences
 - simple-living
-draft: false
 ---
 
 Michelle Gadd of [organicwine.com.au][organicwine] has a [good summary][organicwine 2] of recent coverage of biodynamic wine in the Australia media.

@@ -14,7 +14,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/800px-1911-Solvay-conference.jpg
 use_featured_image: true
-draft: false
 ---
 
 [Mark Bernstein: Going To Conferences][1]

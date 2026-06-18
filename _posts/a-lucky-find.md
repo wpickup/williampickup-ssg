@@ -15,8 +15,7 @@ topics:
 image_url: https://media.publit.io/file/16880875769960.jpg
 use_featured_image: true
 has_sidenotes: true
-featured: false
-draft: false
+featured: true
 ---
 
 Reading [John Connell's The Running Book](https://www.goodreads.com/book/show/55625454-the-running-book) with its evocative 

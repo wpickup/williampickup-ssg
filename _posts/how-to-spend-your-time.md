@@ -12,7 +12,6 @@ tags:
 - mindfulness
 topics:
 - simple-living
-draft: false
 ---
 
 There has been a continuous stream of media about finding your passion and reviewing your working life against higher goals. This post from [workawesome][workawesome] is a nice summary, and once it referred to the Eightfold Path and Right Livelihood I had to link it.

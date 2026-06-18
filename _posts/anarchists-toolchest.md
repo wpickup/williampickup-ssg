@@ -16,7 +16,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/ATC.jpg
 use_featured_image: true
-draft: false
 ---
 
 Just finished reading the [Anarchists Tool Chest by Christopher Schwartz][lostartpress].

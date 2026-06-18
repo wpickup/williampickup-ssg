@@ -14,7 +14,6 @@ tags:
 topics:
 - simple-living
 image_url: https://media.publit.io/file/2008-05-14-slow-food-university.jpg
-draft: false
 ---
 
 When Slowlane joined [Slow Food][slowfood] recently they sent a booklet outlining their various initiatives, The Slow Food Companion. Two ventures that sounded particularly interesting were the [University of Gastronomic Sciences][unisg] (UNISG) and [Terra Madre][terramadre]. The university is based in Piedmont and claims to be the first academic institution in the world dedicated to the study of gastronomy. Subjects include Botany, Food Technology, History of Agriculture, Sensory Analysis and Anthropology. The curriculum combines humanities and sciences with food technology and culture.

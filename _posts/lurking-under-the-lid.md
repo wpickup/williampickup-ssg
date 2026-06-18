@@ -13,7 +13,6 @@ topics:
 - health-wellbeing
 image_url: https://media.publit.io/file/pollan-book.jpg
 use_featured_image: true
-draft: false
 ---
 
 Many of us have been aware of many of the dangers associated with processed foods and the artificial chemicals introduced by the food industry for some time. I was reminded of the horror story again recently after reading Michael Pollan's excellent book [In Defence of Food][amazon].

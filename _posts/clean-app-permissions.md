@@ -11,7 +11,6 @@ tags:
 - tech
 topics:
 - systems-thinking
-draft: false
 ---
 
 I found quite a few applications that had permission to my gmail and linkedIn accounts that I couldn't remember why I granted.  

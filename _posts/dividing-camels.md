@@ -13,7 +13,6 @@ topics:
 - books-ideas
 image_url: https://media.publit.io/file/sufi-comic-dividing-17-camels-by-3-156x300.jpg
 use_featured_image: true
-draft: false
 ---
 
 The traditional teaching stories of the Sufi's are often intriguing. One of my favourites is known as Dividing Camels. I originally came across it in Idries Shah's book [Thinkers of the East][amazon].

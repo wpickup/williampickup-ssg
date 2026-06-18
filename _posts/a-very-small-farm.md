@@ -18,7 +18,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/31eSHxS5elL.jpg
 use_featured_image: true
-draft: false
 ---
 
 When I considered which of my favourite books to write about for this blog, one of the first to come to mind was William Paul Winchester's wonderful memoir of life on his 20 acres -

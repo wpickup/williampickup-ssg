@@ -12,7 +12,6 @@ tags:
 topics:
 - health-wellbeing
 - simple-living
-draft: false
 ---
 
 This post has been in my mind since I saw a wonderful program on ABC TV — "Rare Chicken Rescue" — with two themes: depression, and rescuing rare chicken breeds. Both subjects are interesting however it was the role that keeping chickens played in rescuing Mark Tully from depression that really struck a chord.

@@ -13,7 +13,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/2013-03-21-prioritising-organic-foods-and-challenges-to-paleo.jpg
 use_featured_image: true
-draft: false
 ---
 
 [Mark Sisson][marksdailyapple] runs a business that promotes a version of the Paleo diet and philosophy ([Primal][marksdailyapple 2]). He writes some excellent posts on his blog that I often find myself nodding in agreement with. A recent post that suggests a prioritised list of what to buy from organic sources is an example.

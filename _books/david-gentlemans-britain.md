@@ -3,7 +3,7 @@ title: David Gentleman's Britain
 slug: david-gentlemans-britain
 author: David Gentleman
 status: reading
-isbn: '9781851496235'
 on_now_page: true
+isbn: '9781851496235'
 ---
 

@@ -15,7 +15,6 @@ topics:
 - learning-making
 - places-experiences
 - simple-living
-draft: false
 ---
 
 [The Ecologist][theecologist] is one of the great journals of the green movement and has recently gone through the transformation from print to online. This makes access to its stimulating content much easier.

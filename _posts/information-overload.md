@@ -14,7 +14,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/8081988417.jpg
 use_featured_image: true
-draft: false
 ---
 
 Saw this great cartoon over at [DEVONtechnologies][devontechnologies] which I have been visiting lately as I start to tackle my own information overload.

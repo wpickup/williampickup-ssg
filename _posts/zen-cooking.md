@@ -13,7 +13,6 @@ tags:
 topics:
 - simple-living
 image_url: https://media.publit.io/file/2009-10-18-in-season-zen-cooking.jpg
-draft: false
 ---
 
 Nice post here at Mother Earth News

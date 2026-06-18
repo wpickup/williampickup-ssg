@@ -14,7 +14,6 @@ tags:
 topics:
 - learning-making
 image_url: https://media.publit.io/file/2012-12-21-swedish-spoon-maker-1923-8.jpg
-draft: false
 ---
 
 Great video link from The Village Carpenter

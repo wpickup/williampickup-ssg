@@ -1,0 +1,46 @@
+header:
+  - label: Writing
+    href: blog.html
+    current: writing
+  - label: Gallery
+    href: gallery.html
+    current: gallery
+  - label: Now
+    href: now.html
+    current: now
+  - label: About
+    href: bio.html
+    current: about
+
+footer_primary:
+  - label: Writing
+    href: blog.html
+    current: writing
+  - label: Gallery
+    href: gallery.html
+    current: gallery
+  - label: Now
+    href: now.html
+    current: now
+  - label: Reading
+    href: reading.html
+    current: reading
+  - label: About
+    href: bio.html
+    current: about
+
+footer_secondary:
+  - label: Archive
+    href: archive.html
+    current: archive
+  - label: Blogroll
+    href: blogroll.html
+    current: blogroll
+  - label: Search
+    href: search.html
+    current: search
+  - label: RSS
+    href: Feeds/rss.xml
+  - label: Contact
+    href: "mailto:will@williampickup.org"
+    email: true

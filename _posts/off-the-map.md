@@ -13,7 +13,6 @@ topics:
 - places-experiences
 image_url: https://media.publit.io/file/519A2NPKKRL.jpg
 use_featured_image: true
-draft: false
 ---
 
 I came across a recommendation for the movie "Off The Map" recently.

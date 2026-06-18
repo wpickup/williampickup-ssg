@@ -12,7 +12,6 @@ tags:
 - mindfulness
 topics:
 - health-wellbeing
-draft: false
 ---
 
 Since I subscribed to the Harvard Business Review blog posts I have seen a steady stream of sharply observed and well thought out pieces. Many are aimed at corporate efficiency however a good smattering challenge the existing order and some are just timely good advice like this one

@@ -12,7 +12,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/2-4dd14c2da8.jpg
 use_featured_image: true
-draft: false
 ---
 
 Very interesting diagrams to see at the [Web Science Industry Forum Poster Session][scribd] via [Mark Bernstein][markbernstein]

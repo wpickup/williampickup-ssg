@@ -15,7 +15,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/2012-10-14-mike-dodd-video.jpg
 use_featured_image: true
-draft: false
 ---
 
 [Mike Dodd][studiopottery] makes beautiful ceramics.

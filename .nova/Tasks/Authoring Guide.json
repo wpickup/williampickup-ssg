@@ -1,0 +1,9 @@
+{
+  "actions" : {
+    "build" : {
+      "enabled" : true,
+      "script" : ".nova\/Scripts\/authoring-guide.sh"
+    }
+  },
+  "openLogOnRun" : "never"
+}

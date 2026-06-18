@@ -12,7 +12,6 @@ tags:
 topics:
 - health-wellbeing
 - simple-living
-draft: false
 ---
 
 Rings true to my own experience

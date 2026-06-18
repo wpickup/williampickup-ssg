@@ -11,7 +11,6 @@ tags:
 - tech
 topics:
 - books-ideas
-draft: false
 ---
 
 An interesting article from [The Atlantic][theatlantic] comparing the modern derivatives trading environment with playing a sophisticated computer game.

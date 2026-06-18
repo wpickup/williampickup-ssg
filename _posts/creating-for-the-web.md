@@ -16,7 +16,6 @@ topics:
 - places-experiences
 - simple-living
 - systems-thinking
-draft: false
 ---
 
 Hilarious comic at [The Oatmeal][theoatmeal] on the challenge of creating things for the web.

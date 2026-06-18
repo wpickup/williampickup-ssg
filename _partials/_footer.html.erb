@@ -1,20 +1,22 @@
       <footer class="site-footer">
       <nav class="footer-nav" aria-label="Footer navigation">
-<%- nav = defined?(current) ? current : nil -%>
+<%- nav = defined?(current) ? current : nil
+    fp  = renderer.nav_data['footer_primary']   || []
+    fs  = renderer.nav_data['footer_secondary'] || [] -%>
         <div class="footer-nav__group">
-          <a href="<%= root %>blog.html"<%= ' aria-current="page"' if nav == 'writing' %>>Writing</a>
-          <a href="<%= root %>gallery.html"<%= ' aria-current="page"' if nav == 'gallery' %>>Gallery</a>
-          <a href="<%= root %>now.html"<%= ' aria-current="page"' if nav == 'now' %>>Now</a>
-          <a href="<%= root %>reading.html"<%= ' aria-current="page"' if nav == 'reading' %>>Reading</a>
-          <a href="<%= root %>bio.html"<%= ' aria-current="page"' if nav == 'about' %>>About</a>
+<%- fp.each do |item| -%>
+          <a href="<%= root %><%= item['href'] %>"<%= ' aria-current="page"' if nav && nav == item['current'] %>><%= item['label'] %></a>
+<%- end -%>
         </div>
         <div class="footer-nav__group">
-          <a href="<%= root %>archive.html"<%= ' aria-current="page"' if nav == 'archive' %>>Archive</a>
-          <a href="<%= root %>blogroll.html"<%= ' aria-current="page"' if nav == 'blogroll' %>>Blogroll</a>
-          <a href="<%= root %>search.html">Search</a>
-          <a href="<%= root %>Feeds/rss.xml">RSS</a>
-          <a href="mailto:<%= AUTHOR_EMAIL %>">Contact</a>
+<%- fs.each do |item| -%>
+<%- if item['email'] -%>
+          <a href="<%= item['href'] %>"><%= item['label'] %></a>
+<%- else -%>
+          <a href="<%= root %><%= item['href'] %>"<%= ' aria-current="page"' if nav && nav == item['current'] %>><%= item['label'] %></a>
+<%- end -%>
+<%- end -%>
         </div>
       </nav>
-      <p class="footer-copy">&copy; <%= COPYRIGHT_YEAR %> <%= AUTHOR_NAME %></p>
+      <p class="footer-copy">&copy; <%= COPYRIGHT_YEAR %> <%= AUTHOR_NAME %> &nbsp;&middot;&nbsp; <a class="footer-version" href="<%= root %>colophon.html">built <%= BUILD_STAMP %></a></p>
     </footer>

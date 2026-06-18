@@ -13,7 +13,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/Eurozone-debt-web.png
 use_featured_image: true
-draft: false
 ---
 
 There is a visually striking and information rich diagram from the BBC showing how the Euro countries are indebted to each other.

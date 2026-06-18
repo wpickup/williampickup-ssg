@@ -16,7 +16,6 @@ topics:
 - places-experiences
 image_url: https://media.publit.io/file/8081953951-R.jpg
 use_featured_image: true
-draft: false
 ---
 
 This post was inspired by a rendition [Shane Howard][shanehoward] gave of his song [Let the Franklin Flow][apple] at the [Blue Mountains Blues Festival][bmff] a few months ago.

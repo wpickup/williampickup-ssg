@@ -13,7 +13,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/8081964763.jpg
 use_featured_image: true
-draft: false
 ---
 
 While browsing the website of designer [Zach Debord][zachdebord] (found via a Make RSS post) I came across this&#xa0;great picture of a chook in the snow with a jumper on, she looks very cosy. Head over to their site to see more of these pictures in a&#xa0;slideshow.  

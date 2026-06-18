@@ -16,6 +16,7 @@ SITE_DESC      = 'A personal notebook of making, reading, travelling, photograph
 AUTHOR_NAME    = 'William Pickup'
 AUTHOR_EMAIL   = 'will@williampickup.org'
 COPYRIGHT_YEAR = Date.today.year
+BUILD_STAMP    = Time.now.strftime("%-d %b '%y")
 
 SRC_DIR       = __dir__
 OUT_DIR       = File.join(__dir__, '_out')
@@ -26,9 +27,9 @@ PAGES_DIR     = File.join(__dir__, '_pages')
 DATA_DIR      = File.join(__dir__, '_data')
 TEMPLATES_DIR = File.join(__dir__, '_templates')
 PARTIALS_DIR  = File.join(__dir__, '_partials')
-SITE_SRC      = File.expand_path('~/Sites/williampickup.org')
-STATIC_DIRS   = %w[css javascript fonts].map { |d| File.join(SITE_SRC, d) }
-STATIC_FILES  = %w[favicon.svg WP-at-Stromlo.webp].map { |f| File.join(SITE_SRC, f) }
+DRAFTS        = ARGV.include?('--drafts')
+STATIC_DIRS   = %w[css javascript fonts].map { |d| File.join(SRC_DIR, d) }
+STATIC_FILES  = %w[favicon.svg WP-at-Stromlo.webp].map { |f| File.join(SRC_DIR, f) }
 
 TOPIC_LABELS = {
   'books-ideas'        => 'Books and Ideas',
@@ -55,6 +56,7 @@ end
 
 def md_to_html(text)
   return '' if text.nil? || text.empty?
+  text = text.gsub(/~~(.+?)~~/m, '<del>\1</del>')
   Kramdown::Document.new(text, input: :kramdown, smart_quotes: 'lsquo,rsquo,ldquo,rdquo', hard_wrap: false).to_html
 end
 
@@ -107,7 +109,7 @@ class Post
     @featured           = fm['featured'] == true
     @series             = fm['series']
     @related_posts      = Array(fm['related_posts'])
-    @draft              = fm['draft'] != false
+    @draft              = fm['draft'] == true
     @content_html       = md_to_html(@content_md)
   end
 
@@ -223,7 +225,7 @@ class Book
 end
 
 class Page
-  attr_reader :slug, :title, :description, :template, :content_html, :path
+  attr_reader :slug, :title, :description, :template, :draft, :content_html, :path
 
   def initialize(path)
     @path = path
@@ -233,6 +235,7 @@ class Page
     @title        = fm['title']    || @slug
     @description  = fm['description']
     @template     = fm['template'] || 'page'
+    @draft        = fm['draft'] == true
     @content_html = md_to_html(body)
   end
 
@@ -242,8 +245,9 @@ end
 # ── Renderer ──────────────────────────────────────────────────────────────────
 
 class Renderer
-  def initialize(all_posts)
+  def initialize(all_posts, nav_data = {})
     @all_posts = all_posts
+    @nav_data  = nav_data
   end
 
   def render(template_name, locals = {})
@@ -273,6 +277,7 @@ class Renderer
   def publit_width(url, w) = url.sub(%r{(publit\.io/file/)}, "\\1w_#{w}/")
   def topic_label(id)  = TOPIC_LABELS[id] || id.to_s.gsub('-', ' ').split.map(&:capitalize).join(' ')
   def all_posts        = @all_posts
+  def nav_data         = @nav_data
 
   private
 
@@ -289,7 +294,7 @@ end
 def load_posts
   Dir[File.join(POSTS_DIR, '*.md')]
     .map  { |p| Post.new(p) rescue (warn "Error loading #{p}: #{$!}"; nil) }
-    .compact.reject(&:draft)
+    .compact.reject { |p| p.draft && !DRAFTS }
     .sort_by { |p| p.date || Date.new(1970) }.reverse
 end
 
@@ -311,7 +316,7 @@ def load_pages
   return [] unless Dir.exist?(PAGES_DIR)
   Dir[File.join(PAGES_DIR, '*.md')]
     .map  { |p| Page.new(p) rescue (warn "Error loading #{p}: #{$!}"; nil) }
-    .compact
+    .compact.reject { |p| p.draft && !DRAFTS }
 end
 
 def load_now_data
@@ -326,6 +331,12 @@ def load_blogroll_data
   YAML.safe_load(File.read(path)) || {}
 end
 
+def load_nav_data
+  path = File.join(DATA_DIR, 'nav.yml')
+  return {} unless File.exist?(path)
+  YAML.safe_load(File.read(path)) || {}
+end
+
 def write(path, content)
   FileUtils.mkdir_p(File.dirname(path))
   File.write(path, content, encoding: 'utf-8')
@@ -336,6 +347,7 @@ end
 
 def build
   puts "Building site → #{OUT_DIR}"
+  FileUtils.rm_rf(OUT_DIR)
   FileUtils.mkdir_p(OUT_DIR)
 
   posts    = load_posts
@@ -344,18 +356,26 @@ def build
   pages    = load_pages
   now_data      = load_now_data
   blogroll_data = load_blogroll_data
+  nav_data      = load_nav_data
 
   puts "Loaded: #{posts.length} posts, #{photos.length} photos, #{books.length} books, #{pages.length} pages"
 
-  r = Renderer.new(posts)
+  r = Renderer.new(posts, nav_data)
 
   # ── Posts ──────────────────────────────────────────────────────────────────
   puts "\nPosts:"
-  posts.each_with_index do |post, i|
+  published_posts, draft_posts = posts.partition { |p| !p.draft }
+  published_posts.each_with_index do |post, i|
     html = r.render('post', post: post,
-                    prev_post: posts[i + 1], next_post: i > 0 ? posts[i - 1] : nil,
+                    prev_post: published_posts[i + 1], next_post: i > 0 ? published_posts[i - 1] : nil,
                     root: '../')
     write(File.join(OUT_DIR, 'posts', "#{post.slug}.html"), html)
+  end
+  if DRAFTS
+    draft_posts.each do |post|
+      html = r.render('post', post: post, prev_post: nil, next_post: nil, root: '../')
+      write(File.join(OUT_DIR, 'drafts', "#{post.slug}.html"), html)
+    end
   end
 
   # ── Photos ─────────────────────────────────────────────────────────────────

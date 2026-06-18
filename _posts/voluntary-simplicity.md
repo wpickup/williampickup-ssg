@@ -14,7 +14,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/subaru-S.jpg
 use_featured_image: true
-draft: false
 ---
 
 An article in the [New York Times][nytimes] tells of a couple who are shedding their possessions prior to starting a new life as organic farmers. What I found interesting was that they have had some hostile reactions on the blog they are keeping to document the journey. I suspect that many people find the idea of others who are stepping outside the norm and "letting it all go by" to be threatening.

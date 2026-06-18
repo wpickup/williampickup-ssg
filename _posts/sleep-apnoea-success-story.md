@@ -14,7 +14,6 @@ tags:
 - wellbeing
 topics:
 - health-wellbeing
-draft: false
 ---
 
 Interesting article in The Magazine - [Heavy Breathing](https://the-magazine.org/11/heavy-breathing).

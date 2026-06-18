@@ -12,7 +12,6 @@ tags:
 - book-reviews
 topics:
 - books-ideas
-draft: false
 ---
 
 No its not this author, although we can aspire...I'm referring to [George Monbiot][monbiot], who's new book [Bring on the Apocalypse - Six Arguments for Global Justice][amazon] has leapt to the top of my reading pile. To do that it displaced Nicholas Shakespeares book [Secrets of the Sea][amazon 2] which I reserved at the library with great anticipation due to my attachment to stories about Tasmania. Not to mention any number of magazines and other tempting material.

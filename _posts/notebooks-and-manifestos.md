@@ -15,7 +15,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/2564514540.jpg
 use_featured_image: true
-draft: false
 ---
 
 I love notebooks, especially interesting quirky ones that help me feel creative.  

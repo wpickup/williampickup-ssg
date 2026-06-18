@@ -15,7 +15,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/whatyoucando-560x399-1.jpg.webp
 use_featured_image: true
-draft: false
 ---
 
 I like [this introduction to decision making techniques](https://creativemarket.com/blog/models-for-decision-making) at [Creative Market](https://creativemarket.com).

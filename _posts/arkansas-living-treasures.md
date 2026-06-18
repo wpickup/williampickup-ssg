@@ -15,7 +15,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/arkansas-made-logo-400.png
 use_featured_image: true
-draft: false
 ---
 
 Following a [link][1] from Fine Woodworking I came across an [inspiring collection of videos][2] featuring a group of traditional craftspeople who live in the US state of Arkansas.

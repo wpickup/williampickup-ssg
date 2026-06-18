@@ -12,7 +12,6 @@ tags:
 - mindfulness
 topics:
 - books-ideas
-draft: false
 ---
 
 This stimulating [post][harvardbusiness] from Art Markman at HBR.org has a focus on Innovation.

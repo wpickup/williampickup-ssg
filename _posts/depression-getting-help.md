@@ -11,7 +11,6 @@ tags:
 - mindfulness
 topics:
 - health-wellbeing
-draft: false
 ---
 
 This article was linked by [Macdrifter][macdrifter] overnight and, as is often the case, [Gabe][macdrifter 2] has come up with gem. It's by [Rob Delaney][tumblr] a US comedian, reflecting on his depression and the importance of getting help. Read it [here][tumblr 2].

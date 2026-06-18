@@ -13,7 +13,6 @@ topics:
 - places-experiences
 - simple-living
 image_url: https://media.publit.io/file/2015-06-19-inhabit-movie.jpg
-draft: false
 ---
 
 Back in 2013 a couple of [filmmakers][1] bravely took on the risk of making a high quality movie about the Permaculture movement in North America. Once they had shot the footage, they launched a [kickstarter project to raise funds to complete the project last year][2].

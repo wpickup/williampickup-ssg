@@ -43,6 +43,9 @@
 </head>
 <body>
 <%= renderer.partial('header', root: root, current: 'writing') %>
+<%- if post.draft -%>
+  <div class="draft-banner">Draft — not published</div>
+<%- end -%>
   <div class="page-body">
     <article class="<%= post.css_classes %>">
       <span class="p-author h-card" hidden><a class="p-name u-url" href="<%= SITE_URL %>"><%= AUTHOR_NAME %></a></span>

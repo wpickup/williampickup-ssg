@@ -13,7 +13,6 @@ topics:
 - systems-thinking
 image_url: https://media.publit.io/file/Airship-thumb-560x330-55428.jpg
 use_featured_image: true
-draft: false
 ---
 
 Some fascinating images in the Atlantic article linked below - the long distance air travel proposal may well turn out to be the low carbon future of air transport  

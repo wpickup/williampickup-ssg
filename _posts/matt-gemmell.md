@@ -10,7 +10,6 @@ tags:
 - design
 topics:
 - books-ideas
-draft: false
 ---
 
 Matt Gemmell is such a good writer, his post&#xa0;[Dear TextMate][deartextmate] is a beauty and must reflect the thoughts of many former TextMate fans.

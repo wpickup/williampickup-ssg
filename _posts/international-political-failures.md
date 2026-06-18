@@ -13,7 +13,6 @@ tags:
 - sustainability
 topics:
 - systems-thinking
-draft: false
 ---
 
 Stirring writing [&#x201c;After Rio, we know. Governments have given up on the planet&#x201d;][monbiot] by George Monbiot in reaction to the collapse of the Rio Summit. He still finds reasons to continue to make efforts towards preserving the biosphere. Its clear however that we cannot look to governments and international agreements to do anything significant.

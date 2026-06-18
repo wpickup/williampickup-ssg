@@ -12,7 +12,6 @@ tags:
 - culture
 topics:
 - places-experiences
-draft: false
 ---
 
 This week, we went to the opening night of a new movie called Son Of A Lion. It's a really moving and interesting story set in the tribal region of northern Pakistan, where the Pashtuns live. You know, in the media, they often portray Pashtuns as extremist terrorists and followers of Osama Bin Laden. But that's not really true for most of the people, including those in this story.  

@@ -16,7 +16,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/41fS-kX3naL.jpg
 use_featured_image: true
-draft: false
 ---
 
 In interviews with contemporary woodworkers [James Krenov&#x2019;s][wikipedia] first book &#x2018;A Cabinetmaker Notebook&#x2019; is often cited as the book that changed the course of that person&#x2019;s life and led to them pursuing a career with wood.  

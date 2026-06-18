@@ -14,7 +14,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/51iNBxfBo1L.jpg
 use_featured_image: true
-draft: false
 ---
 
 Reading Alan Watts in my teens I experienced my first taste of eastern thinking which has led to a life long interest. In his essays on Zen and the Tao I could feel deep truths were lurking just beyond the words. A particular favourite is [Cloud-hidden, Whereabouts Unknown: A Mountain Journal][amazon].

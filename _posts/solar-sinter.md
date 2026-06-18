@@ -12,7 +12,6 @@ tags:
 topics:
 - systems-thinking
 image_url: https://media.publit.io/file/2012-01-10-solar-sinter-8.jpg
-draft: false
 ---
 
 I am amazed by this, its an incredible project that uses sunlight, 3D printing components and sand to produce glass sculptures. Watch the video right through to understand what is happening.

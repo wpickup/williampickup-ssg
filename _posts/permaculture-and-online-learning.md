@@ -16,7 +16,6 @@ tags:
 topics:
 - simple-living
 image_url: https://media.publit.io/file/2013-05-29-permaculture-and-online-learning-Q.jpg
-draft: false
 ---
 
 After years of exposure to Permaculture and having spent several years a decade ago implementing a disparate set of its common patterns at our previous property in Northern NSW, I am now taking a much deeper dive into it after enrolling in [Geoff Lawton's][1] Online Permaculture Design Course. Its been running a few weeks now and my partner and I are both finding it a revelation. So many concepts and themes that we had previously read about but not really understood are suddenly making sense. Geoff's an excellent teacher and the online format works perfectly for a couple of introverted types. We can take our time and review material as we go.

@@ -11,7 +11,6 @@ tags:
 - design
 topics:
 - systems-thinking
-draft: false
 ---
 
 [This post][jackadam] is a fascinating description of the design of the Dark Sky weather app — a hyperlocal precipitation forecasting app funded via Kickstarter.

@@ -22,7 +22,8 @@ BLOG_POSTS_DIR = File.expand_path(
   '~/Documents/Personal/Web-Development/williampickup.org/blog-posts'
 )
 
-POST_PROTOS = %w[mmdPost mdPost].freeze
+POST_PROTOS  = %w[mmdPost mdPost].freeze
+DRAFT_PROTOS = %w[draftPost].freeze
 
 # ── Core extensions ───────────────────────────────────────────────────────────
 
@@ -107,7 +108,7 @@ def extract_posts(doc)
   written = 0
   skipped = 0
 
-  items = doc.xpath('//item[@proto]').select { |n| POST_PROTOS.include?(n['proto']) }
+  items = doc.xpath('//item[@proto]').select { |n| (POST_PROTOS + DRAFT_PROTOS).include?(n['proto']) }
   puts "Found #{items.count} post items"
 
   items.each do |item|
@@ -140,7 +141,7 @@ def extract_posts(doc)
       'featured'          => (attrs['HomePageEntryPointPost'] == 'true') || nil,
       'series'            => attrs['series'].presence,
       'related_posts'     => split_list(attrs['relatedPosts']).presence,
-      'draft'             => false,
+      'draft'             => DRAFT_PROTOS.include?(item['proto']) || nil,
     }
 
     if fm['date'].nil?

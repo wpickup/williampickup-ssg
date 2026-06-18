@@ -12,7 +12,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/chris-smither-album-h.jpg
 use_featured_image: true
-draft: false
 ---
 
 Album by [Chris Smither][smither]

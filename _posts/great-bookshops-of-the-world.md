@@ -13,7 +13,6 @@ tags:
 topics:
 - books-ideas
 - places-experiences
-draft: false
 ---
 
 Fascinating photos of bookshops from around the world in [this article in Salon][salon] via Twitter from [Mark Bernstein][markbernstein] who has been to 3 of them. I'm pretty sure I have been to the final one in San Francisco, may visit the London shop this year.

@@ -13,7 +13,6 @@ tags:
 topics:
 - simple-living
 image_url: https://media.publit.io/file/GeoffLawton-whiteboard.png
-draft: false
 ---
 
 In a [previous post][williampickup] I wrote about the positive experience we were having taking part in Geoff Lawton's Online Permaculture course. Having completed all the online lessons and the quiz we are now working on the practical assignment which is due by the end of August.

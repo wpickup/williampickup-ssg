@@ -13,7 +13,6 @@ tags:
 - sustainability
 topics:
 - learning-making
-draft: false
 ---
 
 Horrified to discover the damage that plastic bags were causing to our marine environment, Claire Morsman devised a plan for action - 'sociable guerrilla bagging'.

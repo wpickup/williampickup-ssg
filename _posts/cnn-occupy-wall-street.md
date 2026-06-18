@@ -18,7 +18,6 @@ topics:
 - places-experiences
 - simple-living
 - systems-thinking
-draft: false
 ---
 
 I had missed the interesting social experiments Rushkoff describes, the local media is adopting its usual superficial view.

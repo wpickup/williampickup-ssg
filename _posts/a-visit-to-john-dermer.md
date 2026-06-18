@@ -16,7 +16,6 @@ topics:
 - learning-making
 image_url: https://media.publit.io/file/johndermerbowl.jpg
 use_featured_image: true
-draft: false
 ---
 
 In November we travelled down to Kirby's Flat for [John Dermer's][johndermer] annual major exhibition.

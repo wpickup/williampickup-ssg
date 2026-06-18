@@ -14,7 +14,6 @@ topics:
 - simple-living
 image_url: https://media.publit.io/file/1054edbf79.jpg
 use_featured_image: true
-draft: false
 ---
 
 Here is a design for a traditional chicken ark from Charles Hayward's 1940 book "Carpentry for Beginners" which is still a useful reference as it shows hand tool methods (even better is "Cabinet Making for Beginners").

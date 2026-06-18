@@ -12,7 +12,6 @@ tags:
 topics:
 - systems-thinking
 image_url: https://media.publit.io/file/2012-02-21-uncloud-local-wireless-networking-7.jpg
-draft: false
 ---
 
 This looks interesting - another useful step towards Internet independence.  

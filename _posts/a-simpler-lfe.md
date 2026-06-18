@@ -12,7 +12,6 @@ tags:
 - sustainability
 topics:
 - simple-living
-draft: false
 ---
 
 [Zen Habits][zenhabits] — a popular resource covering many aspects of moving towards a simpler life — published a summary of their best articles on simplicity.  

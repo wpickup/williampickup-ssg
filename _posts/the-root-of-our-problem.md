@@ -11,7 +11,6 @@ tags:
 - sustainability
 topics:
 - systems-thinking
-draft: false
 ---
 
 Excellent writing as usual from Monbiot, pointing to the underlying causes of the unfolding Eco crisis [http://www.monbiot.com/2012/12/03/forbidden-planet][monbiot]

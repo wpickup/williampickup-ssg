@@ -14,7 +14,6 @@ tags:
 topics:
 - learning-making
 image_url: https://media.publit.io/file/2013-05-21-jean-nicholas-gerard-a-potters-potter-S.jpg
-draft: false
 ---
 
 Goldmark have produced another fascinating "day in the life" video, this time featuring French potter Jean-Nicholas Gerard who makes beautiful slipware pots.

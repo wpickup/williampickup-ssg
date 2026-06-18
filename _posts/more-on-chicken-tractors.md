@@ -13,7 +13,6 @@ tags:
 topics:
 - simple-living
 image_url: https://media.publit.io/file/2008-08-30-more-on-chicken-tractors.jpg
-draft: false
 ---
 
 Since my [post][slowlane] about chickens which mentioned the Linda Woodrow inspired chook dome. I have noticed that people are searching in google for information about chicken tractors. This post provides a few more links to information on this subject.  

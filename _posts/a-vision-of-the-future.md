@@ -11,7 +11,6 @@ tags:
 - tech
 topics:
 - systems-thinking
-draft: false
 ---
 
 ### [Wolfram at SXSW][1]

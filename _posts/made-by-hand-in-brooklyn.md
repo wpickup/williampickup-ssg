@@ -12,7 +12,6 @@ tags:
 topics:
 - learning-making
 image_url: https://media.publit.io/file/2012-12-31-made-by-hand-in-brooklyn-p.jpg
-draft: false
 ---
 
 <figure class="figure--video">

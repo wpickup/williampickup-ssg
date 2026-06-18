@@ -10,7 +10,6 @@ tags:
 - design
 topics:
 - simple-living
-draft: false
 ---
 
 [Is Organic Supermarket Food a Lie?][permaculturenews]

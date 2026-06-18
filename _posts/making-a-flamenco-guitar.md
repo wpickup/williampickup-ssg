@@ -12,7 +12,6 @@ tags:
 topics:
 - learning-making
 image_url: https://media.publit.io/file/2013-08-12-making-a-flamenco-guitar-j.jpg
-draft: false
 ---
 
 I have linked to this video showing the making of a beautiful guitar before, but its so good its worth another run.

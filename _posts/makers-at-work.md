@@ -14,7 +14,6 @@ topics:
 - learning-making
 - systems-thinking
 image_url: https://media.publit.io/file/2013-03-03-makers-at-work-p.jpg
-draft: false
 ---
 
 There is an extensive collection of videos of showcasing makers and their work, at Those Who Make.

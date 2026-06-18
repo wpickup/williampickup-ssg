@@ -12,7 +12,6 @@ tags:
 - tech
 topics:
 - books-ideas
-draft: false
 ---
 
 [Macdrifter][macdrifter] is a straight shooter — in this post "Man Up" he calls for direct action against SOPA. I like the style and support the cause.
