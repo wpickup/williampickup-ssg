@@ -299,6 +299,33 @@ class — leave it blank unless you are experimenting.
 
 ---
 
+## Notes
+
+Notes are short, informal entries — observations, links, brief thoughts. They live in `_notes/` and appear in the writing stream alongside posts, differentiated by a "Note" label and full inline body (no title required, no card thumbnail).
+
+### Front matter
+
+```yaml
+slug: note-slug           # URL: /notes/slug.html
+date: 2026-06-18
+title: Optional title     # omit for untitled notes
+draft: true               # same draft behaviour as posts
+```
+
+### In Tinderbox
+
+Use the `mdNote` prototype. The body is the note content. `BlogPublishDate` sets the date. No topic, category, or tag fields are needed.
+
+### Behaviour
+
+- Appear in the main writing stream on `/blog.html`, sorted by date among posts
+- Show full body text inline — no "read more"
+- Have their own permalink at `/notes/slug.html`
+- Included in RSS and Atom feeds
+- Notes without a title show just the body; add a title for longer, titled notes
+
+---
+
 ## Books front matter
 
 ```yaml

@@ -1,0 +1,47 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = note.title ? "#{note.title} — #{SITE_TITLE}" : "Note — #{SITE_TITLE}"
+  description   = nil
+  canonical_url = note.url
+  og_type       = 'article'
+  og_title      = note.title
+  og_image      = nil
+  date_iso      = note.date_iso
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body class="page-note">
+<%= renderer.partial('header', root: root, current: 'writing') %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <article class="note-single h-entry container">
+        <header class="note-single__header">
+          <a href="<%= root %>blog.html" class="note-single__back">&#8592; Writing</a>
+          <div class="note-single__meta">
+            <span class="note-single__label">Note</span>
+            <time class="note-single__date dt-published" datetime="<%= note.date_iso %>"><%= note.date_display %></time>
+          </div>
+<%- if note.title -%>
+          <h1 class="note-single__title p-name"><%= h(note.title) %></h1>
+<%- end -%>
+        </header>
+
+        <div class="note-single__body e-content">
+          <%= note.content_html %>
+        </div>
+      </article>
+
+    </main>
+<%= renderer.partial('footer', root: root, current: 'writing') %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+  <script data-goatcounter="https://stats.williampickup.org/count" async src="https://stats.williampickup.org/count.js"></script>
+</body>
+</html>

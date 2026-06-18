@@ -24,6 +24,7 @@ BLOG_POSTS_DIR = File.expand_path(
 
 POST_PROTOS  = %w[mmdPost mdPost].freeze
 DRAFT_PROTOS = %w[draftPost].freeze
+NOTE_PROTOS  = %w[mdNote].freeze
 
 # ── Core extensions ───────────────────────────────────────────────────────────
 
@@ -225,6 +226,36 @@ def extract_books(doc)
   puts "  #{count} books written"
 end
 
+# ── Notes extraction ─────────────────────────────────────────────────────────
+
+def extract_notes(doc)
+  dir     = File.join(__dir__, '_notes')
+  written = 0
+
+  doc.xpath('//item[@proto]').select { |n| NOTE_PROTOS.include?(n['proto']) }.each do |item|
+    attrs = collect_attrs(item)
+    name  = attrs['Name'] || item['name'] || ''
+    slug  = (attrs['Slug'] || attrs['HTMLExportFileName'] || name)
+              .downcase.gsub(/[^a-z0-9]+/, '-').gsub(/^-|-$/, '')
+    next if slug.empty?
+
+    body = inline_text(item)
+
+    fm = {
+      'title' => attrs['NoteTitle'].presence || attrs['PostTitle'].presence,
+      'slug'  => slug,
+      'date'  => parse_date(attrs['BlogPublishDate']) || parse_date(attrs['CreationDate']),
+      'draft' => (attrs['Status'] == 'draft') || nil,
+    }
+
+    write_md(dir, slug, fm, body)
+    puts "  note: #{slug}.md"
+    written += 1
+  end
+
+  puts "  #{written} notes written"
+end
+
 # ── Now page extraction ───────────────────────────────────────────────────────
 
 NOW_SECTION_NAMES = %w[Making Travelling Growing Thinking-about].freeze
@@ -278,6 +309,9 @@ extract_photos(doc)
 
 puts "\n── Books ──"
 extract_books(doc)
+
+puts "\n── Notes ──"
+extract_notes(doc)
 
 puts "\n── Now page ──"
 extract_now(doc)

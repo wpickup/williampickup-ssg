@@ -21,6 +21,7 @@ BUILD_STAMP    = Time.now.strftime("%-d %b '%y")
 SRC_DIR       = __dir__
 OUT_DIR       = File.join(__dir__, '_out')
 POSTS_DIR     = File.join(__dir__, '_posts')
+NOTES_DIR     = File.join(__dir__, '_notes')
 PHOTOS_DIR    = File.join(__dir__, '_photos')
 BOOKS_DIR     = File.join(__dir__, '_books')
 PAGES_DIR     = File.join(__dir__, '_pages')
@@ -113,6 +114,7 @@ class Post
     @content_html       = md_to_html(@content_md)
   end
 
+  def type          = 'post'
   def url           = "#{SITE_URL}/posts/#{slug}.html"
   def primary_topic = topics.first
   def topic_label(t = primary_topic) = TOPIC_LABELS[t] || t.to_s.gsub('-', ' ').split.map(&:capitalize).join(' ')
@@ -131,6 +133,36 @@ class Post
     classes << "layout--#{layout}"    if layout && layout != 'standard'
     classes.join(' ')
   end
+
+  private
+
+  def coerce_date(val)
+    return val if val.is_a?(Date)
+    Date.parse(val.to_s)
+  rescue
+    nil
+  end
+end
+
+class Note
+  attr_reader :slug, :title, :date, :draft, :content_html, :path
+
+  def initialize(path)
+    @path = path
+    fm, body = parse_frontmatter(path)
+
+    @slug         = fm['slug']  || File.basename(path, '.md')
+    @title        = fm['title']
+    @date         = coerce_date(fm['date'])
+    @draft        = fm['draft'] == true
+    @content_html = md_to_html(body)
+  end
+
+  def type         = 'note'
+  def url          = "#{SITE_URL}/notes/#{slug}.html"
+  def date_display = date&.strftime('%-d %B %Y') || ''
+  def date_iso     = date&.iso8601 || ''
+  def year         = date&.year
 
   private
 
@@ -298,6 +330,14 @@ def load_posts
     .sort_by { |p| p.date || Date.new(1970) }.reverse
 end
 
+def load_notes
+  return [] unless Dir.exist?(NOTES_DIR)
+  Dir[File.join(NOTES_DIR, '*.md')]
+    .map  { |p| Note.new(p) rescue (warn "Error loading #{p}: #{$!}"; nil) }
+    .compact.reject { |p| p.draft && !DRAFTS }
+    .sort_by { |p| p.date || Date.new(1970) }.reverse
+end
+
 def load_photos
   return [] unless Dir.exist?(PHOTOS_DIR)
   Dir[File.join(PHOTOS_DIR, '*.md')]
@@ -351,6 +391,7 @@ def build
   FileUtils.mkdir_p(OUT_DIR)
 
   posts    = load_posts
+  notes    = load_notes
   photos   = load_photos
   books    = load_books
   pages    = load_pages
@@ -358,7 +399,7 @@ def build
   blogroll_data = load_blogroll_data
   nav_data      = load_nav_data
 
-  puts "Loaded: #{posts.length} posts, #{photos.length} photos, #{books.length} books, #{pages.length} pages"
+  puts "Loaded: #{posts.length} posts, #{notes.length} notes, #{photos.length} photos, #{books.length} books, #{pages.length} pages"
 
   r = Renderer.new(posts, nav_data)
 
@@ -375,6 +416,20 @@ def build
     draft_posts.each do |post|
       html = r.render('post', post: post, prev_post: nil, next_post: nil, root: '../')
       write(File.join(OUT_DIR, 'drafts', "#{post.slug}.html"), html)
+    end
+  end
+
+  # ── Notes ──────────────────────────────────────────────────────────────────
+  puts "\nNotes:"
+  published_notes, draft_notes = notes.partition { |n| !n.draft }
+  published_notes.each do |note|
+    html = r.render('note', note: note, root: '../')
+    write(File.join(OUT_DIR, 'notes', "#{note.slug}.html"), html)
+  end
+  if DRAFTS
+    draft_notes.each do |note|
+      html = r.render('note', note: note, root: '../')
+      write(File.join(OUT_DIR, 'drafts', "#{note.slug}.html"), html)
     end
   end
 
@@ -395,8 +450,11 @@ def build
   # ── Index pages ────────────────────────────────────────────────────────────
   puts "\nIndex pages:"
 
+  # Merge posts and notes into a single date-sorted stream for the blog listing
+  stream = (posts + notes).sort_by { |e| e.date || Date.new(1970) }.reverse
+
   write(File.join(OUT_DIR, 'blog.html'),
-    r.render('blog', posts: posts, root: ''))
+    r.render('blog', posts: posts, notes: notes, stream: stream, root: ''))
 
   # Gallery index + highlights
   highlights = photos.select { |p| p.series == 'highlights' }
@@ -420,7 +478,7 @@ def build
   featured_posts = posts.select(&:featured).first(6)
   hero_photo     = photos.find(&:featured)
   write(File.join(OUT_DIR, 'index.html'),
-    r.render('home', posts: posts.first(6), featured_posts: featured_posts,
+    r.render('home', posts: stream.first(6), featured_posts: featured_posts,
              now_data: now_data, now_books: now_books, hero_photo: hero_photo, root: ''))
 
   # Archive
@@ -458,7 +516,7 @@ def build
 
   # ── Feeds ──────────────────────────────────────────────────────────────────
   puts "\nFeeds:"
-  feed_posts = posts.first(20)
+  feed_posts = stream.first(20)
   write(File.join(OUT_DIR, 'Feeds', 'rss.xml'),  r.render('feed_rss',  posts: feed_posts))
   write(File.join(OUT_DIR, 'Feeds', 'atom.xml'), r.render('feed_atom', posts: feed_posts))
 
@@ -477,7 +535,7 @@ def build
     puts "  #{File.basename(src)}"
   end
 
-  puts "\nDone. #{posts.length} posts · #{photos.length} photos · #{books.length} books · #{years.length} archive years · #{topic_groups.length} topics · #{cat_groups.length} categories"
+  puts "\nDone. #{posts.length} posts · #{notes.length} notes · #{photos.length} photos · #{books.length} books · #{years.length} archive years · #{topic_groups.length} topics · #{cat_groups.length} categories"
 end
 
 build

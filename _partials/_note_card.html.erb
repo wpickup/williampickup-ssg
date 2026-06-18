@@ -1,0 +1,13 @@
+<li class="note-card" data-category="note" data-tags="" data-featured="false">
+  <div class="note-card__meta">
+    <span class="note-card__label">Note</span>
+    <time class="note-card__date" datetime="<%= note.date_iso %>"><%= note.date_display %></time>
+  </div>
+  <div class="note-card__body">
+<%- if note.title -%>
+    <h3 class="note-card__title"><a href="<%= root %>notes/<%= note.slug %>.html"><%= h(note.title) %></a></h3>
+<%- end -%>
+    <%= note.content_html %>
+    <a href="<%= root %>notes/<%= note.slug %>.html" class="note-card__permalink">permalink</a>
+  </div>
+</li>

@@ -12,22 +12,24 @@
   <webMaster><%= AUTHOR_EMAIL %> (<%= AUTHOR_NAME %>)</webMaster>
   <lastBuildDate><%= Time.now.strftime('%a, %d %b %Y %H:%M:%S %z') %></lastBuildDate>
   <atom:link href="<%= SITE_URL %>/Feeds/rss.xml" rel="self" type="application/rss+xml" />
-<%- posts.each do |post| -%>
+<%- posts.each do |entry| -%>
   <item>
-    <title><%= h(post.title) %></title>
-    <link><%= post.url %></link>
-    <guid isPermaLink="true"><%= post.url %></guid>
-    <pubDate><%= post.date&.strftime('%a, %d %b %Y 00:00:00 +1000') %></pubDate>
-<%- if post.description -%>
-    <description><![CDATA[<%= post.description %>]]></description>
+    <title><%= h(entry.title || 'Note') %></title>
+    <link><%= entry.url %></link>
+    <guid isPermaLink="true"><%= entry.url %></guid>
+    <pubDate><%= entry.date&.strftime('%a, %d %b %Y 00:00:00 +1000') %></pubDate>
+<%- if entry.respond_to?(:description) && entry.description -%>
+    <description><![CDATA[<%= entry.description %>]]></description>
 <%- end -%>
-<%- post.categories.each do |cat| -%>
+<%- if entry.respond_to?(:categories) -%>
+<%- entry.categories.each do |cat| -%>
     <category><%= h(cat) %></category>
 <%- end -%>
-<%- post.topics.each do |t| -%>
+<%- entry.topics.each do |t| -%>
     <category domain="topic"><%= h(t) %></category>
 <%- end -%>
-    <content:encoded><![CDATA[<%= post.content_html %>]]></content:encoded>
+<%- end -%>
+    <content:encoded><![CDATA[<%= entry.content_html %>]]></content:encoded>
   </item>
 <%- end -%>
 </channel>

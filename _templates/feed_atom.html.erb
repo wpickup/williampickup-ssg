@@ -9,17 +9,17 @@
     <name><%= AUTHOR_NAME %></name>
     <email><%= AUTHOR_EMAIL %></email>
   </author>
-<%- posts.each do |post| -%>
+<%- posts.each do |entry| -%>
   <entry>
-    <title><%= h(post.title) %></title>
-    <link href="<%= post.url %>" />
-    <id><%= post.url %></id>
-    <published><%= post.date_iso %>T00:00:00Z</published>
-    <updated><%= post.date_iso %>T00:00:00Z</updated>
-<%- if post.description -%>
-    <summary><%= h(post.description) %></summary>
+    <title><%= h(entry.title || 'Note') %></title>
+    <link href="<%= entry.url %>" />
+    <id><%= entry.url %></id>
+    <published><%= entry.date_iso %>T00:00:00Z</published>
+    <updated><%= entry.date_iso %>T00:00:00Z</updated>
+<%- if entry.respond_to?(:description) && entry.description -%>
+    <summary><%= h(entry.description) %></summary>
 <%- end -%>
-    <content type="html"><![CDATA[<%= post.content_html %>]]></content>
+    <content type="html"><![CDATA[<%= entry.content_html %>]]></content>
   </entry>
 <%- end -%>
 </feed>

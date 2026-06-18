@@ -97,8 +97,12 @@
           <a href="<%= root %>blog.html" class="home-posts__all">All writing</a>
         </div>
         <ul class="home-posts__grid">
-<%- posts.each do |post| -%>
-          <%= renderer.partial('post_card', post: post, root: root) %>
+<%- posts.each do |entry| -%>
+<%- if entry.type == 'note' -%>
+          <%= renderer.partial('note_card', note: entry, root: root) %>
+<%- else -%>
+          <%= renderer.partial('post_card', post: entry, root: root) %>
+<%- end -%>
 <%- end -%>
         </ul>
       </section>

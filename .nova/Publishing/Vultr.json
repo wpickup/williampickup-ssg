@@ -1,6 +1,8 @@
 {
+  "identifier" : "97E911D2-BFEE-4DEA-81B0-02837CF98522",
   "ignoredFilePatterns" : [
-    ".DS_Store"
+    ".DS_Store",
+    "_out"
   ],
   "localPath" : "_out",
   "remotePath" : "\/var\/www\/htdocs\/williampickup.org",
