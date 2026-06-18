@@ -3227,12 +3227,105 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   border-left: 3px solid currentColor;
   color: var(--color-text);
 }
-/* Narrower justified column at wide viewports — the henry.codes effect */
-@media (min-width: 900px) {
+/* 12-column editorial grid — wide screens only.
+   Reduce the page gutter so the grid gets more canvas.
+   Text sits in cols 3–9 (span 7 of 12 ≈ 580px at this width).
+   Figures and text blocks override grid-column to spread wider.
+   Falls back to single-column below 1000px. */
+@media (min-width: 1000px) {
+  .layout--editorial .post-page {
+    padding-inline: 2rem;
+  }
   .layout--editorial .post-body {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 1.25rem;
+    max-width: none;
     text-align: justify;
     hyphens: auto;
-    max-width: 65ch;
+  }
+  /* Everything defaults to the text column: 3 cols margin | 7 cols text | 2 cols margin */
+  .layout--editorial .post-body > * {
+    grid-column: 3 / span 7;
+    min-width: 0;
+  }
+  /* Replace margin-top rhythm with row-gap */
+  .layout--editorial .post-body > * + * { margin-top: 0; }
+  .layout--editorial .post-body { row-gap: 1.5em; }
+
+  /* ── Figure column assignments ─────────────────────────────────── */
+  /* Slightly wider than text — 1 col into each margin */
+  .layout--editorial .post-body figure.figure--wide {
+    grid-column: 2 / span 9;
+    margin-left: 0; margin-right: 0;
+  }
+  /* Edge to edge — override the 100vw trick used outside the grid */
+  .layout--editorial .post-body figure.figure--full {
+    grid-column: 1 / -1;
+    width: auto;
+    margin-inline: 0;
+  }
+  /* Half the text column — portrait images, paired figures */
+  .layout--editorial .post-body figure.figure--half {
+    grid-column: 3 / span 4;
+  }
+  /* Into the right margin — image floats beside text */
+  .layout--editorial .post-body figure.figure--float-right {
+    grid-column: 8 / span 4;
+    float: none; margin: 0;
+    align-self: start;
+  }
+  /* Into the left margin */
+  .layout--editorial .post-body figure.figure--float-left {
+    grid-column: 1 / span 3;
+    float: none; margin: 0;
+    align-self: start;
+  }
+  /* Small image sits in-column, right-aligned */
+  .layout--editorial .post-body figure.figure--small {
+    grid-column: 3 / span 3;
+  }
+
+  /* ── Text block column assignments ─────────────────────────────── */
+  .layout--editorial .post-body .col--full    { grid-column: 1 / -1; }
+  .layout--editorial .post-body .col--wide    { grid-column: 2 / span 9; }
+  .layout--editorial .post-body .col--narrow  { grid-column: 3 / span 5; }
+
+  /* Shift body text left or right — same 7-column width, different position.
+     col--left anchors to the left edge; col--right anchors to the right edge.
+     Useful for alternating text blocks alongside images, or a zig-zag rhythm. */
+  .layout--editorial .post-body .col--left  { grid-column: 1 / span 7; }
+  .layout--editorial .post-body .col--right { grid-column: 6 / span 7; }
+
+  /* Margin asides — small caption-weight text in either gutter.
+     Placement relative to adjacent content depends on DOM order:
+       col--margin-right must come BEFORE the element it sits beside
+       col--margin-left  must come AFTER  the element it sits beside
+     (Grid auto-placement fills left-to-right, so the right gutter is
+      claimed before the text column; the left gutter is claimed after.) */
+  .layout--editorial .post-body .col--margin-right,
+  .layout--editorial .post-body .col--margin-left {
+    font-size: 0.82em;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    align-self: start;
+  }
+  .layout--editorial .post-body .col--margin-right { grid-column: 10 / span 3; }
+  .layout--editorial .post-body .col--margin-left  { grid-column: 1 / span 2; }
+
+  /* Pull quote spreads wide and centres */
+  .layout--editorial .post-body .pullquote {
+    grid-column: 2 / span 10;
+    text-align: center;
+  }
+  /* h2 headings bleed slightly wider */
+  .layout--editorial .post-body h2 {
+    grid-column: 2 / span 8;
+  }
+  /* Blockquotes step out one column each side */
+  .layout--editorial .post-body blockquote {
+    grid-column: 2 / span 8;
+    margin-inline: 0;
   }
 }
 /* ── layout--feature ───────────────────── */

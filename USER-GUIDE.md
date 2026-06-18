@@ -210,6 +210,79 @@ Both include the 20 most recent posts.
 
 ---
 
+## Post layouts
+
+The `layout:` front matter key selects a page treatment. Omit it for the default single-column post style.
+
+### `layout: editorial`
+
+A twelve-column grid that activates on screens 1000px and wider. Text sits in a comfortable central column (columns 3–9). Images and text blocks can be promoted to wider column spans using CSS classes on the element.
+
+**How to use it:**
+
+Add `layout: editorial` to the post front matter, then use HTML figure and div elements directly in the Markdown body.
+
+#### Figure classes
+
+```markdown
+<figure class="figure--full">
+  <img src="https://..." alt="Alt text">
+  <figcaption>Caption</figcaption>
+</figure>
+```
+
+| Class | Column span | Use for |
+|---|---|---|
+| *(none)* | text column | Default inline image |
+| `figure--wide` | 2 cols wider than text | Landscape photos, diagrams |
+| `figure--full` | Full container width | Dramatic scene-setting images |
+| `figure--half` | Half the text column | Portrait images, paired figures |
+| `figure--float-left` | Left margin (3 cols) | Small image in left gutter |
+| `figure--float-right` | Right margin (4 cols) | Small image in right gutter |
+
+#### Text block classes
+
+```html
+<div class="col--margin-right">A bibliographic note or aside.</div>
+```
+
+| Class | Column span | Use for |
+|---|---|---|
+| `col--wide` | 1 col wider each side | Subheadings, intro paragraphs |
+| `col--narrow` | Narrower than text | Captions, short notes |
+| `col--full` | Full width | Dividers, section breaks |
+| `col--left` | Left-anchored text column | Text shifted to left half of grid |
+| `col--right` | Right-anchored text column | Text shifted to right half of grid |
+| `col--margin-right` | Right gutter (cols 10–12) | Asides, references, footnotes |
+| `col--margin-left` | Left gutter (cols 1–2) | Asides, references, footnotes |
+| `pullquote` | Wide centred (cols 2–11) | Stand-out quotes |
+
+`col--left` and `col--right` use the same 7-column width as the default text column, just repositioned. Placing a `col--left` paragraph followed by a `col--right` paragraph puts two text blocks side by side on the same row — useful for a zig-zag or two-voice layout.
+
+#### How margin notes share a row with adjacent content
+
+Margin notes work by claiming their gutter column before auto-placement reaches the adjacent text. The key is that Grid fills left-to-right across each row.
+
+**`col--margin-right` (cols 10–12)** — place it **before** the element it should sit beside. Grid places the note at cols 10–12, then finds cols 3–9 still empty in that row and places the next element there:
+
+```markdown
+<div class="col--margin-right">Sennett, *The Craftsman* (2008).</div>
+
+## The heading this note sits beside
+```
+
+**`col--margin-left` (cols 1–2)** — place it **after** the element it should sit beside. Grid places the heading at cols 3–9 first, then finds cols 1–2 still empty in that row and places the note there:
+
+```markdown
+## The heading this note sits beside
+
+<div class="col--margin-left">A left-gutter note.</div>
+```
+
+The same logic applies to any combination — the element that occupies the earlier columns in the row must appear first in the source.
+
+---
+
 ## Templates and CSS
 
 - **Templates** live in `_templates/` as `.html.erb` files
