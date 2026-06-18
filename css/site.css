@@ -134,6 +134,9 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
 }
+@media (max-width: 560px) {
+  html { font-size: 18px; }
+}
 
 body {
   background: var(--bg);
