@@ -517,6 +517,9 @@ def build
     write(File.join(OUT_DIR, "#{page.slug}.html"), html)
   end
 
+  # 404
+  write(File.join(OUT_DIR, '404.html'), r.render('404', root: '/'))
+
   # ── Feeds ──────────────────────────────────────────────────────────────────
   puts "\nFeeds:"
   feed_posts = posts.first(20)

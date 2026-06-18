@@ -1,0 +1,32 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Page not found — #{SITE_TITLE}"
+  description   = nil
+  canonical_url = nil
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+  root          = '/'
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body class="page-404">
+<%= renderer.partial('header', root: root) %>
+  <div class="page-body">
+    <main id="main-content">
+      <div class="error-page container">
+        <p class="error-page__code">404</p>
+        <h1 class="error-page__title">Page not found</h1>
+        <p class="error-page__body">The page you were looking for has moved or doesn&rsquo;t exist. Try the <a href="<%= root %>blog.html">writing</a>, the <a href="<%= root %>gallery.html">gallery</a>, or go <a href="<%= root %>index.html">home</a>.</p>
+      </div>
+    </main>
+<%= renderer.partial('footer', root: root) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>
