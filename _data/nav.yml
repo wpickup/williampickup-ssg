@@ -16,6 +16,9 @@ footer_primary:
   - label: Writing
     href: blog.html
     current: writing
+  - label: Notes
+    href: notes.html
+    current: notes
   - label: Gallery
     href: gallery.html
     current: gallery

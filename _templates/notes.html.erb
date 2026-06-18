@@ -1,0 +1,54 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "Notes — #{SITE_TITLE}"
+  description   = 'Short observations, links, and passing thoughts.'
+  canonical_url = "#{SITE_URL}/notes.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body class="page-notes">
+<%= renderer.partial('header', root: root, current: 'notes') %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <p class="page-hero__eyebrow">Short form</p>
+        <h1 class="page-hero__title">Notes</h1>
+        <p class="page-hero__intro">
+          Brief observations, links, and passing thoughts — lighter than essays,
+          more considered than social media.
+        </p>
+      </header>
+
+      <ol class="notes-list container" reversed>
+<%- notes.each do |note| -%>
+        <li class="notes-list__item">
+          <div class="notes-list__meta">
+            <time class="notes-list__date" datetime="<%= note.date_iso %>"><%= note.date_display %></time>
+          </div>
+          <div class="notes-list__body">
+<%- if note.title -%>
+            <h2 class="notes-list__title"><a href="<%= root %>notes/<%= note.slug %>.html"><%= h(note.title) %></a></h2>
+<%- end -%>
+            <%= note.content_html %>
+            <a href="<%= root %>notes/<%= note.slug %>.html" class="notes-list__permalink">permalink</a>
+          </div>
+        </li>
+<%- end -%>
+      </ol>
+
+    </main>
+<%= renderer.partial('footer', root: root, current: 'notes') %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+  <script data-goatcounter="https://stats.williampickup.org/count" async src="https://stats.williampickup.org/count.js"></script>
+</body>
+</html>

@@ -3034,6 +3034,62 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   color: var(--accent);
   text-decoration-color: var(--accent);
 }
+.home-entry-card__more {
+  margin-top: 1rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+}
+.home-entry-card__more a {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+.home-entry-card__more a:hover { color: var(--accent); }
+
+/* ── Notes listing ──────────────────────────────────────────────────────────── */
+.notes-list {
+  list-style: none;
+  padding: clamp(2rem, 5vw, 4rem) clamp(var(--gutter), 6vw, 5rem);
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.notes-list__item {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1rem 2rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem) 0;
+  border-bottom: 1px dotted var(--border);
+  align-items: start;
+}
+.notes-list__item:first-child { border-top: 1px dotted var(--border); }
+.notes-list__date {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  padding-top: 0.25rem;
+}
+.notes-list__title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+.notes-list__title a { text-decoration: none; color: var(--ink); }
+.notes-list__title a:hover { color: var(--accent); }
+.notes-list__body p { margin: 0 0 0.6rem; font-size: 0.95rem; line-height: 1.75; }
+.notes-list__body p:last-of-type { margin-bottom: 0.5rem; }
+.notes-list__permalink {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+.notes-list__permalink:hover { color: var(--accent); }
+@media (max-width: 520px) {
+  .notes-list__item { grid-template-columns: 1fr; gap: 0.4rem; }
+}
 
 /* RECENT POSTS */
 .home-posts { padding-top: calc(var(--gap) * 0.5); padding-bottom: calc(var(--gap) * 4); }

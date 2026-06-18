@@ -88,6 +88,22 @@
               <li><a href="<%= root %>gallery.html">Portfolio</a> &mdash; visual work, projects, and the more image-led side of the site.</li>
             </ul>
           </article>
+<%- unless recent_notes.empty? -%>
+          <article class="home-entry-card">
+            <h2>Recent notes</h2>
+            <ul>
+<%- recent_notes.each do |note| -%>
+              <li>
+                <a href="<%= root %>notes/<%= note.slug %>.html"><%= note.title ? h(note.title) : note.date_display %></a>
+<%- stripped = note.content_html.gsub(/<[^>]+>/, '').strip -%>
+<%- excerpt = stripped.length > 80 ? stripped[0, 80].gsub(/\s\S+$/, '') + '…' : stripped -%>
+                &mdash; <p><%= h(excerpt) %></p>
+              </li>
+<%- end -%>
+            </ul>
+            <p class="home-entry-card__more"><a href="<%= root %>notes.html">All notes &rarr;</a></p>
+          </article>
+<%- end -%>
         </div>
       </section>
 
@@ -97,12 +113,8 @@
           <a href="<%= root %>blog.html" class="home-posts__all">All writing</a>
         </div>
         <ul class="home-posts__grid">
-<%- posts.each do |entry| -%>
-<%- if entry.type == 'note' -%>
-          <%= renderer.partial('note_card', note: entry, root: root) %>
-<%- else -%>
-          <%= renderer.partial('post_card', post: entry, root: root) %>
-<%- end -%>
+<%- posts.each do |post| -%>
+          <%= renderer.partial('post_card', post: post, root: root) %>
 <%- end -%>
         </ul>
       </section>

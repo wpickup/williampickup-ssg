@@ -450,11 +450,12 @@ def build
   # ── Index pages ────────────────────────────────────────────────────────────
   puts "\nIndex pages:"
 
-  # Merge posts and notes into a single date-sorted stream for the blog listing
-  stream = (posts + notes).sort_by { |e| e.date || Date.new(1970) }.reverse
-
   write(File.join(OUT_DIR, 'blog.html'),
-    r.render('blog', posts: posts, notes: notes, stream: stream, root: ''))
+    r.render('blog', posts: posts, root: ''))
+
+  # Notes listing
+  write(File.join(OUT_DIR, 'notes.html'),
+    r.render('notes', notes: notes, root: ''))
 
   # Gallery index + highlights
   highlights = photos.select { |p| p.series == 'highlights' }
@@ -477,8 +478,10 @@ def build
   # Home
   featured_posts = posts.select(&:featured).first(6)
   hero_photo     = photos.find(&:featured)
+  recent_notes   = notes.first(4)
   write(File.join(OUT_DIR, 'index.html'),
-    r.render('home', posts: stream.first(6), featured_posts: featured_posts,
+    r.render('home', posts: posts.first(6), featured_posts: featured_posts,
+             recent_notes: recent_notes,
              now_data: now_data, now_books: now_books, hero_photo: hero_photo, root: ''))
 
   # Archive
@@ -516,7 +519,7 @@ def build
 
   # ── Feeds ──────────────────────────────────────────────────────────────────
   puts "\nFeeds:"
-  feed_posts = stream.first(20)
+  feed_posts = posts.first(20)
   write(File.join(OUT_DIR, 'Feeds', 'rss.xml'),  r.render('feed_rss',  posts: feed_posts))
   write(File.join(OUT_DIR, 'Feeds', 'atom.xml'), r.render('feed_atom', posts: feed_posts))
 
