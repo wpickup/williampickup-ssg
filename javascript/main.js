@@ -27,7 +27,6 @@
   }
 
   /* ── Promote markdown blockquotes to Quotebacks ──────────────────────
-     Runs before quoteback.js (defer scripts execute in document order).
      Convention: blockquote whose last paragraph starts with — and
      contains a link:
        > Quote text here.
@@ -145,20 +144,6 @@
     revealItems.forEach(el => io.observe(el));
   }
 
-  /* ── Category slug → readable label ── */
-  const CATEGORY_LABELS = {
-    'simple-living':      'Simple Living',
-    'books-ideas':        'Books & Ideas',
-    'learning-making':    'Learning & Making',
-    'places-experiences': 'Places & Experiences',
-    'health-wellbeing':   'Wellbeing',
-  };
-
-  document.querySelectorAll('.post-item__cat, .featured-card__cat').forEach(el => {
-    const first = el.textContent.split(';')[0].trim();
-    el.textContent = CATEGORY_LABELS[first] || first;
-  });
-
   /* ── Hide featured posts from main blog list ── */
   document.querySelectorAll('.blog-list [data-featured="true"]').forEach(el => {
     el.style.display = 'none';
@@ -172,7 +157,7 @@
   }
 
   function getListItems() {
-    return Array.from(document.querySelectorAll('.blog-list .post-item:not([data-featured="true"])'));
+    return Array.from(document.querySelectorAll('.blog-list .post-card:not([data-featured="true"])'));
   }
 
   function applyTagFilter(tag) {
@@ -252,48 +237,6 @@
   }
 
 
-  /* ── Convert MMD footnotes to sidenotes ──────────────────────────────
-     Works on both post pages (.post-body) and the bio page (.bio-text).
-     Tinderbox MMD output: <a id="fnref:N" class="footnote"><sup>N</sup></a>
-     footnote content:     <li id="fn:N"><p>text <a class="reversefootnote">↩</a></p></li>
-  ──────────────────────────────────────────────────────────────────── */
-  const postBody = document.querySelector('.post-body, .bio-text');
-  const fnBlock  = document.querySelector('.footnotes');
-  if (postBody && fnBlock) {
-    const refs = postBody.querySelectorAll('a[id^="fnref"]');
-    refs.forEach(ref => {
-      const num = ref.id.replace(/[^0-9]/g, '');
-      if (!num) return;
-
-      const li = document.querySelector('[id="fn:' + num + '"], [id="fn' + num + '"]');
-      if (!li) return;
-
-      const clone = li.cloneNode(true);
-      clone.querySelectorAll('a.reversefootnote, a[rev], a[title="return to body"]').forEach(a => a.remove());
-
-      let content = clone.innerHTML.trim();
-      content = content.replace(/^<p>([\s\S]*)<\/p>$/, '$1').trim();
-
-      const cbId = 'sn-fn-' + num;
-      const sn   = document.createElement('span');
-      sn.className = 'sidenote sidenote-numbered';
-      sn.innerHTML =
-        '<input type="checkbox" id="' + cbId + '" class="sidenote-checkbox">' +
-        '<label for="' + cbId + '" class="sidenote-toggle"></label>' +
-        '<span class="sidenote-content">' + content + '</span>';
-
-      ref.replaceWith(sn);
-    });
-
-    if (refs.length) fnBlock.hidden = true;
-  }
-
-  /* ── Similar posts — enhance <ul><li><a href="../css/site.css" >site</a></li></ul> output ─────────────────────
-     <ul><li><a href="../css/site.css" >site</a></li></ul> outputs raw Tinderbox note names, e.g.:
-     "2012-10-21-ceramics-destinations-in-kyoto"
-     Strip the date prefix to recover the slug, build a working href,
-     and title-case the slug for a readable display label.
-  ──────────────────────────────────────────────────────────────────── */
   /* ── Webmentions ───────────────────────────────────────────────────
      Fetches from webmention.io and renders replies, likes, and
      mentions. The target URL is read from data-url on the section
@@ -392,23 +335,6 @@
       .catch(() => {});
   })();
 
-  /* ── Similar posts ───────────────────────────────────────────────────
-     <ul><li><a href="../css/site.css" >site</a></li></ul> outputs raw Tinderbox note names. Strip the date
-     prefix to recover the slug, build a working href, and
-     title-case the slug for a readable display label.
-  ──────────────────────────────────────────────────────────────────── */
-  document.querySelectorAll('.related-posts__list li').forEach(li => {
-    const raw   = li.textContent.trim();
-    const slug  = raw.replace(/^\d{4}-\d{2}-\d{2}-/, '');
-    const label = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-    li.innerHTML = '<a href="' + slug + '.html">' + label + '</a>';
-  });
-
-  const relatedSection = document.querySelector('.related-posts');
-  if (relatedSection && relatedSection.querySelectorAll('li').length === 0) {
-    relatedSection.hidden = true;
-  }
-
   /* ── Location ticker ────────────────────────────────────────────────
      Home page only. Fetches current temperature from Open-Meteo (free,
      no key, CORS-friendly) and shows coordinates + temp + local time.
@@ -458,13 +384,5 @@
       })
       .catch(() => {});
   })();
-
-  /* ── ==highlight== → <mark> ──────────────────────────────────────────
-     Converts ==text== in post body to <mark>text</mark>.
-     Operates on text nodes only to avoid corrupting HTML attributes.
-  ──────────────────────────────────────────────────────────────────── */
-  document.querySelectorAll('.post-body p, .post-body li, .post-body blockquote p').forEach(el => {
-    el.innerHTML = el.innerHTML.replace(/==(.+?)==/g, '<mark>$1</mark>');
-  });
 
 })();

@@ -263,8 +263,8 @@ Add `layout: editorial` to the post front matter, then use HTML figure and div e
 | `col--full` | Full width | Dividers, section breaks |
 | `col--left` | Left-anchored text column | Text shifted to left half of grid |
 | `col--right` | Right-anchored text column | Text shifted to right half of grid |
-| `col--margin-right` | Right gutter (cols 10–12) | Asides, references, footnotes |
-| `col--margin-left` | Left gutter (cols 1–2) | Asides, references, footnotes |
+| `col--margin-right` | Right gutter (cols 10–12) | Short asides, captions |
+| `col--margin-left` | Left gutter (cols 1–2) | Short asides, captions |
 | `pullquote` | Wide centred (cols 2–11) | Stand-out quotes |
 
 `col--left` and `col--right` use the same 7-column width as the default text column, just repositioned. Placing a `col--left` paragraph followed by a `col--right` paragraph puts two text blocks side by side on the same row — useful for a zig-zag or two-voice layout.
@@ -290,6 +290,21 @@ Margin notes work by claiming their gutter column before auto-placement reaches 
 ```
 
 The same logic applies to any combination — the element that occupies the earlier columns in the row must appear first in the source.
+
+#### Margin notes vs. sidenotes — which one to use
+
+The site has two separate ways to put content in a margin. They are not interchangeable — pick based on the post's layout and what the note is for.
+
+| | `col--margin-left` / `col--margin-right` | Sidenotes (`has_sidenotes: true`) |
+|---|---|---|
+| Works in | `layout: editorial` only, 1000px+ screens | Any layout, any width |
+| Mechanism | CSS Grid column placement | CSS `float: right` |
+| Numbering | None | Automatic (footnote-style superscript) |
+| Mobile behaviour | Falls back to a plain full-width block below 1000px | Collapses to a tap-to-expand toggle |
+| Side | Left or right | Right only |
+| Built for | Short asides or captions that align beside a specific block in the grid | Citations and footnote-style annotations in continuous prose |
+
+**Rule of thumb:** if the post uses `layout: editorial`, use `col--margin-left`/`col--margin-right` for asides — they're part of the grid system. For a standard single-column post that needs numbered footnotes or citations, use sidenotes instead (markup documented under "Sidenotes" in `AUTHORING.md`). Don't use sidenote markup inside an editorial post or vice versa — the two systems assume different parent layouts and will not interact correctly.
 
 ---
 

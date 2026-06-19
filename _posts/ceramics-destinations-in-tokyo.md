@@ -25,7 +25,11 @@ The most popular post on Slowlane has been [Ceramics Destinations in Kyoto][1], 
 
 #### [Mingeikan][2] 
 
-Also known as the Japan Folk Crafts Museum. [Soetsu Yanagi][3][^1] created this museum to display his collection of mingei items (daily necessities made by common people using local materials). It displays a collection of mingei pottery, textiles and lacquer ware. Feature [exhibitions][4] are also held regularly. During our visit the main gallery was showing "KANTHA and SASHIKO - Needle Works from Bengal and Tohoku".
+Also known as the Japan Folk Crafts Museum. [Soetsu Yanagi][3]<span class="sidenote sidenote-numbered">
+  <input type="checkbox" id="sn1" class="sidenote-checkbox">
+  <label for="sn1" class="sidenote-toggle"></label>
+  <span class="sidenote-content">see [Soetsu Yanagi The Unknown Craftsman][6]</span>
+</span> created this museum to display his collection of mingei items (daily necessities made by common people using local materials). It displays a collection of mingei pottery, textiles and lacquer ware. Feature [exhibitions][4] are also held regularly. During our visit the main gallery was showing "KANTHA and SASHIKO - Needle Works from Bengal and Tohoku".
 
 It's not obvious that the gallery is open, you need to check the opening hours and then open the wooden sliding doors to enter the beautiful open entrance area. It's well worth going on a day when you can also visit Yanagi's house (in 2014 this is open every second & third Wednesday and Saturdays).
 
@@ -36,9 +40,6 @@ It's not obvious that the gallery is open, you need to check the opening hours a
 A private collection housed in building designed by Toguri, we were privileged to see an extensive selection of Inari ware, featuring a theme designs with water themes "COOLNESS&#x2026;.Ko-Inari ware with Design of Water".
 
 After making your way from Shibuya station (a 10 minute walk once you have your bearings), take seat in the lounge to observe the garden before making your way through the upstairs galleries.
-
-[^1]: see [Soetsu Yanagi The Unknown Craftsman][6]
-
 
 [1]: ceramics-destinations-in-kyoto.html
 [2]: https://www.mingeikan.or.jp/english/info
