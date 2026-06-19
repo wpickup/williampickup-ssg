@@ -14,9 +14,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
+          bundler-cache: true
 
       - name: Build site
-        run: ruby build.rb
+        run: bundle exec ruby build.rb
 
       - name: Set up Node
         uses: actions/setup-node@v4
