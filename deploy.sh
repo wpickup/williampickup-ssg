@@ -24,6 +24,8 @@ fi
 echo ""
 echo "==> Deploying to ${DEPLOY_DEST}..."
 rsync -avz --delete \
+  --omit-dir-times \
+  --no-perms \
   --exclude '.DS_Store' \
   --exclude 'drafts/' \
   _out/ "${DEPLOY_DEST}"

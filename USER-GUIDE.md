@@ -188,7 +188,7 @@ Output goes to `_out/`. The script prints every file it generates and a summary 
 npx pagefind --site _out
 ```
 
-Run this after every build that should be searchable, or add it as a second line in your deploy script.
+`deploy.sh` (see "Deploying" below) already runs this for you — manual indexing is only needed if you build without it.
 
 ### Previewing locally
 
@@ -202,11 +202,45 @@ Then open `http://localhost:4567` in your browser.
 
 ## Deploying
 
-Copy the contents of `_out/` to your web host. For example with rsync:
+`deploy.sh` builds the site, generates the Pagefind search index, and (if you give it a destination) rsyncs `_out/` to the web host — all in one step:
 
 ```bash
-rsync -avz --delete ~/Sites/williampickup-ssg/_out/ user@host:/path/to/webroot/
+cd ~/Sites/williampickup-ssg
+
+# Build + index only, no deploy:
+./deploy.sh
+
+# Build, index, and deploy:
+DEPLOY_DEST=williampickup:/var/www/htdocs/williampickup.org/ ./deploy.sh
 ```
+
+`williampickup` here is the SSH config alias for the Vultr server (see `~/.ssh/config`) — it already carries the right user and deploy key, so you don't need to spell those out. Pass `--drafts` as an extra argument if you want drafts included in the build (they're excluded from the rsync regardless, via `--exclude 'drafts/'`).
+
+Since typing `DEPLOY_DEST=...` every time is easy to forget, consider exporting it once per shell session:
+
+```bash
+export DEPLOY_DEST=williampickup:/var/www/htdocs/williampickup.org/
+./deploy.sh   # now deploys every time, no env var needed
+```
+
+### Deploying via GitHub Actions
+
+`.github/workflows/deploy.yml` runs the same build → index → rsync sequence, triggered manually — either via the Actions tab's "Run workflow" button, or from the terminal:
+
+```bash
+gh workflow run deploy.yml
+```
+
+It deliberately does not run on every push to `main`, so commits and merges never trigger a production deploy on their own — you decide when to ship by running the workflow explicitly. It needs four repository secrets set under **Settings → Secrets and variables → Actions**:
+
+| Secret | Value |
+|---|---|
+| `DEPLOY_SSH_KEY` | Private key for a dedicated deploy keypair (not your personal key — generate one scoped just to this, e.g. `ssh-keygen -t ed25519 -f deploy_key -C "github-actions"`, and add its public half to the server's `authorized_keys`) |
+| `DEPLOY_HOST` | The server's IP or hostname |
+| `DEPLOY_USER` | The SSH user on the server |
+| `DEPLOY_PATH` | The webroot path, e.g. `/var/www/htdocs/williampickup.org/` |
+
+I can't create or view these secrets myself — add them directly in the GitHub UI, never by pasting key material into chat or a file in the repo.
 
 ---
 
