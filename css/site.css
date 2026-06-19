@@ -595,10 +595,45 @@ ul { list-style: none; }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-2.5rem); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(2.5rem); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* Elements queued for scroll-reveal start invisible */
 .will-animate { opacity: 0; }
 
 .animate-in { animation: fadeUp 0.55s var(--ease-out) both; }
+
+/* ── Reveal direction + speed modifiers ───────────────────────────────
+   Add `reveal` plus a direction and/or speed modifier to any element —
+   figure, div, paragraph — to opt it into the same scroll-triggered
+   animation system used for cards and sections. `reveal` alone uses the
+   default fadeUp at 0.55s. See main.js's REVEAL_SELECTOR, which includes
+   `.reveal` so any classed element is picked up automatically; no extra
+   JS wiring needed per element. */
+.animate-in.reveal--left  { animation-name: slideInLeft; }
+.animate-in.reveal--right { animation-name: slideInRight; }
+.animate-in.reveal--fade  { animation-name: fadeIn; }
+.animate-in.reveal--up    { animation-name: fadeUp; }
+
+/* ── Reveal speed modifiers ───────────────────────────────────────────
+   Combine with a direction modifier, e.g. class="reveal reveal--left
+   reveal--slow". Without one of these the default duration is 0.55s. */
+.animate-in.reveal--slower { animation-duration: 1.2s; }
+.animate-in.reveal--slow   { animation-duration: 0.9s; }
+.animate-in.reveal--fast   { animation-duration: 0.32s; }
+.animate-in.reveal--faster { animation-duration: 0.18s; }
 
 @media (prefers-reduced-motion: reduce) {
   .will-animate { opacity: 1; }

@@ -308,6 +308,42 @@ The site has two separate ways to put content in a margin. They are not intercha
 
 ---
 
+## Scroll-reveal animations
+
+Any element on the site can fade or slide into view as it scrolls into the viewport. This is the same system that already animates post cards, gallery items, and section headers — adding `reveal` to an element's classes opts it into that system rather than introducing a separate one.
+
+**How to use it:** add `class="reveal"` to any element in post content — a `<figure>`, a `<div>`, a paragraph — optionally with a direction modifier and a speed modifier:
+
+```html
+<figure class="figure--wide reveal reveal--left reveal--slow">
+  <img src="https://..." alt="Alt text">
+</figure>
+```
+
+| Direction modifier | Effect |
+|---|---|
+| `reveal` (no modifier) | Fade up — the site default |
+| `reveal--left` | Slide in from the left |
+| `reveal--right` | Slide in from the right |
+| `reveal--fade` | Plain fade, no movement |
+| `reveal--up` | Same as no modifier — explicit fade-up |
+
+| Speed modifier | Duration |
+|---|---|
+| *(none)* | 0.55s — the site default |
+| `reveal--faster` | 0.18s |
+| `reveal--fast` | 0.32s |
+| `reveal--slow` | 0.9s |
+| `reveal--slower` | 1.2s |
+
+Direction and speed modifiers combine freely — `class="reveal reveal--right reveal--fast"` slides in from the right at the faster speed. Only one of each kind takes effect; if you add two direction modifiers to the same element, the one with the higher CSS specificity (i.e. whichever rule comes later in `site.css`) wins, so stick to one direction and one speed per element.
+
+The animation triggers once, the first time the element scrolls into view, via an `IntersectionObserver` in `main.js`. It respects `prefers-reduced-motion` automatically — no extra markup needed. If an element never scrolls (already in the initial viewport on load, as in a short draft preview), the animation plays immediately on page load instead.
+
+Works in any layout, not just `layout: editorial` — `reveal` is a general-purpose class, independent of the grid system.
+
+---
+
 ## Templates and CSS
 
 - **Templates** live in `_templates/` as `.html.erb` files

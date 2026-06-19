@@ -100,9 +100,15 @@
   /* ── Scroll-reveal: fade + rise elements into view ─────────────────
      Elements matching the selector start invisible (.will-animate).
      When they enter the viewport the observer adds .animate-in which
-     triggers the CSS fadeUp keyframe. Siblings within a shared parent
+     triggers a CSS keyframe — fadeUp by default, or slideInLeft /
+     slideInRight / fadeIn if the element also carries a `reveal--*`
+     modifier class (see site.css). Siblings within a shared parent
      get a staggered delay so grouped items arrive in sequence.
      Respects prefers-reduced-motion via CSS — no JS branch needed.
+
+     `.reveal` is the author-facing hook: add `class="reveal reveal--left"`
+     (or --right, --fade, --up) to any element in post content — a
+     figure, a div, a paragraph — to opt it into this same system.
   ──────────────────────────────────────────────────────────────────── */
   const REVEAL_SELECTOR = [
     '.home-masthead__name',
@@ -114,6 +120,7 @@
     '.page-hero',
     '.bio-layout > *',
     '.work-item',
+    '.reveal',
   ].join(', ');
 
   const revealItems = document.querySelectorAll(REVEAL_SELECTOR);
