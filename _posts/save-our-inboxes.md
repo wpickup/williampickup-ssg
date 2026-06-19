@@ -1,6 +1,6 @@
 ---
 title: Save our inboxes
-slug: save-out-inboxes
+slug: save-our-inboxes
 date: 2011-06-29
 description: Chris Anderson's Email Charter offers ten simple rules for reducing the
   burden email places on everyone — including the principle that short and slow is

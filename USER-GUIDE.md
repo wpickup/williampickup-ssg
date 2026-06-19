@@ -180,6 +180,16 @@ ruby build.rb
 
 Output goes to `_out/`. The script prints every file it generates and a summary at the end.
 
+### Search index (Pagefind)
+
+`build.rb` does not build the Pagefind search index — the CSS theming for the search UI (`#search`, `.pagefind-ui__*` in `site.css`) is wired up, but indexing is a separate step. After running `ruby build.rb`, generate the index over the output directory:
+
+```bash
+npx pagefind --site _out
+```
+
+Run this after every build that should be searchable, or add it as a second line in your deploy script.
+
 ### Previewing locally
 
 ```bash

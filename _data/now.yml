@@ -1,4 +1,10 @@
 ---
+# Available keys under `sections` (any may be omitted — templates check
+# presence before rendering):
+#   making          — shown on home page and /now
+#   travelling      — shown on home page and /now
+#   growing         — shown on /now only
+#   thinking_about  — shown on /now only
 updated: '2026-05-01'
 sections:
   making: I’m collaborating on an entry for the Northern Beaches Environmental Art

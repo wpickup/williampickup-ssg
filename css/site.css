@@ -462,12 +462,12 @@ ul { list-style: none; }
   padding-top: 0.2rem;
 }
 .note-card__label {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   background: var(--surface-raised, var(--bg-alt));
   border: 1px solid var(--border);
   border-radius: 2px;
@@ -476,9 +476,9 @@ ul { list-style: none; }
   width: fit-content;
 }
 .note-card__date {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.72rem;
-  color: var(--ink-muted);
+  color: var(--ink-light);
 }
 .note-card__title {
   font-size: 1rem;
@@ -490,9 +490,9 @@ ul { list-style: none; }
 .note-card__body p { margin: 0 0 0.6rem; font-size: 0.95rem; }
 .note-card__body p:last-of-type { margin-bottom: 0.5rem; }
 .note-card__permalink {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.72rem;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   text-decoration: none;
 }
 .note-card__permalink:hover { color: var(--accent); }
@@ -510,17 +510,17 @@ ul { list-style: none; }
   padding: clamp(4rem, 10vw, 8rem) clamp(var(--gutter), 6vw, 5rem);
 }
 .error-page__code {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.75rem;
   letter-spacing: 0.15em;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   margin-bottom: 1rem;
 }
 .error-page__title {
   font-size: clamp(2rem, 5vw, 3.5rem);
   margin-bottom: 1.5rem;
 }
-.error-page__body { font-size: 1.05rem; line-height: 1.75; color: var(--ink-muted); }
+.error-page__body { font-size: 1.05rem; line-height: 1.75; color: var(--ink-light); }
 .error-page__body a { color: var(--ink); }
 .error-page__body a:hover { color: var(--accent); }
 
@@ -531,9 +531,9 @@ ul { list-style: none; }
   padding-top: clamp(2rem, 5vw, 4rem);
 }
 .note-single__back {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.8rem;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   text-decoration: none;
   display: inline-block;
   margin-bottom: 2rem;
@@ -546,21 +546,21 @@ ul { list-style: none; }
   margin-bottom: 1.5rem;
 }
 .note-single__label {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   background: var(--surface-raised, var(--bg-alt));
   border: 1px solid var(--border);
   border-radius: 2px;
   padding: 0.15em 0.5em;
 }
 .note-single__date {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.8rem;
-  color: var(--ink-muted);
+  color: var(--ink-light);
 }
 .note-single__title {
   font-size: clamp(1.4rem, 3vw, 2rem);
@@ -1057,7 +1057,7 @@ ul { list-style: none; }
   display: flex;
   align-items: center;
   gap: 2rem;
-  padding-top: 1.5rem;
+  padding-top: 1.25rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
 }
@@ -1162,10 +1162,6 @@ ul { list-style: none; }
 .writing-paths__item:hover h2,
 .writing-paths__item:focus-visible h2 {
   color: var(--accent);
-}
-
-.blog-filters {
-  padding-top: 1.25rem;
 }
 
 @media (max-width: 720px) {
@@ -3063,11 +3059,11 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 }
 .home-entry-card__more {
   margin-top: 1rem;
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.8rem;
 }
 .home-entry-card__more a {
-  color: var(--ink-muted);
+  color: var(--ink-light);
   text-decoration: none;
 }
 .home-entry-card__more a:hover { color: var(--accent); }
@@ -3093,9 +3089,9 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 }
 .notes-list__item:first-child { border-top: 1px dotted var(--border); }
 .notes-list__date {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.75rem;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   padding-top: 0.25rem;
 }
 .notes-list__title {
@@ -3108,9 +3104,9 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 .notes-list__body p { margin: 0 0 0.6rem; font-size: 0.95rem; line-height: 1.75; }
 .notes-list__body p:last-of-type { margin-bottom: 0.5rem; }
 .notes-list__permalink {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.72rem;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   text-decoration: none;
 }
 .notes-list__permalink:hover { color: var(--accent); }
@@ -3307,7 +3303,7 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   .layout--editorial .post-body .col--margin-left {
     font-size: 0.82em;
     line-height: 1.55;
-    color: var(--ink-muted);
+    color: var(--ink-light);
     align-self: start;
   }
   .layout--editorial .post-body .col--margin-right { grid-column: 10 / span 3; }
@@ -3557,7 +3553,7 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   font-weight: 500;
   letter-spacing: 0.25em;
   text-transform: lowercase;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   margin: 4rem 0 0.25rem;
 }
 .post-body .part-label + h2 {
@@ -3566,10 +3562,10 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 
 /* ── Version stamp ────────────────────────────────────────────────────────── */
 .footer-version {
-  color: var(--ink-muted);
+  color: var(--ink-light);
   text-decoration: none;
   font-size: inherit;
-  border-bottom: 1px dotted color-mix(in srgb, var(--ink-muted) 40%, transparent);
+  border-bottom: 1px dotted color-mix(in srgb, var(--ink-light) 40%, transparent);
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 .footer-version:hover {
@@ -3589,7 +3585,7 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   margin: 3rem 0 0.75rem;
 }
 .colophon-body p,
@@ -3617,11 +3613,11 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   padding-top: 1.5rem;
   border-top: 1px solid var(--border);
   font-size: 0.85rem;
-  color: var(--ink-muted);
+  color: var(--ink-light);
 }
 .colophon-meta a {
-  color: var(--ink-muted);
-  border-bottom: 1px dotted color-mix(in srgb, var(--ink-muted) 40%, transparent);
+  color: var(--ink-light);
+  border-bottom: 1px dotted color-mix(in srgb, var(--ink-light) 40%, transparent);
   text-decoration: none;
 }
 .colophon-meta a:hover { color: var(--accent); border-color: var(--accent); }
@@ -3629,11 +3625,11 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 /* ── Location ticker ──────────────────────────────────────────────────────── */
 .location-ticker {
   margin-top: 1rem;
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 300;
   letter-spacing: 0.12em;
-  color: var(--ink-muted);
+  color: var(--ink-light);
   overflow: hidden;
   white-space: nowrap;
   opacity: 0;

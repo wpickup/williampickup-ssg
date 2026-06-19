@@ -35,6 +35,12 @@ The traditional teaching stories of the Sufi's are often intriguing. One of my f
 
 Here is a [sufi comic][vakil] version from [Arif & Ali's Blog][vakil 2]
 
+  <a title="Sufi Comics - Dividing 17 camels between 3 people" href="https://vakil.org/wp-content/uploads/2009/04/sufi-comic-dividing-17-camels-by-3.jpg">
+    <br/>
+    <img decoding="async" src="https://vakil.org/wp-content/uploads/2009/04/sufi-comic-dividing-17-camels-by-3-156x300.jpg" alt="Sufi Comics - Dividing 17 camels between 3 people" title="Sufi Comics - Dividing 17 camels between 3 people" width="156" height="300" class="size-medium wp-image-419" srcset="https://vakil.org/wp-content/uploads/2009/04/sufi-comic-dividing-17-camels-by-3-156x300.jpg 156w, https://vakil.org/wp-content/uploads/2009/04/sufi-comic-dividing-17-camels-by-3-532x1024.jpg 532w, https://vakil.org/wp-content/uploads/2009/04/sufi-comic-dividing-17-camels-by-3.jpg 700w" sizes="(max-width: 156px) 100vw, 156px"/>
+    <br/>
+</a>
+
 [amazon]: http://www.amazon.com/gp/product/0863040799/ref=asliqfspasiniltl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0863040799&linkCode=as2&tag=slowlane-20
 [vakil]: http://www.vakil.org/tag/sufi-comics/ "Sufi Comics"
 [vakil 2]: http://www.vakil.org/

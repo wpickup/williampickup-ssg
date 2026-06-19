@@ -77,7 +77,7 @@
             <h2 id="start-title">Start here</h2>
             <ul>
 <%- featured_posts.each do |post| -%>
-              <li><a href="<%= root %>posts/<%= post.slug %>.html"><%= h(post.title) %></a><%- if post.description -%> &mdash; <p><%= h(post.description) %></p><%- end -%></li>
+              <li><a href="<%= root %>posts/<%= post.slug %>.html"><%= h(post.title) %></a><%- if post.description -%> &mdash; <span><%= h(post.description) %></span><%- end -%></li>
 <%- end -%>
             </ul>
           </article>
@@ -97,7 +97,7 @@
                 <a href="<%= root %>notes/<%= note.slug %>.html"><%= note.title ? h(note.title) : note.date_display %></a>
 <%- stripped = note.content_html.gsub(/<[^>]+>/, '').strip -%>
 <%- excerpt = stripped.length > 80 ? stripped[0, 80].gsub(/\s\S+$/, '') + '…' : stripped -%>
-                &mdash; <p><%= h(excerpt) %></p>
+                &mdash; <span><%= h(excerpt) %></span>
               </li>
 <%- end -%>
             </ul>
