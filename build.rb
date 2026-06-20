@@ -29,8 +29,7 @@ DATA_DIR      = File.join(__dir__, '_data')
 TEMPLATES_DIR = File.join(__dir__, '_templates')
 PARTIALS_DIR  = File.join(__dir__, '_partials')
 DRAFTS        = ARGV.include?('--drafts')
-STATIC_DIRS   = %w[css javascript fonts].map { |d| File.join(SRC_DIR, d) }
-STATIC_FILES  = %w[favicon.svg WP-at-Stromlo.webp].map { |f| File.join(SRC_DIR, f) }
+STATIC_DIRS   = %w[css javascript fonts assets].map { |d| File.join(SRC_DIR, d) }
 
 TOPIC_LABELS = {
   'books-ideas'        => 'Books and Ideas',
@@ -502,11 +501,6 @@ def build
     FileUtils.rm_rf(dest)
     FileUtils.cp_r(src, dest)
     puts "  #{File.basename(src)}/"
-  end
-  STATIC_FILES.each do |src|
-    next unless File.exist?(src)
-    FileUtils.cp(src, File.join(OUT_DIR, File.basename(src)))
-    puts "  #{File.basename(src)}"
   end
 
   puts "\nDone. #{posts.length} posts · #{notes.length} notes · #{photos.length} photos · #{books.length} books · #{years.length} archive years · #{topic_groups.length} topics · #{cat_groups.length} categories"
