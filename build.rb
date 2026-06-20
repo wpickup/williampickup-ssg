@@ -21,6 +21,7 @@ BUILD_STAMP    = Time.now.strftime("%-d %b '%y")
 SRC_DIR       = __dir__
 OUT_DIR       = File.join(__dir__, '_out')
 POSTS_DIR     = File.join(__dir__, '_posts')
+DRAFTS_DIR    = File.join(__dir__, '_drafts')
 NOTES_DIR     = File.join(__dir__, '_notes')
 PHOTOS_DIR    = File.join(__dir__, '_photos')
 BOOKS_DIR     = File.join(__dir__, '_books')
@@ -83,7 +84,7 @@ class Post
               :series, :draft,
               :content_md, :content_html, :path
 
-  def initialize(path)
+  def initialize(path, force_draft: false)
     @path        = path
     fm, @content_md = parse_frontmatter(path)
 
@@ -103,7 +104,7 @@ class Post
     @has_sidenotes      = fm['has_sidenotes'] == true
     @featured           = fm['featured'] == true
     @series             = fm['series']
-    @draft              = fm['draft'] == true
+    @draft              = fm['draft'] == true || force_draft
     @content_html       = md_to_html(@content_md)
   end
 
@@ -291,8 +292,11 @@ end
 # ── Build helpers ─────────────────────────────────────────────────────────────
 
 def load_posts
-  Dir[File.join(POSTS_DIR, '*.md')]
-    .map  { |p| Post.new(p) rescue (warn "Error loading #{p}: #{$!}"; nil) }
+  from_posts = Dir[File.join(POSTS_DIR, '*.md')]
+    .map { |p| Post.new(p) rescue (warn "Error loading #{p}: #{$!}"; nil) }
+  from_drafts = Dir.exist?(DRAFTS_DIR) ? Dir[File.join(DRAFTS_DIR, '*.md')]
+    .map { |p| Post.new(p, force_draft: true) rescue (warn "Error loading #{p}: #{$!}"; nil) } : []
+  (from_posts + from_drafts)
     .compact.reject { |p| p.draft && !DRAFTS }
     .sort_by { |p| p.date || Date.new(1970) }.reverse
 end

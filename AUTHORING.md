@@ -7,10 +7,10 @@ CSS patterns, and inline markup.
 
 ## Quick start
 
-1. Run the **New Post** Nova task → enter a title → file opens ready to write
+1. Run the **New Post** Nova task → enter a title → file opens ready to write, saved in `_drafts/`
 2. Run the **Watch** Nova task → site rebuilds automatically on every save
 3. Preview at `http://localhost:4567` (run `python3 -m http.server 4567 --directory _out`)
-4. When done: remove `draft: true` (or set to `false`) and run **Deploy**
+4. When done: run the **Publish Draft** Nova task → pick the file → it moves to `_posts/`, then run **Deploy**
 
 ---
 
@@ -64,8 +64,12 @@ tags:
 
 ### Status
 
+Draft status is primarily determined by **location**: anything in `_drafts/` is always treated as a draft, regardless of what (if anything) its front matter says — new posts from the **New Post** task don't even include a `draft:` field. Move it to `_posts/` (via the **Publish Draft** Nova task, or `git mv`) to publish it.
+
+`draft: true` still works as a manual override for a file already sitting in `_posts/`, if you ever need to pull a published post back without physically moving it — but the folder is the normal way to manage this.
+
 ```yaml
-draft: true       # Goes to _out/drafts/, shows banner, excluded from deploy
+draft: true       # Manual override only — see note above. Goes to _out/drafts/, shows banner, excluded from deploy
 featured: true    # Appears in "Start here" on home page; hidden from blog listing
 ```
 
@@ -371,10 +375,11 @@ Siblings within the same container stagger by 70ms each so grouped items arrive 
 ## Builder behaviours to know
 
 **Drafts**
-- `draft: true` → built to `_out/drafts/slug.html` with an amber "Draft" banner
+- Anything in `_drafts/` builds to `_out/drafts/slug.html` with an amber "Draft" banner, same as `draft: true` in `_posts/`
 - Excluded from the blog listing, feeds, and all index pages
 - Excluded from rsync deploy — never reaches the live server
 - Preview with the **Build with Drafts** Nova task
+- Publish with the **Publish Draft** Nova task — moves the file to `_posts/` via `git mv`, preserving history
 
 **Featured posts**
 - `featured: true` → appears in the "Start here" section on the home page

@@ -29,6 +29,7 @@ echo ""
 # Watch source dirs and the live site CSS/JS
 fswatch -o \
   "$PROJECT_DIR/_posts" \
+  "$PROJECT_DIR/_drafts" \
   "$PROJECT_DIR/_pages" \
   "$PROJECT_DIR/_photos" \
   "$PROJECT_DIR/_books" \

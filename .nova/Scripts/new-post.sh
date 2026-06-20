@@ -24,7 +24,7 @@ SLUG=$(echo "$TITLE" \
   | sed 's/ /-/g' \
   | sed 's/^-//;s/-$//')
 
-FILE="$PROJECT_DIR/_posts/${TODAY}-${SLUG}.md"
+FILE="$PROJECT_DIR/_drafts/${TODAY}-${SLUG}.md"
 
 # ── Bail if file already exists ───────────────────────────────────────────────
 if [ -f "$FILE" ]; then
@@ -47,7 +47,6 @@ image_focal_point:
 use_featured_image: false
 has_sidenotes: false
 featured: false
-draft: true
 ---
 
 FRONTMATTER

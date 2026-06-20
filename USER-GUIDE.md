@@ -14,7 +14,8 @@ The site is built with a plain Ruby static site generator. The workflow is:
 
 ```
 williampickup-ssg/
-├── _posts/          Markdown files, one per blog post
+├── _posts/          Markdown files, one per published blog post
+├── _drafts/         Markdown files, one per draft post (see "Drafts" below)
 ├── _photos/         Markdown files, one per photo
 ├── _books/          Markdown files, one per book
 ├── _pages/          Markdown files for static pages (bio, blogroll)
@@ -35,7 +36,7 @@ CSS, JavaScript, fonts, and images are pulled from `~/Sites/williampickup.org/` 
 
 ### Writing a new post
 
-Create a file in `_posts/` named `your-slug.md`:
+New posts start as drafts. Create a file in `_drafts/` named `your-slug.md` (or use the **New Post** Nova task, which does this for you and opens the file ready to write):
 
 ```markdown
 ---
@@ -50,20 +51,30 @@ topics: [books-ideas]
 image_url: https://res.publit.io/file/your-account/image.jpg
 image_focal_point: "50% 30%"
 use_featured_image: true
-draft: false
 ---
 
 Your post content in Markdown here.
 ```
 
-**Required:** `title`, `slug`, `date`, `draft: false`  
+**Required:** `title`, `slug`, `date`  
 **Optional:** everything else
 
-Run `ruby build.rb` and the post appears at `posts/your-slug.html`.
+Run `ruby build.rb --drafts` to preview it at `drafts/your-slug.html` with a draft banner.
 
 ### Drafts
 
-Set `draft: true` in the front matter. The post is skipped during build.
+Draft status is determined by which folder the file is in, not a front matter flag:
+
+- **`_drafts/`** — always a draft, regardless of front matter. This is where new posts should live while you're writing them. Excluded from `ruby build.rb` (production); included, with a draft banner, when you pass `--drafts`.
+- **`_posts/`** — always published, unless you manually add `draft: true` to its front matter (a rarely-needed override for pulling a published post back without moving the file).
+
+To publish, move the file from `_drafts/` to `_posts/` — either with the **Publish Draft** Nova task (pick the file from a list; it uses `git mv` so history is preserved), or manually:
+
+```bash
+git mv _drafts/your-slug.md _posts/your-slug.md
+```
+
+Run `ruby build.rb` and the post appears at `posts/your-slug.html`.
 
 ### Categories and topics
 
