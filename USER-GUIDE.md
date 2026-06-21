@@ -305,10 +305,18 @@ After that, only posts or links that didn't exist at seed time will ever trigger
 ## Feeds
 
 RSS and Atom feeds are generated automatically at:
-- `_out/Feeds/rss.xml`
-- `_out/Feeds/atom.xml`
+- `_out/feeds/rss.xml`
+- `_out/feeds/atom.xml`
 
 Both include the 20 most recent posts.
+
+---
+
+## Sitemap and robots.txt
+
+Generated automatically on every build, reflecting whatever currently exists — no separate maintenance step:
+- `_out/sitemap.xml` — every post, note, photo, book, and static page. Drafts are always excluded, even when building with `--drafts`.
+- `_out/robots.txt` — disallows `/drafts/` and points crawlers at the sitemap.
 
 ---
 
