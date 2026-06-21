@@ -130,122 +130,94 @@ entries:
   - name: "Michael Tsai"
     url: "https://mjtsai.com/blog/"
     feed: "https://mjtsai.com/blog/feed/"
-    category: craft
+    category: bloggers
 
   - name: "Jack Baty"
     url: "https://baty.net"
     feed: "https://baty.net/feed/"
-    category: craft
-
-  - name: "All Things Distributed"
-    url: "https://www.allthingsdistributed.com"
-    feed: "https://www.allthingsdistributed.com/index.xml"
-    category: craft
-    desc: "Werner Vogels on building scalable and robust distributed systems"
-
-  - name: "Martin Fowler"
-    url: "https://www.martinfowler.com"
-    feed: "https://www.martinfowler.com/feed.atom"
-    category: craft
+    category: bloggers
 
   - name: "Brent Simmons — inessential"
     url: "https://inessential.com"
     feed: "https://inessential.com/xml/rss.xml"
-    category: craft
+    category: bloggers
     desc: "Brent Simmons's weblog"
 
   - name: "BrettTerpstra.com"
     url: "https://brettterpstra.com"
     feed: "https://brett.trpstra.net/brettterpstra"
-    category: craft
+    category: bloggers
 
   - name: "CogZest"
     url: "https://cogzest.com"
     feed: "https://cogzest.com/feed/"
-    category: craft
+    category: bloggers
     desc: "Thrive in the Sea of Knowledge"
 
   - name: "The Eclectic Light Company"
     url: "https://eclecticlight.co"
     feed: "https://eclecticlight.co/feed/"
-    category: craft
+    category: bloggers
     desc: "Macs, painting, and more"
 
   - name: "Molly White"
     url: "https://blog.mollywhite.net"
     feed: "https://blog.mollywhite.net/feed.xml"
-    category: craft
+    category: bloggers
 
   - name: "Mark Bernstein"
     url: "https://markbernstein.org"
     feed: "https://markbernstein.org/news.rss"
-    category: craft
+    category: bloggers
     desc: "Hypertext research"
 
   - name: "Tao of Mac"
     url: "https://taoofmac.com"
     feed: "https://taoofmac.com/atom.xml"
-    category: craft
-
-  - name: "Matt Gemmell"
-    url: "https://mattgemmell.com"
-    feed: "https://mattgemmell.com/feed"
-    category: craft
-    desc: "Thriller, Horror, and Suspense author"
-
-  - name: "And now it's all this"
-    url: "https://leancrew.com/all-this/"
-    feed: "https://leancrew.com/all-this/feed/"
-    category: craft
-    desc: "I just said what I said and it was wrong. Or was taken wrong."
+    category: bloggers
 
   - name: "Austin Kleon"
     url: "https://austinkleon.com"
     feed: "https://austinkleon.com/feed/"
-    category: craft
+    category: bloggers
 
   - name: "Ben Thompson — Stratechery"
     url: "https://stratechery.com"
     feed: "https://stratechery.com/feed/"
-    category: craft
+    category: bloggers
     desc: "On the business, strategy, and impact of technology"
 
   - name: "The Hypothesis"
     url: "https://buttondown.com/thehypothesis"
     feed: "https://buttondown.com/thehypothesis/rss"
-    category: craft
+    category: bloggers
     desc: "A newsletter by Annalee Newitz"
 
   - name: "Cal Newport"
     url: "https://calnewport.com"
     feed: "https://calnewport.com/home-page/feed/"
-    category: craft
+    category: bloggers
 
   - name: "Julia Evans"
     url: "https://jvns.ca"
     feed: "https://jvns.ca/atom.xml"
-    category: craft
+    category: bloggers
 
   - name: "Ethan Marcotte"
     url: "https://ethanmarcotte.com"
     feed: "https://ethanmarcotte.com/wrote/feed.xml"
-    category: craft
-
-  - name: "Josh Collinsworth"
-    url: "https://joshcollinsworth.com"
-    feed: "https://joshcollinsworth.com/rss"
-    category: craft
+    category: bloggers
 
   - name: "CSS In Real Life"
     url: "https://css-irl.info"
     feed: "https://css-irl.info/rss.xml"
-    category: craft
+    category: bloggers
     desc: "Tips, tricks and tutorials on the web's most beautiful language"
 
   - name: "A List Apart"
     url: "https://alistapart.com"
     feed: "https://feeds.feedburner.com/alistapart/main"
-    category: craft
+    category: bloggers
     desc: "Articles for people who make web sites"
 
   - name: "Holmgren Design"
@@ -293,12 +265,6 @@ entries:
     feed: "https://joeredski.com/blog?format=rss"
     category: photography
 
-  - name: "Dan Bailey Adventure Photography"
-    url: "https://danbaileyphoto.com"
-    feed: "https://danbaileyphoto.com/blog/feed/"
-    category: photography
-    desc: "Exploring the World of Outdoor Photography"
-
   - name: "Teju Cole"
     url: "https://www.tejucole.com"
     feed: "https://www.tejucole.com/feed/"
@@ -310,11 +276,6 @@ entries:
     category: photography
     desc: "Community and magazine for Fujifilm X Series and GFX users"
 
-  - name: "darktable blog"
-    url: "https://www.darktable.org/blog/"
-    feed: "https://www.darktable.org/blog/index.xml"
-    category: photography
-
   - name: "Mountain Photography Workshop"
     url: "https://www.mountainphotographyworkshop.com"
     feed: "https://www.mountainphotographyworkshop.com/blog-feed.xml"
@@ -324,7 +285,7 @@ entries:
     url: "https://blog.mingthein.com"
     feed: "https://blog.mingthein.com/feed/"
     category: photography
-    desc: "Reframing the world one picture at a time"
+    desc: "No longer updated but still an amazing resource"
 
   - name: "RICOH GR Street Photography"
     url: "https://simonjohnsonstreet.blogspot.com"
@@ -338,51 +299,17 @@ entries:
     category: photography
     desc: "The Photographer's Knowledge Resource"
 
-  - name: "Scott Davenport Photo"
-    url: "https://scottdavenportphoto.com"
-    feed: "https://scottdavenportphoto.com/blog?format=rss"
-    category: photography
-    desc: "Free photography tutorials and articles"
-
   - name: "Meandering Passage"
     url: "https://meanderingpassage.com"
     feed: "https://meanderingpassage.com/feed/"
     category: photography
     desc: "We live life moving forward and often only comprehend it looking back"
 
-  - name: "Eric Harvey"
-    url: "https://ericdharvey.com"
-    feed: "https://ericdharvey.com/feed/"
-    category: music
-
-  - name: "SuperMegaUltraGroovy"
-    url: "https://supermegaultragroovy.com"
-    feed: "https://supermegaultragroovy.com/feed/"
-    category: music
-
-  - name: "Lefsetz Letter"
-    url: "https://lefsetz.com"
-    feed: "https://lefsetz.com/wordpress/feed/"
-    category: music
-    desc: "First in Music Analysis"
-
   - name: "ROUGH TYPE"
     url: "https://www.roughtype.com"
     feed: "https://www.roughtype.com/?feed=rss2"
     category: opinion
     desc: "Nicholas Carr's blog"
-
-  - name: "Japan Optimist"
-    url: "https://japanoptimist.substack.com"
-    feed: "https://japanoptimist.substack.com/feed"
-    category: opinion
-    desc: "Japan analysis and insights"
-
-  - name: "TidBITS"
-    url: "https://tidbits.com"
-    feed: "https://tidbits.com/feed/"
-    category: opinion
-    desc: "Coverage of everything Apple"
 
   - name: "L. M. Sacasas — The Convivial Society"
     url: "https://theconvivialsociety.substack.com"
