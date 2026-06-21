@@ -112,7 +112,7 @@
           <span class="home-posts__label">Recent writing</span>
           <a href="<%= root %>blog.html" class="home-posts__all">All writing</a>
         </div>
-        <ul class="home-posts__grid">
+        <ul class="home-posts__grid h-feed">
 <%- posts.each do |post| -%>
           <%= renderer.partial('post_card', post: post, root: root) %>
 <%- end -%>
