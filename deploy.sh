@@ -6,13 +6,14 @@
 set -euo pipefail
 
 DEPLOY_DEST="${DEPLOY_DEST:-}"
+OUT_DIR="${SSG_OUT_DIR:-_out}"
 
 echo "==> Building site..."
 ruby build.rb "$@"
 
 echo ""
 echo "==> Indexing with Pagefind..."
-npx --yes pagefind --site _out
+npx --yes pagefind --site "$OUT_DIR"
 
 if [ -z "$DEPLOY_DEST" ]; then
   echo ""
@@ -28,7 +29,7 @@ rsync -avz --delete \
   --no-perms \
   --exclude '.DS_Store' \
   --exclude 'drafts/' \
-  _out/ "${DEPLOY_DEST}"
+  "$OUT_DIR/" "${DEPLOY_DEST}"
 
 echo ""
 echo "==> Done."

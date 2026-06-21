@@ -19,7 +19,10 @@ COPYRIGHT_YEAR = Date.today.year
 BUILD_STAMP    = Time.now.strftime("%-d %b '%y")
 
 SRC_DIR       = __dir__
-OUT_DIR       = File.join(__dir__, '_out')
+# Defaults to repo/_out — overridable so local runs can write straight to a
+# real local-server docroot (e.g. ~/Sites/williampickup.org) without CI
+# (which has no such path) needing to know about it.
+OUT_DIR       = ENV['SSG_OUT_DIR'] || File.join(__dir__, '_out')
 POSTS_DIR     = File.join(__dir__, '_posts')
 DRAFTS_DIR    = File.join(__dir__, '_drafts')
 NOTES_DIR     = File.join(__dir__, '_notes')

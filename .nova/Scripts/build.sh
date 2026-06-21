@@ -13,5 +13,5 @@ cd "$PROJECT_DIR"
 ruby build.rb "$@"
 
 echo ""
-echo "  ✓ Site built to _out/"
+echo "  ✓ Site built to $OUT_DIR"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

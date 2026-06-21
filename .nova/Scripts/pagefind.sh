@@ -20,5 +20,5 @@ npx pagefind \
   --exclude-selectors "nav, footer, .site-header, .skip-link, .breadcrumb"
 
 echo ""
-echo "  ✓ Search index written to _out/pagefind/"
+echo "  ✓ Search index written to $OUT_DIR/pagefind/"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -4,9 +4,9 @@
 
 The site is built with a plain Ruby static site generator. The workflow is:
 
-1. Edit source files (`_posts/`, `_pages/`, `_data/`, templates, CSS)
-2. Run `ruby build.rb` to generate the site into `_out/`
-3. Deploy `_out/` to your web host
+1. Edit source files (`_posts/`, `_pages/`, `_data/`, templates, CSS) — this repo lives in `~/Documents/Personal/Web-Development/williampickup-ssg`, separate from anything served locally
+2. Run `ruby build.rb` to generate the site into `_out/` (or set `SSG_OUT_DIR` to write straight to a local preview folder — see "Previewing locally" below)
+3. Deploy the generated output to your web host
 
 ---
 
@@ -28,7 +28,7 @@ williampickup-ssg/
 └── build.rb         Build script — run this to publish
 ```
 
-CSS, JavaScript, fonts, and images are pulled from `~/Sites/williampickup.org/` at build time. Edit those files there; `build.rb` copies them into `_out/` on every build.
+CSS, JavaScript, fonts, and images live inside this repo (`css/`, `javascript/`, `fonts/`, `assets/`) — edit them here, not anywhere under `~/Sites`. `build.rb` copies them into the output directory on every build.
 
 ---
 
@@ -185,11 +185,23 @@ Your bio content here.
 ## Building the site
 
 ```bash
-cd ~/Sites/williampickup-ssg
+cd ~/Documents/Personal/Web-Development/williampickup-ssg
 ruby build.rb
 ```
 
-Output goes to `_out/`. The script prints every file it generates and a summary at the end.
+Output goes to `_out/` inside the repo by default. The script prints every file it generates and a summary at the end.
+
+### Writing output somewhere else (`SSG_OUT_DIR`)
+
+The generator and its source live in `~/Documents/Personal/Web-Development/williampickup-ssg` — separate from anything actually served locally. To preview the site through a real local server instead of just generating files, set `SSG_OUT_DIR` to redirect the build there instead of `_out/`:
+
+```bash
+SSG_OUT_DIR=~/Sites/williampickup.org/_site ruby build.rb
+```
+
+CI (the GitHub Actions deploy workflow) never sets this — it always uses the default `_out/`, so this is purely a local convenience. `deploy.sh` and the Nova build tasks both respect it the same way `build.rb` does.
+
+Note: `build.rb` deletes and recreates whatever `OUT_DIR` resolves to on every build. Point it at a dedicated subfolder (like `_site` above), not a folder that holds anything else you care about (e.g. don't point it directly at `~/Sites/williampickup.org` itself if that folder also holds a `.claude/` config or similar — it'll get wiped on the next build).
 
 ### Search index (Pagefind)
 
@@ -204,10 +216,10 @@ npx pagefind --site _out
 ### Previewing locally
 
 ```bash
-python3 -m http.server 4567 --directory ~/Sites/williampickup-ssg/_out
+python3 -m http.server 4567 --directory ~/Sites/williampickup.org/_site
 ```
 
-Then open `http://localhost:4567` in your browser.
+Then open `http://localhost:4567` in your browser. (The Nova tasks and `.claude/launch.json` in this project already point at this folder via `SSG_OUT_DIR` — see above.)
 
 ---
 
@@ -216,7 +228,7 @@ Then open `http://localhost:4567` in your browser.
 `deploy.sh` builds the site, generates the Pagefind search index, and (if you give it a destination) rsyncs `_out/` to the web host — all in one step:
 
 ```bash
-cd ~/Sites/williampickup-ssg
+cd ~/Documents/Personal/Web-Development/williampickup-ssg
 
 # Build + index only, no deploy:
 ./deploy.sh
@@ -393,6 +405,6 @@ Works in any layout, not just `layout: editorial` — `reveal` is a general-purp
 
 - **Templates** live in `_templates/` as `.html.erb` files
 - **Partials** (head, header, footer, post card, book entry) live in `_partials/`
-- **CSS** is at `~/Sites/williampickup.org/css/site.css` — edit there, rebuild to see changes
+- **CSS** is at `css/site.css` in this repo — edit here, rebuild to see changes
 
 After editing a template or CSS file, just run `ruby build.rb` again.
