@@ -1,0 +1,28 @@
+<%
+  urls = []
+  urls << [SITE_URL + '/', Date.today.iso8601]
+
+  posts.each { |p| urls << [p.url, (p.date || Date.today).iso8601] }
+  notes.each { |n| urls << [n.url, (n.date || Date.today).iso8601] }
+  photos.each { |p| urls << [p.url, nil] }
+  books.each { |b| urls << [b.url, nil] }
+
+  %w[blog notes gallery reading now archive].each { |slug| urls << ["#{SITE_URL}/#{slug}.html", nil] }
+  urls << ["#{SITE_URL}/gallery/highlights.html", nil]
+
+  years.each { |y| urls << ["#{SITE_URL}/archive/#{y}.html", nil] }
+  topic_groups.each_key { |tid| urls << ["#{SITE_URL}/topics/#{tid}.html", nil] }
+  cat_groups.each_key { |cat| urls << ["#{SITE_URL}/categories/#{cat}.html", nil] }
+  pages.each { |page| urls << ["#{SITE_URL}/#{page.slug}.html", nil] }
+-%>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<%- urls.each do |loc, lastmod| -%>
+  <url>
+    <loc><%= loc %></loc>
+<%- if lastmod -%>
+    <lastmod><%= lastmod %></lastmod>
+<%- end -%>
+  </url>
+<%- end -%>
+</urlset>

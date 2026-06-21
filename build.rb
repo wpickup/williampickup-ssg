@@ -514,6 +514,21 @@ def build
   write(File.join(OUT_DIR, 'feeds', 'rss.xml'),  r.render('feed_rss',  posts: feed_posts))
   write(File.join(OUT_DIR, 'feeds', 'atom.xml'), r.render('feed_atom', posts: feed_posts))
 
+  # ── Sitemap + robots.txt ─────────────────────────────────────────────────────
+  # .reject(&:draft) here is belt-and-braces — posts/notes already exclude
+  # drafts unless --drafts was passed, but a sitemap is exactly the kind of
+  # file where "exclude drafts" should never depend on remembering a flag.
+  write(File.join(OUT_DIR, 'sitemap.xml'),
+    r.render('sitemap', posts: posts.reject(&:draft), notes: notes.reject(&:draft),
+             photos: photos, books: books, years: years,
+             topic_groups: topic_groups, cat_groups: cat_groups, pages: pages))
+
+  write(File.join(OUT_DIR, 'robots.txt'), <<~ROBOTS)
+    User-agent: *
+    Disallow: /drafts/
+    Sitemap: #{SITE_URL}/sitemap.xml
+  ROBOTS
+
   # ── Static assets ──────────────────────────────────────────────────────────
   puts "\nAssets:"
   STATIC_DIRS.each do |src|
