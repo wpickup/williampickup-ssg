@@ -16,7 +16,18 @@ SITE_DESC      = 'A personal notebook of making, reading, travelling, photograph
 AUTHOR_NAME    = 'William Pickup'
 AUTHOR_EMAIL   = 'will@williampickup.org'
 COPYRIGHT_YEAR = Date.today.year
-BUILD_STAMP    = Time.now.strftime("%-d %b '%y")
+GITHUB_REPO    = 'wpickup/williampickup-ssg'
+
+# UTC, not system local time — local builds (Sydney) and CI builds
+# (GitHub Actions runners) would otherwise show different times for the
+# same moment. The git SHA pins this to an exact, verifiable commit.
+BUILD_STAMP = Time.now.utc.strftime("%-d %b '%y, %H:%M UTC")
+BUILD_SHA   = begin
+  sha = `git rev-parse --short HEAD 2>/dev/null`.strip
+  sha.empty? ? nil : sha
+rescue StandardError
+  nil
+end
 
 SRC_DIR       = __dir__
 # Defaults to repo/_out — overridable so local runs can write straight to a
