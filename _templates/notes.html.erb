@@ -36,10 +36,10 @@
           </div>
           <div class="notes-list__body">
 <%- if note.title -%>
-            <h2 class="notes-list__title"><a href="<%= root %>notes/<%= note.slug %>.html"><%= h(note.title) %></a></h2>
+            <h2 class="notes-list__title"><a href="<%= root %><%= note.url_path %>"><%= h(note.title) %></a></h2>
 <%- end -%>
             <%= note.content_html %>
-            <a href="<%= root %>notes/<%= note.slug %>.html" class="notes-list__permalink">permalink</a>
+            <a href="<%= root %><%= note.url_path %>" class="notes-list__permalink">permalink</a>
           </div>
         </li>
 <%- end -%>

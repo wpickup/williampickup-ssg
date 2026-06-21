@@ -112,7 +112,8 @@ class Post
   end
 
   def type          = 'post'
-  def url           = "#{SITE_URL}/posts/#{slug}.html"
+  def url_path      = "#{draft ? 'drafts' : 'posts'}/#{slug}.html"
+  def url           = "#{SITE_URL}/#{url_path}"
   def primary_topic = topics.first
   def topic_label(t = primary_topic) = TOPIC_LABELS[t] || t.to_s.gsub('-', ' ').split.map(&:capitalize).join(' ')
   def date_display  = date&.strftime('%-d %B %Y') || ''
@@ -150,7 +151,8 @@ class Note
   end
 
   def type         = 'note'
-  def url          = "#{SITE_URL}/notes/#{slug}.html"
+  def url_path     = "#{draft ? 'drafts' : 'notes'}/#{slug}.html"
+  def url          = "#{SITE_URL}/#{url_path}"
   def date_display = date&.strftime('%-d %B %Y') || ''
   def date_iso     = date&.iso8601 || ''
   def year         = date&.year

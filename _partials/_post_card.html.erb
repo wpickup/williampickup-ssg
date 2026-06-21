@@ -7,7 +7,7 @@
 -%>
 <li class="post-card<%= " cat--#{primary_topic}" if primary_topic %>" data-category="<%= all_topics_str %>" data-tags="<%= all_tags_str %>" data-featured="<%= post.featured %>">
 <%- if img -%>
-  <a href="<%= root %>posts/<%= post.slug %>.html" class="post-card__image" tabindex="-1" aria-hidden="true">
+  <a href="<%= root %><%= post.url_path %>" class="post-card__image" tabindex="-1" aria-hidden="true">
     <img
       src="<%= img[:src] %>"
       srcset="<%= img[:srcset] %>"
@@ -24,7 +24,7 @@
       <span class="post-card__read-time"><%= post.reading_time.sub(' read', '') %></span>
     </div>
     <h3 class="post-card__title">
-      <a href="<%= root %>posts/<%= post.slug %>.html"><%= h(post.title) %></a>
+      <a href="<%= root %><%= post.url_path %>"><%= h(post.title) %></a>
     </h3>
 <%- if post.description -%>
     <p class="post-card__excerpt"><%= h(post.description) %></p>

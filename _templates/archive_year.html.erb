@@ -28,7 +28,7 @@
 <%- sorted.each do |post| -%>
           <li class="archive-row">
   <time class="archive-row__date"><%= post.date&.strftime('%-d %B') %></time>
-  <a class="archive-row__title" href="<%= root %>posts/<%= post.slug %>.html"><%= h(post.title) %></a>
+  <a class="archive-row__title" href="<%= root %><%= post.url_path %>"><%= h(post.title) %></a>
 </li>
 <%- end -%>
         </ol>

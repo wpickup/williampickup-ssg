@@ -106,13 +106,13 @@
 
     <nav class="post-nav" aria-label="Post navigation">
 <%- if prev_post -%>
-      <a href="<%= root %>posts/<%= prev_post.slug %>.html" class="post-nav__item post-nav__item--prev">
+      <a href="<%= root %><%= prev_post.url_path %>" class="post-nav__item post-nav__item--prev">
         <span class="post-nav__label">&#x2190; Previous</span>
         <span class="post-nav__title"><%= h(prev_post.title) %></span>
       </a>
 <%- end -%>
 <%- if next_post -%>
-      <a href="<%= root %>posts/<%= next_post.slug %>.html" class="post-nav__item post-nav__item--next">
+      <a href="<%= root %><%= next_post.url_path %>" class="post-nav__item post-nav__item--next">
         <span class="post-nav__label">Next &#x2192;</span>
         <span class="post-nav__title"><%= h(next_post.title) %></span>
       </a>

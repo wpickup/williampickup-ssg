@@ -5,9 +5,9 @@
   </div>
   <div class="note-card__body">
 <%- if note.title -%>
-    <h3 class="note-card__title"><a href="<%= root %>notes/<%= note.slug %>.html"><%= h(note.title) %></a></h3>
+    <h3 class="note-card__title"><a href="<%= root %><%= note.url_path %>"><%= h(note.title) %></a></h3>
 <%- end -%>
     <%= note.content_html %>
-    <a href="<%= root %>notes/<%= note.slug %>.html" class="note-card__permalink">permalink</a>
+    <a href="<%= root %><%= note.url_path %>" class="note-card__permalink">permalink</a>
   </div>
 </li>
