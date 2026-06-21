@@ -39,6 +39,15 @@ touch "$PROJECT_DIR/.last-build"
 echo ""
 echo "  ✓ Deploy complete"
 
+echo "→ Sending webmentions for new outbound links..."
+ruby "$PROJECT_DIR/send_webmentions.rb" || echo "  (non-fatal — deploy already succeeded)"
+
+if ! git -C "$PROJECT_DIR" diff --quiet -- _data/webmentions_sent.json 2>/dev/null; then
+  git -C "$PROJECT_DIR" add _data/webmentions_sent.json
+  git -C "$PROJECT_DIR" commit -m "Update webmention state" -q
+  echo "  → Committed updated webmention state (not pushed)"
+fi
+
 echo "→ Checking live CSP headers..."
 CSP=$(curl -sI "https://williampickup.org/" | grep -i "content-security-policy")
 if echo "$CSP" | grep -q "wasm-unsafe-eval"; then

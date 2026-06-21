@@ -527,4 +527,6 @@ def build
   puts "\nDone. #{posts.length} posts · #{notes.length} notes · #{photos.length} photos · #{books.length} books · #{years.length} archive years · #{topic_groups.length} topics · #{cat_groups.length} categories"
 end
 
-build
+# Guarded so other scripts can `require_relative 'build'` to reuse Post,
+# load_posts, etc. without triggering a full site build as a side effect.
+build if __FILE__ == $0

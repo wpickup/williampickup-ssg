@@ -19,3 +19,12 @@ PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 # the way a terminal does.
 OUT_DIR="${SSG_OUT_DIR:-/Users/will/Sites/williampickup.org/_site}"
 export SSG_OUT_DIR="$OUT_DIR"
+
+# Same propagation concern as above applies to secrets — a real token
+# can't live in this file (it's committed to git), and Nova's GUI task
+# runner may not see a shell-profile-exported var. Read from a gitignored
+# local file instead, created once with:
+#   echo "your-token" > .webmention-token
+if [ -z "${WEBMENTION_TOKEN:-}" ] && [ -f "$PROJECT_DIR/.webmention-token" ]; then
+  export WEBMENTION_TOKEN="$(cat "$PROJECT_DIR/.webmention-token")"
+fi

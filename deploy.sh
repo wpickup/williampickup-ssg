@@ -32,4 +32,14 @@ rsync -avz --delete \
   "$OUT_DIR/" "${DEPLOY_DEST}"
 
 echo ""
+echo "==> Sending webmentions for new outbound links..."
+ruby send_webmentions.rb || echo "  (non-fatal — deploy already succeeded)"
+
+if ! git diff --quiet -- _data/webmentions_sent.json 2>/dev/null; then
+  git add _data/webmentions_sent.json
+  git commit -m "Update webmention state" -q
+  echo "  → Committed updated webmention state (not pushed)"
+fi
+
+echo ""
 echo "==> Done."

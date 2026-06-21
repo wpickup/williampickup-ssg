@@ -3,6 +3,9 @@ name: Deploy
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -43,3 +46,18 @@ jobs:
             --exclude '.DS_Store' \
             --exclude 'drafts/' \
             _out/ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}"
+
+      - name: Send webmentions for new outbound links
+        env:
+          WEBMENTION_TOKEN: ${{ secrets.WEBMENTION_TOKEN }}
+        run: bundle exec ruby send_webmentions.rb
+
+      - name: Commit updated webmention state
+        run: |
+          if ! git diff --quiet -- _data/webmentions_sent.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add _data/webmentions_sent.json
+            git commit -m "Update webmention state [skip ci]"
+            git push
+          fi

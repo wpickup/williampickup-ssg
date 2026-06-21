@@ -246,15 +246,17 @@ export DEPLOY_DEST=williampickup:/var/www/htdocs/williampickup.org/
 ./deploy.sh   # now deploys every time, no env var needed
 ```
 
+After a real deploy (`DEPLOY_DEST` set), `deploy.sh` also sends webmentions for any new outbound links and commits the updated state file — see "Sending webmentions" below.
+
 ### Deploying via GitHub Actions
 
-`.github/workflows/deploy.yml` runs the same build → index → rsync sequence, triggered manually — either via the Actions tab's "Run workflow" button, or from the terminal:
+`.github/workflows/deploy.yml` runs the same build → index → rsync → webmention sequence, triggered manually — either via the Actions tab's "Run workflow" button, or from the terminal:
 
 ```bash
 gh workflow run deploy.yml
 ```
 
-It deliberately does not run on every push to `main`, so commits and merges never trigger a production deploy on their own — you decide when to ship by running the workflow explicitly. It needs four repository secrets set under **Settings → Secrets and variables → Actions**:
+It deliberately does not run on every push to `main`, so commits and merges never trigger a production deploy on their own — you decide when to ship by running the workflow explicitly. It needs five repository secrets set under **Settings → Secrets and variables → Actions**:
 
 | Secret | Value |
 |---|---|
@@ -262,8 +264,32 @@ It deliberately does not run on every push to `main`, so commits and merges neve
 | `DEPLOY_HOST` | The server's IP or hostname |
 | `DEPLOY_USER` | The SSH user on the server |
 | `DEPLOY_PATH` | The webroot path, e.g. `/var/www/htdocs/williampickup.org/` |
+| `WEBMENTION_TOKEN` | Your Telegraph token — see "Sending webmentions" below |
 
 I can't create or view these secrets myself — add them directly in the GitHub UI, never by pasting key material into chat or a file in the repo.
+
+The workflow also needs permission to commit back to the repo (for the webmention state file) — this is set via `permissions: contents: write` already in `deploy.yml`, nothing extra to configure.
+
+### Sending webmentions
+
+After a successful deploy, `send_webmentions.rb` scans every published post's outbound links and sends a webmention for any that haven't been sent before, via [Telegraph](https://telegraph.p3k.io) — a third-party service that handles endpoint discovery for you, so we don't need to implement the protocol ourselves.
+
+**One-time setup:** sign in at telegraph.p3k.io with your domain to get a token, then make it available in each environment that deploys:
+
+```bash
+# Local terminal (deploy.sh reads this automatically):
+export WEBMENTION_TOKEN=your-token-here
+
+# Nova-triggered deploys: Nova's GUI task runner may not inherit a
+# shell-exported variable, so use a gitignored local file instead:
+echo "your-token-here" > .webmention-token
+
+# GitHub Actions: add WEBMENTION_TOKEN as a repository secret (see above)
+```
+
+Without a token set, `send_webmentions.rb` just prints a notice and exits — it never blocks a deploy.
+
+**State tracking:** `_data/webmentions_sent.json` records which (post, target) pairs have already been sent, so re-deploying doesn't re-send the same webmention for unchanged posts — only genuinely new outbound links trigger a send. This file is committed to the repo (not gitignored) since it's shared state between local deploys and CI; both `deploy.sh` and the GitHub Action commit it automatically after sending (locally, committed but not pushed — same as everything else in this workflow).
 
 ---
 
