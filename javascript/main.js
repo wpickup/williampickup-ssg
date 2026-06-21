@@ -268,10 +268,42 @@
       });
     }
 
+    /* ── Spam/quality filter ─────────────────────────────────────────
+       webmention.io does no filtering of its own — anyone can claim a
+       link to your site. Heuristic, not foolproof: drops mentions with
+       no traceable source, no author identity and no real text (the
+       common low-effort spam shape), plus an easy manual block-list for
+       anything that slips through. */
+    const BLOCKED_DOMAINS = []; // add hostnames here if spam ever shows up
+
+    function hostnameOf(url) {
+      try { return new URL(url).hostname; } catch { return ''; }
+    }
+
+    function isLikelySpam(m) {
+      const source = m['wm-source'] || m.url || '';
+      const host = hostnameOf(source);
+      if (!host) return true;
+      if (BLOCKED_DOMAINS.includes(host)) return true;
+
+      const a = m.author || {};
+      const text = ((m.content && m.content.text) || '').trim();
+      const hasIdentity = !!(a.name || a.photo);
+      const hasText = text.length >= 2;
+
+      // Replies are supposed to say something — no text is suspicious
+      if (m['wm-property'] === 'in-reply-to' && !hasText) return true;
+
+      // Anonymous and content-free — the classic low-effort spam shape
+      if (!hasIdentity && !hasText) return true;
+
+      return false;
+    }
+
     fetch('https://webmention.io/api/mentions.jf2?per-page=50&target=' + encodeURIComponent(targetUrl))
       .then(r => r.json())
       .then(data => {
-        const all = data.children || [];
+        const all = (data.children || []).filter(m => !isLikelySpam(m));
         if (!all.length) return;
 
         const replies   = all.filter(m => m['wm-property'] === 'in-reply-to');
