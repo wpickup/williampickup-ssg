@@ -18,5 +18,5 @@
 <%- end -%>
         </div>
       </nav>
-      <p class="footer-copy">&copy; <%= COPYRIGHT_YEAR %> <%= AUTHOR_NAME %> &nbsp;&middot;&nbsp; <a class="footer-version" href="<%= root %>colophon.html">built <%= BUILD_STAMP %></a><%- if BUILD_SHA -%> &nbsp;<a class="footer-version" href="https://github.com/<%= GITHUB_REPO %>/commit/<%= BUILD_SHA %>"><%= BUILD_SHA %></a><%- end -%></p>
+      <p class="footer-copy">&copy; <%= COPYRIGHT_YEAR %> <%= AUTHOR_NAME %> &nbsp;&middot;&nbsp; <a class="footer-version" href="<%= root %>colophon.html">built <%= BUILD_STAMP %></a><%- if BUILD_SHA -%> &nbsp;<span class="footer-version"><%= BUILD_SHA %></span><%- end -%></p>
     </footer>

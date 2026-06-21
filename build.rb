@@ -16,11 +16,12 @@ SITE_DESC      = 'A personal notebook of making, reading, travelling, photograph
 AUTHOR_NAME    = 'William Pickup'
 AUTHOR_EMAIL   = 'will@williampickup.org'
 COPYRIGHT_YEAR = Date.today.year
-GITHUB_REPO    = 'wpickup/williampickup-ssg'
 
 # UTC, not system local time — local builds (Sydney) and CI builds
 # (GitHub Actions runners) would otherwise show different times for the
-# same moment. The git SHA pins this to an exact, verifiable commit.
+# same moment. The git SHA pins this to an exact, verifiable commit
+# (intentionally not linked in the footer — the repo is private, so a
+# link to GitHub would 404 for every visitor except the owner).
 BUILD_STAMP = Time.now.utc.strftime("%-d %b '%y, %H:%M UTC")
 BUILD_SHA   = begin
   sha = `git rev-parse --short HEAD 2>/dev/null`.strip
