@@ -289,7 +289,16 @@ echo "your-token-here" > .webmention-token
 
 Without a token set, `send_webmentions.rb` just prints a notice and exits — it never blocks a deploy.
 
-**State tracking:** `_data/webmentions_sent.json` records which (post, target) pairs have already been sent, so re-deploying doesn't re-send the same webmention for unchanged posts — only genuinely new outbound links trigger a send. This file is committed to the repo (not gitignored) since it's shared state between local deploys and CI; both `deploy.sh` and the GitHub Action commit it automatically after sending (locally, committed but not pushed — same as everything else in this workflow).
+**State tracking:** `_data/webmentions_sent.json` records which (post, target) pairs have already been settled — sent, or definitively rejected by Telegraph as unsupported — so re-deploying doesn't re-send the same webmention for unchanged posts. Saved incrementally after every single target, so an interrupted run never loses track of what already went out. Committed to the repo (not gitignored), since it's shared state between local deploys and CI; both `deploy.sh` and the GitHub Action commit it automatically after sending (locally, committed but not pushed — same as everything else in this workflow).
+
+**Adopting this on a site with an existing backlog:** the first real run treats every published post as new, which means firing webmentions at every outbound link across the entire back-catalogue at once — for an established blog, that's potentially years-old posts suddenly notifying unrelated sites out of nowhere, which isn't really what the protocol is for. Run with `--seed` first to mark the existing backlog as already-settled without sending anything (no network calls at all):
+
+```bash
+ruby send_webmentions.rb --seed
+git add _data/webmentions_sent.json && git commit -m "Seed webmention baseline"
+```
+
+After that, only posts or links that didn't exist at seed time will ever trigger a real send.
 
 ---
 
