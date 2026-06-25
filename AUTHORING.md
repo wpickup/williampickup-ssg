@@ -407,3 +407,6 @@ Siblings within the same container stagger by 70ms each so grouped items arrive 
 - ISO 8601 format: `2026-06-18`
 - Posts sorted newest-first throughout the site
 - Archive pages group by year automatically
+
+**Adding a new template**
+- `_partials/_head.html.erb` is just the contents of `<head>` — `<meta>` and `<link>` tags only, no `<html>` wrapper. Every template is responsible for writing `<!DOCTYPE html><html lang="en"><head>` itself, rendering the `head` partial inside it, then closing `</head>` before `<body>`. This is consistent across every existing template (see any file in `_templates/` for the exact pattern to copy), but it's manual — forgetting to close `</head>` before `<body>` in a new template is a silent bug, not something the builder will catch for you.

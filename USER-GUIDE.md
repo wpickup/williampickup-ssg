@@ -163,6 +163,8 @@ sections:
 
 Books with `on_now_page: true` and `status: reading` appear automatically in the Reading section.
 
+**Plain text only — no links or markdown.** `now.html.erb` passes each section through `h()` (HTML-escape) before output, so `[a link](https://...)` or `<a href="...">` will render as literal text, not a clickable link. This is deliberate — YAML strings are simpler to write than markdown-in-YAML — but it does mean you can't casually drop a link into a `/now` update the way you might in a post. If you want to point somewhere, write the URL out in full as plain text (`see https://example.com`) and let it render as inert text, or write the news as a short post/note instead, which does support markdown.
+
 ---
 
 ## Static pages
