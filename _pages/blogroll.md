@@ -167,6 +167,7 @@ A collection of blogs and websites I follow, organized by topic.
 
 - [Goldmark TV](https://www.goldmarkart.com/blogs/goldmark-tv) - [RSS](https://www.goldmarkart.com/blogs/goldmark-tv.atom)
 - [Discover – Goldmark](https://www.goldmarkart.com/blogs/discover) - [RSS](https://www.goldmarkart.com/blogs/discover.atom)
+- [Olia Lialina](https://art.teleportacia.org) - Net Artist, one of net.art pioneers
 
 ## Life
 
