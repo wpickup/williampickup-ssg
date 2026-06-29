@@ -39,6 +39,7 @@ A collection of blogs and websites I follow, organized by topic.
 
 ## Craft
 
+- [Irwin Miller](http://irwinmiller.com/) - The polymath
 - [Labor Limae](http://laborlimaetoolworks.blogspot.com/) - A study of the aesthetico-political consequences of japanese saw sharpening — or something like that - [RSS](http://laborlimaetoolworks.blogspot.com/feeds/posts/default?alt=rss)
 - [giant Cypress](https://giantcypress.net/) - A monk asked Joshu, "What is the meaning of Bodhidharma's coming to China?" Joshu said, "The oak tree in the garden." - [RSS](http://feeds.feedburner.com/giantcypress?format=xml)
 - [Svend Bayer Pottery](https://svendbayerpottery.wordpress.com) - [RSS](https://svendbayerpottery.wordpress.com/feed/)
