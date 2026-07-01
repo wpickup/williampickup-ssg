@@ -43,7 +43,7 @@ footer_secondary:
     href: search.html
     current: search
   - label: RSS
-    href: Feeds/rss.xml
+    href: feeds/rss.xml
   - label: Contact
     href: "mailto:will@williampickup.org"
     email: true
