@@ -28,6 +28,7 @@ A single reference for writing content and operating the generator: front matter
 13. [Images (publit.io)](#images-publitio)
 14. [Notes](#notes)
     - [Formatting available in notes](#formatting-available-in-notes)
+    - [Promoting a note to a post](#promoting-a-note-to-a-post)
 15. [Photos](#photos)
 16. [Books](#books)
 17. [Static pages](#static-pages)
@@ -603,6 +604,17 @@ Notes render into a different HTML wrapper (`.note-single__body` / `.notes-list_
 **Post-only, not available in notes:** figure size modifiers, photo pairs, code block syntax highlighting, the [editorial grid](#editorial-grid-layout) (notes have no `layout` field at all), and sidenotes (the CSS isn't strictly blocked, but the numbering counter never initializes for a note, so a hand-written sidenote would render with broken numbering).
 
 Quotebacks and pull quotes render identically whether a note is viewed on its own permalink page or inline on the `/notes.html` listing — both surfaces show a note's full body, so both get the same styling.
+
+### Promoting a note to a post
+
+If a note grows into something that deserves a full post treatment, use the **Promote Note** Nova task — pick the note from a list; it `git mv`s the file into `_posts/` (preserving history) and scaffolds in blank `description:`/`topics:`/`categories:`/`tags:` lines for whichever the note doesn't already have.
+
+A raw move alone would work without erroring — `Post` defaults every field beyond `title`/`slug`/`date` gracefully — but the result would be a thin post: no topic colour on its card, no card description, and (if the note was untitled) a title that's just the raw slug. The scaffolded fields are there to prompt filling those in.
+
+Two things worth knowing before promoting:
+
+- **The URL changes** — `/notes/slug.html` becomes `/posts/slug.html`. Nothing auto-redirects the old address, so a promotion breaks any existing link to the note.
+- **Nothing in the note's content needs to change.** Every formatting option that works in a note also works in a post (see [Formatting available in notes](#formatting-available-in-notes) above) — promotion only adds capability, it never removes any.
 
 ---
 
