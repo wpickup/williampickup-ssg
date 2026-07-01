@@ -35,7 +35,7 @@
      The link provides the cite URL and title; text before the first
      comma is treated as the author.
   ──────────────────────────────────────────────────────────────────── */
-  document.querySelectorAll('.post-body blockquote:not(.quoteback)').forEach(bq => {
+  document.querySelectorAll('.post-body blockquote:not(.quoteback), .note-single__body blockquote:not(.quoteback), .notes-list__body blockquote:not(.quoteback)').forEach(bq => {
     const paras = [...bq.querySelectorAll(':scope > p')];
     if (!paras.length) return;
 

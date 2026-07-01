@@ -834,13 +834,17 @@ ul { list-style: none; }
 }
 .post-body a:hover { color: var(--accent); border-color: var(--accent); }
 
-.post-body blockquote {
+.post-body blockquote,
+.note-single__body blockquote,
+.notes-list__body blockquote {
   margin: 2.5em 0;
   padding: 0 0 0 clamp(1.5rem, 3vw, 2.5rem);
   border-left: 2px solid var(--accent);
 }
 
-.post-body blockquote p {
+.post-body blockquote p,
+.note-single__body blockquote p,
+.notes-list__body blockquote p {
   font-family: var(--font-display);
   font-size: clamp(1.1rem, 2vw, 1.3rem);
   font-style: italic;
@@ -849,7 +853,9 @@ ul { list-style: none; }
   margin-top: 0;
 }
 
-.post-body blockquote cite {
+.post-body blockquote cite,
+.note-single__body blockquote cite,
+.notes-list__body blockquote cite {
   display: block;
   margin-top: 0.75em;
   font-size: 0.7rem;
@@ -900,7 +906,9 @@ ul { list-style: none; }
 }
 
 /* Quotebacks */
-.post-body blockquote.quoteback {
+.post-body blockquote.quoteback,
+.note-single__body blockquote.quoteback,
+.notes-list__body blockquote.quoteback {
   border-left: none;
   padding: 1.25rem 1.5rem;
   margin: 2.5em 0;
@@ -911,7 +919,9 @@ ul { list-style: none; }
   color: var(--ink-mid);
 }
 
-.post-body blockquote.quoteback p {
+.post-body blockquote.quoteback p,
+.note-single__body blockquote.quoteback p,
+.notes-list__body blockquote.quoteback p {
   font-family: var(--font-body);
   font-size: 0.95rem;
   font-style: normal;
@@ -919,7 +929,9 @@ ul { list-style: none; }
   line-height: 1.7;
 }
 
-.post-body blockquote.quoteback footer {
+.post-body blockquote.quoteback footer,
+.note-single__body blockquote.quoteback footer,
+.notes-list__body blockquote.quoteback footer {
   margin-top: 0.75rem;
   font-size: 0.72rem;
   font-weight: 400;
@@ -927,7 +939,9 @@ ul { list-style: none; }
   color: var(--ink-light);
 }
 
-.post-body blockquote.quoteback footer cite a {
+.post-body blockquote.quoteback footer cite a,
+.note-single__body blockquote.quoteback footer cite a,
+.notes-list__body blockquote.quoteback footer cite a {
   border-bottom: none;
   color: var(--ink-light);
 }
@@ -3568,7 +3582,9 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 }
 
 /* Pull quote: <p class="pullquote"> */
-.post-body .pullquote {
+.post-body .pullquote,
+.note-single__body .pullquote,
+.notes-list__body .pullquote {
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 3vw, 1.65rem);
   font-weight: 300;

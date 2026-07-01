@@ -27,6 +27,7 @@ A single reference for writing content and operating the generator: front matter
 12. [Scroll-reveal animations](#scroll-reveal-animations)
 13. [Images (publit.io)](#images-publitio)
 14. [Notes](#notes)
+    - [Formatting available in notes](#formatting-available-in-notes)
 15. [Photos](#photos)
 16. [Books](#books)
 17. [Static pages](#static-pages)
@@ -308,7 +309,7 @@ A richer attributed-quote treatment, auto-detected client-side (in `main.js`) fr
 > — Author Name, [Article Title](https://example.com)
 ```
 
-On page load, JS detects any `.post-body blockquote` matching that shape, pulls the link's URL and text as the citation, treats the text before the first comma as the author, and rewrites the attribution line into a styled `<footer><cite>` — removing the plain attribution paragraph and adding the `quoteback` class. The result looks like:
+On page load, JS detects any matching blockquote inside a post, a single note, or the notes listing, pulls the link's URL and text as the citation, treats the text before the first comma as the author, and rewrites the attribution line into a styled `<footer><cite>` — removing the plain attribution paragraph and adding the `quoteback` class. The result looks like:
 
 > Quote text here.
 > — Author Name, *Article Title*
@@ -588,6 +589,16 @@ draft: true                # same draft behaviour as posts — see "Drafts"
 - Have their own permalink at `/notes/slug.html`
 - Untitled notes show just the date and body; add a `title` for a titled entry
 - Not included in RSS/Atom (feeds are posts-only) or the home page's "Recent writing" grid — they have their own home page card instead
+
+### Formatting available in notes
+
+Notes render into a different HTML wrapper (`.note-single__body` / `.notes-list__body`) than posts (`.post-body`), and most of [Body markup](#body-markup)'s formatting is scoped specifically to that `.post-body` class — so not everything documented there works in a note.
+
+**Works in notes:** standard Markdown, `==highlighted==`/`~~strikethrough~~`, [quotebacks](#quotebacks), [pull quotes](#pull-quotes-part-labels-pilcrow), epigraphs, new-thought, the pilcrow, and [scroll-reveal](#scroll-reveal-animations) (`reveal`, `reveal--*`).
+
+**Post-only, not available in notes:** figure size modifiers, photo pairs, code block syntax highlighting, the [editorial grid](#editorial-grid-layout) (notes have no `layout` field at all), and sidenotes (the CSS isn't strictly blocked, but the numbering counter never initializes for a note, so a hand-written sidenote would render with broken numbering).
+
+Quotebacks and pull quotes render identically whether a note is viewed on its own permalink page or inline on the `/notes.html` listing — both surfaces show a note's full body, so both get the same styling.
 
 ---
 
