@@ -195,7 +195,9 @@ To publish, move the file from `_drafts/` to `_posts/`:
 
 Then run `ruby build.rb` and the post appears at `posts/your-slug.html`.
 
-Notes (see [Notes](#notes)) follow the same drafting convention — a `draft: true` note, or one force-drafted by folder, builds to `drafts/slug.html` exactly like a post.
+**Notes work differently — this is the one important exception.** Unlike posts, a note is *never* drafted by which folder it's in; `_notes/` is the only folder notes ever live in, drafted or not. Draft status for a note comes entirely from `draft: true` in its own front matter, set and later removed **in place** — there's no `_drafts/` → `_notes/` move, and no "Publish Draft" Nova task for notes (that task only scans `_drafts/` and only moves things into `_posts/`). A draft note still builds to `drafts/slug.html`, with the same banner and the same exclusion from production, `--drafts` behaves identically either way — only the *mechanism* for marking a note as a draft differs from a post's.
+
+The **New Note** Nova task creates files directly in `_notes/` with `draft: true` already set, for exactly this reason.
 
 ---
 
@@ -579,8 +581,10 @@ Notes are short, informal entries — observations, links, brief thoughts — wi
 slug: note-slug           # URL: /notes/slug.html
 date: 2026-06-18
 title: Optional title     # omit for untitled notes
-draft: true                # same draft behaviour as posts — see "Drafts"
+draft: true                 # unlike posts, this is the ONLY way to draft a note — see "Drafts"
 ```
+
+Create a new draft note with the **New Note** Nova task — it writes straight into `_notes/` with `draft: true` already set (never into `_drafts/`, which is posts-only). To publish, remove the `draft: true` line from the file in place; there's no move and no "Publish Draft" task for notes.
 
 ### Behaviour
 

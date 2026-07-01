@@ -8,23 +8,23 @@ TITLE=$(osascript -e '
   tell application "Nova"
     activate
   end tell
-  set result to text returned of (display dialog "New note title:" default answer "" with title "New Note" buttons {"Cancel", "Create"} default button "Create")
+  set result to text returned of (display dialog "New note title (optional — leave blank for an untitled note):" default answer "" with title "New Note" buttons {"Cancel", "Create"} default button "Create")
 ' 2>/dev/null) || exit 0   # exit 0 on Cancel so Nova doesn't show an error
-
-if [ -z "$TITLE" ]; then
-  exit 0
-fi
 
 # ── Derive slug and date ──────────────────────────────────────────────────────
 TODAY=$(date '+%Y-%m-%d')
-SLUG=$(echo "$TITLE" \
-  | tr '[:upper:]' '[:lower:]' \
-  | sed 's/[^a-z0-9 ]//g' \
-  | sed 's/  */ /g' \
-  | sed 's/ /-/g' \
-  | sed 's/^-//;s/-$//')
+if [ -n "$TITLE" ]; then
+  SLUG=$(echo "$TITLE" \
+    | tr '[:upper:]' '[:lower:]' \
+    | sed 's/[^a-z0-9 ]//g' \
+    | sed 's/  */ /g' \
+    | sed 's/ /-/g' \
+    | sed 's/^-//;s/-$//')
+else
+  SLUG="untitled"
+fi
 
-FILE="$PROJECT_DIR/_drafts/${TODAY}-${SLUG}.md"
+FILE="$PROJECT_DIR/_notes/${TODAY}-${SLUG}.md"
 
 # ── Bail if file already exists ───────────────────────────────────────────────
 if [ -f "$FILE" ]; then
@@ -32,21 +32,22 @@ if [ -f "$FILE" ]; then
   exit 1
 fi
 
-# ── Write front matter ────────────────────────────────────────────────────────
+# ── Write front matter — a note's own shape, not a post's ─────────────────────
+# draft: true here, not the _drafts/ folder — Note has no location-based
+# drafting like Post does; load_notes only ever reads _notes/. Publish by
+# removing this line (or setting it to false) once the note is ready.
 cat > "$FILE" << FRONTMATTER
 ---
-title: $TITLE
-slug: $SLUG
-date: $TODAY
-description:
-topics:
-categories:
-tags:
-image_url:
-image_focal_point:
-use_featured_image: false
-has_sidenotes: false
-featured: false
+slug: ${TODAY}-${SLUG}
+date: ${TODAY}
+FRONTMATTER
+
+if [ -n "$TITLE" ]; then
+  echo "title: $TITLE" >> "$FILE"
+fi
+
+cat >> "$FILE" << FRONTMATTER
+draft: true
 ---
 
 FRONTMATTER
