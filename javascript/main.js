@@ -424,4 +424,46 @@
       .catch(() => {});
   })();
 
+  /* ── Listening to ────────────────────────────────────────────────────
+     Home page only. Polls ListenBrainz's playing-now endpoint (free,
+     no key, CORS-friendly) and shows track + artist when something is
+     actively playing. No-ops entirely if data-user is blank (not yet
+     configured) or the API has nothing playing. Silent failure on any
+     error, matching the location ticker's pattern.
+  ──────────────────────────────────────────────────────────────────── */
+  (function initListeningTo() {
+    const el = document.getElementById('listening-to');
+    if (!el) return;
+    const user = el.dataset.user;
+    if (!user) return;
+
+    function esc(str) {
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function render() {
+      const url = 'https://api.listenbrainz.org/1/user/' + encodeURIComponent(user) + '/playing-now';
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          const listens = data.payload && data.payload.listens;
+          if (!listens || !listens.length) return;
+          const meta   = listens[0].track_metadata || {};
+          const track  = meta.track_name;
+          const artist = meta.artist_name;
+          if (!track || !artist) return;
+          el.innerHTML = 'Listening to <strong>' + esc(track) + '</strong> by ' + esc(artist);
+          el.hidden = false;
+          requestAnimationFrame(() => el.classList.add('is-loaded'));
+        })
+        .catch(() => {});
+    }
+
+    render();
+    // Re-check periodically in case a track starts after page load —
+    // no need to be aggressive, this is a passive status line not a player.
+    setInterval(render, 60000);
+  })();
+
 })();

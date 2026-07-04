@@ -828,11 +828,25 @@ ul { list-style: none; }
 
 .post-body a {
   color: var(--ink);
-  text-decoration: none;   
+  text-decoration: none;
   border-bottom: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
   transition: color 0.2s, border-color 0.2s;
 }
 .post-body a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* External links get a small directional marker so readers know before
+   clicking that a link leaves the site. Scoped to prose content only —
+   nav, footer, and card links stay unmarked. */
+.post-body a[href^="http"]:not([href*="williampickup.org"])::after,
+.note-single__body a[href^="http"]:not([href*="williampickup.org"])::after,
+.notes-list__body a[href^="http"]:not([href*="williampickup.org"])::after,
+.bio-body a[href^="http"]:not([href*="williampickup.org"])::after {
+  content: "\2197";
+  display: inline-block;
+  margin-left: 0.15em;
+  font-size: 0.75em;
+  transform: translateY(-0.05em);
+}
 
 .post-body blockquote,
 .note-single__body blockquote,
@@ -3700,3 +3714,19 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 @media (prefers-reduced-motion: reduce) {
   .location-ticker__track { animation: none; }
 }
+
+/* ── Listening to ─────────────────────────────────────────────────────────── */
+.listening-to {
+  margin-top: 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: var(--ink-light);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.listening-to.is-loaded {
+  opacity: 1;
+}
+.listening-to strong { font-weight: 500; color: var(--ink); }

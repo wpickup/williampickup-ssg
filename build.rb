@@ -17,6 +17,10 @@ AUTHOR_NAME    = 'William Pickup'
 AUTHOR_EMAIL   = 'will@williampickup.org'
 COPYRIGHT_YEAR = Date.today.year
 
+# ListenBrainz username for the home page "listening to" widget. Leave blank
+# until Apple Music is scrobbling there — the widget silently no-ops without it.
+LISTENBRAINZ_USER = ''
+
 # UTC, not system local time — local builds (Sydney) and CI builds
 # (GitHub Actions runners) would otherwise show different times for the
 # same moment. The git SHA pins this to an exact, verifiable commit
