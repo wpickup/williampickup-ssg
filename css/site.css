@@ -826,6 +826,16 @@ ul { list-style: none; }
 .post-body strong { font-weight: 500; color: var(--ink); }
 .post-body em { font-style: italic; }
 
+/* Small caps for acronyms/initialisms (applied at build time — see
+   apply_smallcaps in build.rb). Faux small caps via size + tracking rather
+   than font-variant-caps, since the self-hosted font subsets don't include
+   the OpenType small-caps feature. Global: acronyms can appear in any
+   content_html-rendered page (posts, notes, bio, colophon, blogroll). */
+.acr {
+  font-size: 0.82em;
+  letter-spacing: 0.02em;
+}
+
 .post-body a {
   color: var(--ink);
   text-decoration: none;
