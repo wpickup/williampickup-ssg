@@ -1,0 +1,7 @@
+name = "wp-feed-proxy"
+main = "index.js"
+compatibility_date = "2024-11-01"
+workers_dev = true
+
+# No KV/D1/R2 bindings — caching is handled entirely via the Cache API
+# (caches.default) inside index.js, scoped per feed URL.
