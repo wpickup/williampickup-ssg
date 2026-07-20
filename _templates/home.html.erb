@@ -14,6 +14,28 @@
       page_title: page_title, description: description,
       canonical_url: canonical_url, og_type: og_type, og_title: og_title,
       og_image: og_image, date_iso: date_iso, root: root) %>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "<%= h(SITE_TITLE) %>",
+        "url": "<%= SITE_URL %>/",
+        "description": "<%= h(SITE_DESC) %>",
+        "author": { "@id": "<%= SITE_URL %>/bio.html#person" }
+      },
+      {
+        "@type": "Person",
+        "@id": "<%= SITE_URL %>/bio.html#person",
+        "name": "<%= h(AUTHOR_NAME) %>",
+        "url": "<%= SITE_URL %>/bio.html",
+        "email": "mailto:<%= AUTHOR_EMAIL %>",
+        "sameAs": ["https://github.com/wpickup"]
+      }
+    ]
+  }
+  </script>
 </head>
 <body class="page-home">
 <%= renderer.partial('header', root: root) %>

@@ -13,6 +13,7 @@
       page_title: page_title, description: description,
       canonical_url: canonical_url, og_type: og_type, og_title: og_title,
       og_image: og_image, date_iso: date_iso, root: root) %>
+<%= renderer.breadcrumb_ld([[SITE_TITLE, SITE_URL], ['Gallery', "#{SITE_URL}/gallery.html"], ['Highlights', nil]]) %>
 </head>
 <body>
 <%= renderer.partial('header', root: root, current: 'gallery') %>
