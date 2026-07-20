@@ -1,0 +1,47 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "#{series_title} — #{SITE_TITLE}"
+  description   = series_description || "Posts in the #{series_title} series."
+  canonical_url = "#{SITE_URL}/series/#{series_id}.html"
+  og_type       = 'website'
+  og_title      = nil; og_image = posts.first&.image_url; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+<%= renderer.breadcrumb_ld([[SITE_TITLE, SITE_URL], ['Writing', "#{SITE_URL}/blog.html"], [series_title, nil]]) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root, current: 'writing') %>
+  <div class="page-body">
+    <main id="main-content">
+      <header class="page-hero container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="<%= root %>blog.html">Writing</a>
+          <span class="breadcrumb__sep" aria-hidden="true">&#x203A;</span>
+          <span class="breadcrumb__current"><%= h(series_title) %></span>
+        </nav>
+        <h1 class="page-hero__title"><%= h(series_title) %></h1>
+<%- if series_description -%>
+        <p class="page-hero__lede"><%= h(series_description) %></p>
+<%- end -%>
+        <p class="page-hero__meta"><%= posts.length %> <%= posts.length == 1 ? 'part' : 'parts' %></p>
+      </header>
+
+      <!-- Oldest-first, unlike blog.html's reverse-chron list — a series
+           reads as a sequence (Part 1, 2, 3…), not a feed of updates. -->
+      <ol class="blog-list" aria-label="Posts in <%= h(series_title) %>">
+<%- posts.each do |post| -%>
+        <%= renderer.partial('post_card', post: post, root: root) %>
+<%- end -%>
+      </ol>
+    </main>
+<%= renderer.partial('footer', root: root, current: 'writing') %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

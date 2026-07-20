@@ -65,6 +65,11 @@
               Topics: <span class="blog-topics"><%= post.topics.map { |t| %(<a href="#{root}topics/#{t}.html">#{h(renderer.topic_label(t))}</a>) }.join(' | ') %></span>
             </span>
 <%- end -%>
+<%- if post.series -%>
+            <span class="post-header__topics">
+              Part of <a href="<%= root %>series/<%= post.series %>.html">a series</a>
+            </span>
+<%- end -%>
             <span class="post-header__read-time"><%= post.reading_time %></span>
           </div>
           <h1 class="post-header__title p-name"><%= h(post.title) %></h1>

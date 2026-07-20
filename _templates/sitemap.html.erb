@@ -13,6 +13,7 @@
   years.each { |y| urls << ["#{SITE_URL}/archive/#{y}.html", nil] }
   topic_groups.each_key { |tid| urls << ["#{SITE_URL}/topics/#{tid}.html", nil] }
   cat_groups.each_key { |cat| urls << ["#{SITE_URL}/categories/#{cat}.html", nil] }
+  series_groups.each_key { |sid| urls << ["#{SITE_URL}/series/#{sid}.html", nil] }
   pages.each { |page| urls << ["#{SITE_URL}/#{page.slug}.html", nil] }
 -%>
 <?xml version="1.0" encoding="UTF-8"?>

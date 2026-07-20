@@ -1,0 +1,10 @@
+# Series metadata — title and framing copy for each series, keyed by the
+# same slug used in a post's `series:` front matter field.
+#
+# A series slug appearing in a post's front matter but not listed here
+# still works — series_title falls back to a humanized version of the
+# slug in build.rb — but won't have a description or hero image.
+
+nullarbor-road-trip:
+  title: "Eight Weeks on the Nullarbor and Back"
+  description: "Sydney to Perth and back — twelve weeks, roughly 8,500km, with a standard poodle."
