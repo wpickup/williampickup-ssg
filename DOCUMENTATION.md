@@ -872,7 +872,10 @@ Generated automatically on every build — no separate maintenance step, always 
 
 - `_out/feeds/rss.xml`, `_out/feeds/atom.xml` — the 20 most recent published posts
 - `_out/sitemap.xml` — every post, note, photo, book, and static page. Drafts are always excluded, even when building with `--drafts`
-- `_out/robots.txt` — disallows `/drafts/` and points crawlers at the sitemap
+- `_out/robots.txt` — disallows `/drafts/` and points crawlers at the sitemap. Also lists common AI crawlers (GPTBot, ClaudeBot, Google-Extended, PerplexityBot, etc.) by name with an explicit `Allow: /`, so the stance on AI crawling is a deliberate, visible one rather than just whatever the wildcard rule happens to imply. Flip any single bot to `Disallow: /` in `build.rb` if you change your mind about it specifically.
+- `_out/llms.txt` — a curated Markdown index for LLMs/agents, per [llmstxt.org](https://llmstxt.org): site description, the 20 most recent posts, topic links, and links to the other index surfaces (blog, notes, gallery, reading, sitemap, feed). Distinct from `sitemap.xml`, which is exhaustive; this is meant to be a smaller, high-signal summary.
+- `_out/.well-known/security.txt` — [RFC 9116](https://www.rfc-editor.org/rfc/rfc9116). Contact + a rolling one-year `Expires` date computed at build time, so it never goes stale on its own.
+- `_out/manifest.json` — a minimal web app manifest (name, description, theme colours, existing SVG/PNG icons) linked from every page's `<head>` via `<link rel="manifest">`. Uses `display: minimal-ui`. Icons currently cover `purpose: any` only — no dedicated maskable icon exists yet (see comment in `build.rb` for what adding one would need).
 
 ---
 
