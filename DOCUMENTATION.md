@@ -11,8 +11,9 @@ A single reference for writing content and operating the generator: front matter
 5. [Front matter reference](#front-matter-reference)
 6. [Drafts](#drafts)
 7. [Topics, categories, and tags](#topics-categories-and-tags)
-8. [Layout variants](#layout-variants)
-9. [Body markup](#body-markup)
+8. [Series](#series)
+9. [Layout variants](#layout-variants)
+10. [Body markup](#body-markup)
    - [Highlighted text and strikethrough](#highlighted-text-and-strikethrough)
    - [Pull quotes, part labels, pilcrow](#pull-quotes-part-labels-pilcrow)
    - [Blockquotes](#blockquotes)
@@ -22,28 +23,28 @@ A single reference for writing content and operating the generator: front matter
    - [Figures](#figures)
    - [Photo pairs](#photo-pairs)
    - [Sidenotes and margin notes](#sidenotes-and-margin-notes)
-10. [Editorial grid layout](#editorial-grid-layout)
-11. [Photo essay layout](#photo-essay-layout)
-12. [Scroll-reveal animations](#scroll-reveal-animations)
-13. [Images (publit.io)](#images-publitio)
-14. [Notes](#notes)
+11. [Editorial grid layout](#editorial-grid-layout)
+12. [Photo essay layout](#photo-essay-layout)
+13. [Scroll-reveal animations](#scroll-reveal-animations)
+14. [Images (publit.io)](#images-publitio)
+15. [Notes](#notes)
     - [Formatting available in notes](#formatting-available-in-notes)
     - [Promoting a note to a post](#promoting-a-note-to-a-post)
-15. [Photos](#photos)
-16. [Books](#books)
-17. [Static pages](#static-pages)
-18. [The /now page](#the-now-page)
-19. [Blogroll](#blogroll)
-20. [Navigation](#navigation)
-21. [Building the site](#building-the-site)
-22. [Previewing locally](#previewing-locally)
-23. [Deploying](#deploying)
-24. [Sending webmentions](#sending-webmentions)
-25. [Feeds, sitemap, and robots.txt](#feeds-sitemap-and-robotstxt)
-26. [Search](#search)
-27. [Templates and CSS](#templates-and-css)
-28. [Authoring tools](#authoring-tools)
-29. [Builder behaviours and gotchas](#builder-behaviours-and-gotchas)
+16. [Photos](#photos)
+17. [Books](#books)
+18. [Static pages](#static-pages)
+19. [The /now page](#the-now-page)
+20. [Blogroll](#blogroll)
+21. [Navigation](#navigation)
+22. [Building the site](#building-the-site)
+23. [Previewing locally](#previewing-locally)
+24. [Deploying](#deploying)
+25. [Sending webmentions](#sending-webmentions)
+26. [Feeds, sitemap, and robots.txt](#feeds-sitemap-and-robotstxt)
+27. [Search](#search)
+28. [Templates and CSS](#templates-and-css)
+29. [Authoring tools](#authoring-tools)
+30. [Builder behaviours and gotchas](#builder-behaviours-and-gotchas)
 
 ---
 
@@ -55,7 +56,7 @@ The site is a plain Ruby static site generator — no framework (Eleventy, Jekyl
 2. Run `ruby build.rb` to generate the site
 3. Deploy the generated output to the web host
 
-The generator and its source live in `~/Documents/Personal/Web-Development/williampickup-ssg` — deliberately separate from `~/Sites`, which holds only generated output and local server config, never source or tooling.
+The generator and its source live in `~/dev/williampickup-ssg` — deliberately separate from `~/Sites`, which holds only generated output and local server config, never source or tooling. (Formerly under `~/Documents/Personal/Web-Development/` — moved out from under iCloud Drive's Desktop & Documents sync, which was racing the build's rapid delete-and-recreate of `_out/` and leaving behind empty duplicate `" 2"` directories. `_site` in `~/Sites/williampickup.org/` is a symlink into this repo's `_out/` and didn't need to move.)
 
 ---
 
@@ -81,7 +82,8 @@ williampickup-ssg/
 ├── _data/
 │   ├── now.yml        Content for the /now page
 │   ├── nav.yml        Header/footer navigation links
-│   └── blogroll.yml   Blogroll entries and filter categories
+│   ├── blogroll.yml   Blogroll entries and filter categories
+│   └── series.yml     Series titles and descriptions (see "Series")
 ├── _templates/      ERB page templates
 ├── _partials/       ERB partials (head, header, footer, cards)
 ├── _out/            Generated site (git-ignored, do not edit directly)
@@ -170,6 +172,7 @@ topics:
   - books-ideas              # Fixed set — see "Topics, categories, and tags" for valid values
 tags:
   - photography              # Freeform — shown on the post, filterable, no archive page generated
+series: nullarbor-road-trip  # Optional — groups this post with others sharing the slug; see "Series"
 ```
 
 ### Status
@@ -224,6 +227,46 @@ A post can belong to more than one topic — list all that apply; the **first on
 | `places-experiences` | Places and Experiences | Ochre |
 | `systems-thinking` | Systems Thinking | Violet |
 | `health-wellbeing` | Health and Wellbeing | Dusty rose |
+
+---
+
+## Series
+
+A fourth, optional classification alongside topics/categories/tags — for a body of posts meant to be read **as a sequence**, like a multi-part trip write-up, rather than filtered as a set. The key difference from every other listing on the site: a series page orders its posts **oldest-first** (Part 1, 2, 3…), not newest-first — it reads as chapters, not a feed.
+
+### Adding a post to a series
+
+```yaml
+series: nullarbor-road-trip
+```
+
+Just a slug in front matter — no need to register it anywhere first. Any post carrying the same `series:` slug is grouped together automatically at build time and gets a "Part of a series" badge in its header, linking to the series index.
+
+### Series metadata
+
+A slug with no entry in `_data/series.yml` still works — the series index page just falls back to a humanized version of the slug as its title, with no description. To give a series a proper title and framing copy, add it there:
+
+```yaml
+# _data/series.yml
+nullarbor-road-trip:
+  title: "Eight Weeks on the Nullarbor and Back"
+  description: "Sydney to Perth and back — twelve weeks, roughly 8,500km, with a standard poodle."
+```
+
+### What gets generated
+
+Each distinct `series:` slug in use produces one page at `/series/slug.html` (via `_templates/series.html.erb`), listing every post in that series oldest-first, plus a part count in the page header. Series pages are automatically included in `sitemap.xml`, alongside topic and category archive pages.
+
+Drafts follow the same rule as everywhere else: a series made up entirely of `_drafts/` posts only appears when building with `--drafts`, and its post links resolve to `drafts/slug.html` accordingly — nothing series-specific to configure for that, it falls out of how `Post#url_path` already works.
+
+### Pairing with `layout: photo-essay`
+
+Series and layout are independent front-matter fields, but a multi-part trip or project write-up is often exactly the kind of content that also wants the two-column photo grid — see [Photo essay layout](#photo-essay-layout). Combine both:
+
+```yaml
+series: nullarbor-road-trip
+layout: photo-essay
+```
 
 ---
 
@@ -745,7 +788,7 @@ footer_secondary:
 ## Building the site
 
 ```bash
-cd ~/Documents/Personal/Web-Development/williampickup-ssg
+cd ~/dev/williampickup-ssg
 ruby build.rb
 ```
 
@@ -790,7 +833,7 @@ Then open `http://localhost:4567` in your browser. The Nova tasks and `.claude/l
 `deploy.sh` builds the site, generates the Pagefind search index, and (if you give it a destination) rsyncs `_out/` to the web host — all in one step:
 
 ```bash
-cd ~/Documents/Personal/Web-Development/williampickup-ssg
+cd ~/dev/williampickup-ssg
 
 # Build + index only, no deploy:
 ./deploy.sh
@@ -871,7 +914,7 @@ After that, only posts or links that didn't exist at seed time will ever trigger
 Generated automatically on every build — no separate maintenance step, always reflect whatever content currently exists:
 
 - `_out/feeds/rss.xml`, `_out/feeds/atom.xml` — the 20 most recent published posts
-- `_out/sitemap.xml` — every post, note, photo, book, and static page. Drafts are always excluded, even when building with `--drafts`
+- `_out/sitemap.xml` — every post, note, photo, book, static page, and topic/category/series archive page. Drafts are always excluded, even when building with `--drafts`
 - `_out/robots.txt` — disallows `/drafts/` and points crawlers at the sitemap. Also lists common AI crawlers (GPTBot, ClaudeBot, Google-Extended, PerplexityBot, etc.) by name with an explicit `Allow: /`, so the stance on AI crawling is a deliberate, visible one rather than just whatever the wildcard rule happens to imply. Flip any single bot to `Disallow: /` in `build.rb` if you change your mind about it specifically.
 - `_out/llms.txt` — a curated Markdown index for LLMs/agents, per [llmstxt.org](https://llmstxt.org): site description, the 20 most recent posts, topic links, and links to the other index surfaces (blog, notes, gallery, reading, sitemap, feed). Distinct from `sitemap.xml`, which is exhaustive; this is meant to be a smaller, high-signal summary.
 - `_out/.well-known/security.txt` — [RFC 9116](https://www.rfc-editor.org/rfc/rfc9116). Contact + a rolling one-year `Expires` date computed at build time, so it never goes stale on its own.
