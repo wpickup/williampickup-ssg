@@ -1,0 +1,21 @@
+<%
+  img = publit_srcset(journey.image_url, journey.image_focal_point) if journey.image_url
+-%>
+<li class="post-card">
+<%- if img -%>
+  <a href="<%= root %><%= journey.url_path %>" class="post-card__image" tabindex="-1" aria-hidden="true">
+    <img src="<%= img[:src] %>" alt="" width="700" height="467" loading="lazy"<%= img[:style] %>>
+  </a>
+<%- end -%>
+  <div class="post-card__body">
+<%- if journey.updated_display -%>
+    <div class="post-card__meta">
+      <span class="post-card__date">Updated <%= journey.updated_display %></span>
+    </div>
+<%- end -%>
+    <h3 class="post-card__title"><a href="<%= root %><%= journey.url_path %>"><%= h(journey.title) %></a></h3>
+<%- if journey.lede || journey.description -%>
+    <p class="post-card__excerpt"><%= h(journey.lede || journey.description) %></p>
+<%- end -%>
+  </div>
+</li>

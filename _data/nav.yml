@@ -25,6 +25,9 @@ footer_primary:
   - label: Now
     href: now.html
     current: now
+  - label: Journeys
+    href: journeys.html
+    current: journeys
   - label: Reading
     href: reading.html
     current: reading

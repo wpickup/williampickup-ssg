@@ -1,0 +1,64 @@
+<%# encoding: utf-8 %>
+<%
+  page_title    = "#{journey.title} — #{SITE_TITLE}"
+  description   = journey.description
+  canonical_url = journey.url
+  og_type       = 'website'
+  og_title      = journey.title
+  og_image      = journey.image_url
+  date_iso      = nil
+  img           = publit_srcset(journey.image_url, journey.image_focal_point) if journey.use_featured_image && journey.image_url
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+<%= renderer.breadcrumb_ld([[SITE_TITLE, SITE_URL], ['Journeys', "#{SITE_URL}/journeys.html"], [journey.title, nil]]) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root, current: 'journeys') %>
+<%- if journey.draft -%>
+  <div class="draft-banner">Draft — not published</div>
+<%- end -%>
+  <div class="page-body">
+    <article class="<%= journey.css_classes %>">
+      <div class="post-page">
+        <header class="post-header">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="<%= root %>journeys.html">Journeys</a>
+            <span class="breadcrumb__sep" aria-hidden="true">&#x203A;</span>
+            <span class="breadcrumb__current"><%= h(journey.title) %></span>
+          </nav>
+          <h1 class="post-header__title"><%= h(journey.title) %></h1>
+<%- if journey.lede -%>
+          <p class="post-header__lede"><%= h(journey.lede) %></p>
+<%- end -%>
+<%- if journey.updated_display -%>
+          <p class="post-header__meta">Last updated <%= journey.updated_display %></p>
+<%- end -%>
+        </header>
+
+<%- if img -%>
+        <figure class="post-hero-image">
+          <img src="<%= img[:src] %>" srcset="<%= img[:srcset] %>" alt="" width="1050" height="700" loading="eager"<%= img[:style] %>>
+        </figure>
+<%- end -%>
+
+        <div class="post-body">
+          <%= journey.content_html %>
+        </div>
+
+        <footer class="post-footer">
+          <a href="<%= root %>journeys.html" class="post-back">All journeys</a>
+        </footer>
+      </div>
+    </article>
+
+<%= renderer.partial('footer', root: root, current: 'journeys') %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

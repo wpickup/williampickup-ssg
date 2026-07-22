@@ -6,8 +6,9 @@
   notes.each { |n| urls << [n.url, (n.date || Date.today).iso8601] }
   photos.each { |p| urls << [p.url, nil] }
   books.each { |b| urls << [b.url, nil] }
+  journeys.each { |j| urls << [j.url, j.updated_iso.empty? ? nil : j.updated_iso] }
 
-  %w[blog notes gallery reading now archive].each { |slug| urls << ["#{SITE_URL}/#{slug}.html", nil] }
+  %w[blog notes gallery reading now archive journeys].each { |slug| urls << ["#{SITE_URL}/#{slug}.html", nil] }
   urls << ["#{SITE_URL}/gallery/highlights.html", nil]
 
   years.each { |y| urls << ["#{SITE_URL}/archive/#{y}.html", nil] }
