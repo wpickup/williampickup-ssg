@@ -56,7 +56,8 @@ The site is a plain Ruby static site generator — no framework (Eleventy, Jekyl
 2. Run `ruby build.rb` to generate the site
 3. Deploy the generated output to the web host
 
-The generator and its source live in `~/dev/williampickup-ssg` — deliberately separate from `~/Sites`, which holds only generated output and local server config, never source or tooling. (Formerly under `~/Documents/Personal/Web-Development/` — moved out from under iCloud Drive's Desktop & Documents sync, which was racing the build's rapid delete-and-recreate of `_out/` and leaving behind empty duplicate `" 2"` directories. `_site` in `~/Sites/williampickup.org/` is a symlink into this repo's `_out/` and didn't need to move.)
+The generator and its source live in `~/dev/williampickup-ssg` — deliberately separate from `~/Sites`, which holds generated output and local server config, never source or tooling. (Formerly under `~/Documents/Personal/Web-Development/` — moved out from under iCloud Drive's Desktop & Documents sync, which was racing the build's rapid delete-and-recreate of `_out/` and leaving behind empty duplicate `" 2"` directories.)
+
 
 ---
 

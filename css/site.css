@@ -900,15 +900,40 @@ ul { list-style: none; }
 .post-body figure img { width: 100%; height: auto; object-fit: cover; }
 
 .post-body figure.figure--wide {
-  margin-left: clamp(-2rem, -6vw, -4rem);
-  margin-right: clamp(-2rem, -6vw, -4rem);
+  margin-left: clamp(-1rem, -3vw, -2.25rem);
+  margin-right: clamp(-1rem, -3vw, -2.25rem);
 }
 
-.post-body figure.figure--small { max-width: 132px; }
-.post-body figure.figure--small img { width: auto; max-width: 100%; height: auto; object-fit: contain; }
+.post-body figure.figure--small {
+  max-width: clamp(180px, 28vw, 260px);
+}
 
-.post-body figure.figure--float-left { float: left; margin: 0.25em 1.75em 1em 0; }
-.post-body figure.figure--float-right { float: right; margin: 0.25em 0 1em 1.75em; }
+.post-body figure.figure--portrait {
+  max-width: clamp(220px, 34vw, 320px);
+}
+
+.post-body figure.figure--small img,
+.post-body figure.figure--portrait img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.post-body figure.figure--float-left {
+  float: left;
+  margin: 0.35em 2rem 1.25em 0;
+}
+
+.post-body figure.figure--float-right {
+  float: right;
+  margin: 0.35em 0 1.25em 2rem;
+}
+
+.post-body h2,
+.post-body h3 {
+  clear: both;
+}
 
 .post-body .figure--video iframe,
 .post-body .figure--video video,
@@ -922,6 +947,7 @@ ul { list-style: none; }
 
 .post-body figure figcaption {
   margin-top: 0.6rem;
+  max-width: 32ch;
   font-size: 0.7rem;
   font-weight: 300;
   letter-spacing: 0.07em;
@@ -1075,7 +1101,17 @@ ul { list-style: none; }
   .post-nav__item--prev { border-right: none; border-bottom: 1px solid var(--border); }
   .post-body p:first-child::first-letter { font-size: 2.8em; }
   .post-body figure.figure--float-left,
-  .post-body figure.figure--float-right { float: none; margin-left: 0; margin-right: 0; }
+  .post-body figure.figure--float-right {
+    float: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .post-body figure.figure--small,
+  .post-body figure.figure--portrait {
+    max-width: 100%;
+  }
+
 }
 
 /* PAGE HERO (interior pages)
