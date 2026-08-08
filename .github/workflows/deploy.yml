@@ -30,6 +30,9 @@ jobs:
       - name: Build search index
         run: npx --yes pagefind --site _out
 
+      - name: Generate gzip-static siblings
+        run: find _out -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.json' -o -name '*.xml' -o -name '*.svg' -o -name '*.txt' \) -exec gzip -kf9 {} \;
+
       - name: Set up deploy key
         run: |
           mkdir -p ~/.ssh

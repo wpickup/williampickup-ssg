@@ -15,6 +15,10 @@ echo ""
 echo "==> Indexing with Pagefind..."
 npx --yes pagefind --site "$OUT_DIR"
 
+echo ""
+echo "==> Generating gzip-static siblings..."
+find "$OUT_DIR" -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.json' -o -name '*.xml' -o -name '*.svg' -o -name '*.txt' \) -exec gzip -kf9 {} \;
+
 if [ -z "$DEPLOY_DEST" ]; then
   echo ""
   echo "Build complete. To deploy, set DEPLOY_DEST and re-run:"
