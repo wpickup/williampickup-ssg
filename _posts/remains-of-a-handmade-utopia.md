@@ -1,9 +1,16 @@
 ---
+description:  
 title: Remains of a Handmade Utopia
 slug: remains-of-a-handmade-utopia
 date: 2026-06-01
 layout: 
 draft: false
+categories:
+tags:
+topics:
+- simple-living
+image_url: https://media.publit.io/file/IMG-0929-V.jpeg
+use_featured_image: true
 ---
 
 A [poignant article](https://aperture.org/editorial/the-remains-of-a-handmade-utopia) from Aperture about [Michael Schmelling's](https://michaelschmelling.com/info) recent work which "documents what’s left of the 1960s back-to-the-land movement". It's sad to see that these handmade houses and simple lifestyles are succumbing to the ravages of time.
