@@ -16,6 +16,7 @@ entries:
     feed: "https://feeds.feedburner.com/brainpickings/rss"
     category: life
     desc: "Maria Popova — marginalia on the search for meaning."
+    sidebar: true
 
   - name: "Infinite Wishes"
     url: "https://emmas.site"
@@ -109,6 +110,7 @@ entries:
     feed: "https://paulsellers.com/feed/"
     category: craft
     desc: "A Lifestyle Woodworker"
+    sidebar: true
 
   - name: "Mortise and Tenon Magazine"
     url: "https://mortiseandtenonmag.com"
@@ -304,6 +306,7 @@ entries:
     feed: "https://meanderingpassage.com/feed/"
     category: photography
     desc: "We live life moving forward and often only comprehend it looking back"
+    sidebar: true
 
   - name: "ROUGH TYPE"
     url: "https://www.roughtype.com"
@@ -316,6 +319,7 @@ entries:
     feed: "https://theconvivialsociety.substack.com/feed"
     category: opinion
     desc: "Thinking about technology, society, and the good life"
+    sidebar: true
 
   - name: "George Monbiot"
     url: "https://www.monbiot.com"

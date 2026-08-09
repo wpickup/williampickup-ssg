@@ -2,6 +2,7 @@
 title: About
 slug: bio
 description: About William Pickup — maker, reader, photographer, and traveller.
+sidebar_blurb: Maker, reader, photographer, and traveller. Interested in work that rewards patience and attention to detail.
 template: bio
 ---
 

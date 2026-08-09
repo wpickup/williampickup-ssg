@@ -67,53 +67,95 @@
       </section>
 <%- end -%>
 
-      <section class="home-now container" aria-label="Now">
-        <div class="now-strip now-strip--grid">
-          <a href="<%= root %>now.html" class="now-strip__label" aria-label="Now page">Now</a>
-          <dl class="now-strip__items">
-<%- if sections['making'] -%>
-            <div class="now-strip__item">
-              <dt>Making</dt>
-              <dd><%= h(sections['making']) %></dd>
+      <div class="container sidebar-layout">
+
+        <div class="sidebar-layout__main">
+          <section class="home-posts" aria-label="Recent writing">
+            <div class="home-posts__header">
+              <span class="home-posts__label">Recent writing</span>
+              <a href="<%= root %>blog.html" class="home-posts__all">All writing</a>
             </div>
+            <ul class="home-posts__grid h-feed">
+<%- posts.each do |post| -%>
+              <%= renderer.partial('post_card', post: post, root: root) %>
+<%- end -%>
+            </ul>
+          </section>
+        </div>
+
+        <aside class="sidebar-layout__sidebar" aria-label="About, now, and start here">
+
+<%- if bio_page -%>
+          <div class="sidebar-card sidebar-bio">
+            <a href="<%= root %>bio.html" class="sidebar-bio__photo">
+              <img src="<%= root %>assets/WP-at-Stromlo.webp" alt="William Pickup">
+            </a>
+            <div>
+              <p class="sidebar-bio__name">William Pickup</p>
+<%- if bio_page.sidebar_blurb -%>
+              <p class="sidebar-bio__text"><%= h(bio_page.sidebar_blurb) %></p>
+<%- end -%>
+              <a href="<%= root %>bio.html" class="sidebar-bio__link">More about me &rarr;</a>
+            </div>
+          </div>
+<%- end -%>
+
+          <div class="sidebar-card sidebar-now">
+            <a href="<%= root %>now.html" class="sidebar-card__label">Now</a>
+            <dl>
+<%- if sections['making'] -%>
+              <div class="now-strip__item">
+                <dt>Making</dt>
+                <dd><%= h(sections['making']) %></dd>
+              </div>
 <%- end -%>
 <%- unless now_books.empty? -%>
-            <div class="now-strip__item">
-              <dt>Reading</dt>
-              <dd class="book-links"><%= now_books.map { |b| %(<a href="#{root}reading/#{b.slug}.html">#{h(b.title)}</a>) }.join('') %></dd>
-            </div>
+              <div class="now-strip__item">
+                <dt>Reading</dt>
+                <dd class="book-links"><%= now_books.map { |b| %(<a href="#{root}reading/#{b.slug}.html">#{h(b.title)}</a>) }.join('') %></dd>
+              </div>
 <%- end -%>
 <%- if sections['travelling'] -%>
-            <div class="now-strip__item">
-              <dt>Travelling</dt>
-              <dd><%= h(sections['travelling']) %></dd>
-            </div>
+              <div class="now-strip__item">
+                <dt>Travelling</dt>
+                <dd><%= h(sections['travelling']) %></dd>
+              </div>
 <%- end -%>
-          </dl>
-          <a href="<%= root %>now.html" class="now-strip__more">Full now page</a>
-        </div>
-      </section>
+            </dl>
+          </div>
 
-      <section class="home-entry container" aria-labelledby="start-title">
-        <div class="home-entry-grid">
-          <article class="home-entry-card">
-            <h2 id="start-title">Start here</h2>
+          <div class="sidebar-card sidebar-start">
+            <span class="sidebar-card__label">Start here</span>
             <ul>
 <%- featured_posts.each do |post| -%>
               <li><a href="<%= root %><%= post.url_path %>"><%= h(post.title) %></a><%- if post.description -%> &mdash; <span><%= h(post.description) %></span><%- end -%></li>
 <%- end -%>
             </ul>
-          </article>
-          <article class="home-entry-card">
-            <h2>Visual work</h2>
+          </div>
+
+          <div class="sidebar-card sidebar-visual">
+            <span class="sidebar-card__label">Visual work</span>
             <ul>
               <li><a href="<%= root %>gallery/highlights.html">Gallery highlights</a> &mdash; selected photographs and observations.</li>
               <li><a href="<%= root %>gallery.html">Portfolio</a> &mdash; visual work, projects, and the more image-led side of the site.</li>
             </ul>
-          </article>
+          </div>
+
+<%- unless sidebar_blogroll.empty? -%>
+          <div class="sidebar-card sidebar-blogroll">
+            <span class="sidebar-card__label">Blogroll</span>
+            <ul>
+<%- sidebar_blogroll.each do |entry| -%>
+              <li><a href="<%= h(entry['url'].to_s) %>" target="_blank" rel="noopener"><%= h(entry['name'].to_s) %></a><%- if entry['desc'] -%> &mdash; <span><%= h(entry['desc']) %></span><%- end -%></li>
+<%- end -%>
+            </ul>
+            <p class="sidebar-card__more"><a href="<%= root %>blogroll.html">Full blogroll &rarr;</a></p>
+          </div>
+<%- end -%>
+
 <%- unless recent_notes.empty? -%>
-          <article class="home-entry-card">
-            <h2>Notes</h2>
+          <div class="sidebar-card sidebar-notes">
+            <span class="sidebar-card__label">Notes</span>
             <ul>
 <%- recent_notes.each do |note| -%>
               <li>
@@ -124,23 +166,13 @@
               </li>
 <%- end -%>
             </ul>
-            <p class="home-entry-card__more"><a href="<%= root %>notes.html">All notes &rarr;</a></p>
-          </article>
+            <p class="sidebar-card__more"><a href="<%= root %>notes.html">All notes &rarr;</a></p>
+          </div>
 <%- end -%>
-        </div>
-      </section>
 
-      <section class="home-posts container" aria-label="Recent writing">
-        <div class="home-posts__header">
-          <span class="home-posts__label">Recent writing</span>
-          <a href="<%= root %>blog.html" class="home-posts__all">All writing</a>
-        </div>
-        <ul class="home-posts__grid h-feed">
-<%- posts.each do |post| -%>
-          <%= renderer.partial('post_card', post: post, root: root) %>
-<%- end -%>
-        </ul>
-      </section>
+        </aside>
+
+      </div>
 
     </main>
 <%= renderer.partial('footer', root: root) %>

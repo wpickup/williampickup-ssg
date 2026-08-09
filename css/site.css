@@ -2914,7 +2914,7 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 
 /* MASTHEAD */
 .home-masthead {
-  padding-top: clamp(3rem, 7vw, 5rem);
+  padding-top: var(--space-md);
   padding-bottom: var(--space-lg-wide);
   border-bottom: 1px solid var(--border);
   display: grid;
@@ -2951,27 +2951,9 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   margin: 0;
 }
 
-/* NOW STRIP */
-.now-strip {
-  padding: 1.5rem 0;
-  border-top: 1px solid var(--border);
-  margin-bottom: calc(var(--gap) * 2);
-}
-
-.now-strip__label {
-  display: inline-block;
-  font-size: 0.65rem;
-  font-weight: 400;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--ink-light);
-  margin-bottom: 0.75rem;
-  transition: color 0.2s;
-}
-.now-strip__label:hover { color: var(--accent); }
-
-.now-strip__items { display: flex; flex-direction: column; gap: 0.3rem; }
-
+/* NOW STRIP — item styling reused inside the home sidebar's .sidebar-now card
+   (see HOMEPAGE SIDEBAR below); the old horizontal strip wrapper/label/more
+   link this was originally built for no longer exist. */
 .now-strip__item {
   display: flex;
   align-items: baseline;
@@ -3013,144 +2995,6 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   text-decoration: none;
   pointer-events: none;
 }
-
-.now-strip__more {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.75rem;
-  font-size: 0.65rem;
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-light);
-  transition: color 0.2s, gap 0.2s;
-}
-.now-strip__more::after { content: '\2192'; }
-.now-strip__more:hover { color: var(--accent); gap: 0.55rem; }
-
-/* NOW STRIP — GRID VARIANT */
-.now-strip--grid {
-  display: grid;
-  grid-template-columns: 5rem 1fr;
-  grid-template-rows: auto auto;
-  column-gap: var(--space-2xl);
-  align-items: start;
-}
-
-.now-strip--grid .now-strip__label {
-  grid-row: 1; grid-column: 1;
-  font-family: var(--font-display);
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: var(--ink);
-  margin-bottom: 0;
-  padding-top: 0.15rem;
-}
-
-.now-strip--grid .now-strip__items {
-  grid-row: 1; grid-column: 2;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem 3rem;
-  flex-direction: unset;
-}
-
-.now-strip--grid .now-strip__item { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
-
-.now-strip--grid .now-strip__item dt {
-  min-width: unset;
-  font-size: 0.63rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.now-strip--grid .now-strip__item dt::before { content: '\25CF'; font-size: 0.5rem; line-height: 1; }
-.now-strip--grid .now-strip__item dt::after { content: none; }
-.now-strip--grid .now-strip__item dd { font-size: 0.9rem; font-weight: 300; line-height: 1.45; color: var(--ink-mid); }
-.now-strip--grid .now-strip__more { grid-row: 2; grid-column: 2; margin-top: 0.5rem; }
-
-/* HOMEPAGE ENTRY POINTS — START HERE / VISUAL WORK */
-.home-entry {
-  padding-top: 0;
-  padding-bottom: calc(var(--gap) * 1.5);
-}
-
-.home-entry > p {
-  max-width: 42rem;
-  margin: 0 0 1.5rem;
-  color: var(--ink-mid);
-  font-size: 0.98rem;
-  line-height: 1.75;
-}
-
-.home-entry-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
-}
-@media (max-width: 800px) {
-  .home-entry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-.home-entry-card {
-  padding: 1.35rem 1.4rem;
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  background: var(--paper-2);
-}
-
-.home-entry-card h2 {
-  margin: 0 0 0.85rem;
-  font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2vw, 1.6rem);
-  font-weight: 400;
-  line-height: 1.2;
-  color: var(--ink);
-}
-
-.home-entry-card ul {
-  margin: 0;
-  padding-left: 1.1rem;
-  color: var(--ink-mid);
-}
-
-.home-entry-card li + li {
-  margin-top: 0.8rem;
-}
-
-.home-entry-card li {
-  line-height: 1.65;
-}
-
-.home-entry-card a {
-  color: var(--ink);
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
-  text-underline-offset: 2px;
-}
-
-.home-entry-card a:hover {
-  color: var(--accent);
-  text-decoration-color: var(--accent);
-}
-.home-entry-card__more {
-  margin-top: 1rem;
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-}
-.home-entry-card__more a {
-  color: var(--ink-light);
-  text-decoration: none;
-}
-.home-entry-card__more a:hover { color: var(--accent); }
 
 /* ── Notes listing ──────────────────────────────────────────────────────────── */
 .notes-list {
@@ -3207,7 +3051,7 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 
 .home-posts__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   gap: var(--space-md);
   list-style: none;
 }
@@ -3217,28 +3061,103 @@ html[data-theme="light"] .post-body code[class*="language-"] {
 .home-posts__grid .post-card__title { font-size: clamp(1.1rem, 2vw, 1.4rem); }
 .home-posts__grid .post-card__image { margin-bottom: 0.75rem; }
 
+/* HOMEPAGE SIDEBAR — replaces the old horizontal Now strip and the
+   Start here/Visual work/Notes card grid; same data, laid out as a sticky
+   sidebar next to Recent writing on wide screens. */
+.sidebar-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2xl);
+  align-items: start;
+  padding-top: var(--space-lg);
+  padding-bottom: calc(var(--gap) * 5);
+}
+
+@media (min-width: 1180px) {
+  .sidebar-layout { grid-template-columns: minmax(0, 1fr) 300px; }
+  .sidebar-layout__main { order: 1; }
+  .sidebar-layout__sidebar {
+    order: 2;
+    position: sticky;
+    top: calc(var(--nav-h) + var(--gap));
+    max-height: calc(100vh - var(--nav-h) - var(--gap) * 2);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding-bottom: var(--gap);
+  }
+}
+
+.sidebar-card {
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+.sidebar-layout__sidebar > .sidebar-card:first-child { border-top: none; padding-top: 0; }
+
+.sidebar-card__label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 0.9rem;
+  transition: color 0.2s;
+}
+.sidebar-card__label:hover { color: var(--accent); }
+
+.sidebar-card__more {
+  margin-top: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+}
+.sidebar-card__more a { color: var(--ink-light); text-decoration: none; }
+.sidebar-card__more a:hover { color: var(--accent); }
+
+/* Bio */
+.sidebar-bio { display: flex; gap: 0.85rem; align-items: flex-start; }
+.sidebar-bio__photo {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: block;
+  background: var(--accent-pale);
+}
+.sidebar-bio__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sidebar-bio__name { font-family: var(--font-display); font-size: 1.05rem; color: var(--ink); margin: 0 0 0.3rem; }
+.sidebar-bio__text { font-size: 0.85rem; line-height: 1.6; color: var(--ink-mid); margin: 0 0 0.5rem; }
+.sidebar-bio__link { font-size: 0.75rem; color: var(--ink-light); text-decoration: none; border-bottom: 1px dotted var(--ink-light); }
+.sidebar-bio__link:hover { color: var(--accent); border-color: var(--accent); }
+
+/* Now — reuses .now-strip__item styling, narrower label column to fit 300px */
+.sidebar-now dl { display: flex; flex-direction: column; gap: 0.7rem; }
+.sidebar-now .now-strip__item { flex-direction: column; align-items: flex-start; gap: 0.15rem; }
+.sidebar-now .now-strip__item dt { min-width: unset; }
+.sidebar-now .now-strip__item dt::after { content: none; }
+.sidebar-now .now-strip__item dd { font-size: 0.85rem; line-height: 1.5; }
+
+/* Start here / Visual work / Notes — plain link lists, shared styling */
+.sidebar-start ul, .sidebar-visual ul, .sidebar-notes ul, .sidebar-blogroll ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.sidebar-start li, .sidebar-visual li, .sidebar-notes li, .sidebar-blogroll li { font-size: 0.85rem; line-height: 1.5; color: var(--ink-mid); }
+.sidebar-start a, .sidebar-visual a, .sidebar-notes a, .sidebar-blogroll a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.sidebar-start a:hover, .sidebar-visual a:hover, .sidebar-notes a:hover, .sidebar-blogroll a:hover { color: var(--accent); border-color: var(--accent); }
+
 /* HOME RESPONSIVE */
-@media (max-width: 860px) {
-  .now-strip--grid .now-strip__items { grid-template-columns: 1fr; }
-}
-@media (max-width: 700px) {
-  .home-posts__grid { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 640px) {
-  .now-strip--grid { grid-template-columns: 1fr; }
-  .now-strip--grid .now-strip__label { margin-bottom: 0.75rem; }
-  .now-strip--grid .now-strip__more { grid-column: 1; }
-  .now-strip__item dt { min-width: 6rem; }
-  .now-strip__more { display: none; }
-}
 @media (max-width: 560px) {
   .home-masthead { grid-template-columns: 1fr; gap: 1.25rem; }
   .home-masthead h1 { white-space: normal; }
-  .home-entry-grid { grid-template-columns: 1fr; }
-  .home-posts__grid { grid-template-columns: 1fr; }
-}
-@media (max-width: 480px) {
-  .home-posts__grid { grid-template-columns: 1fr; }
 }
 
 /* PAGE CROSSLINKS */
