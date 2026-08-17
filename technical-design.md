@@ -324,21 +324,26 @@ This strips HTML tags with a simple regex, splits on whitespace to count words, 
 ### Book cover URLs
 
 ```ruby
-def cover_src
+def source_cover_url
   return cover_url if cover_url
   return nil unless isbn
   "https://covers.openlibrary.org/b/isbn/#{isbn}-M.jpg"
 end
 
-def cover_srcset
-  return nil unless isbn
-  m = "https://covers.openlibrary.org/b/isbn/#{isbn}-M.jpg"
-  l = "https://covers.openlibrary.org/b/isbn/#{isbn}-L.jpg"
-  "#{m} 180w, #{l} 500w"
+def cover_src
+  path = local_cover_path
+  return nil unless path
+  "#{SITE_URL}/assets/books/#{File.basename(path)}"
+end
+
+private
+
+def local_cover_path
+  Dir[File.join(SRC_DIR, 'assets', 'books', "#{slug}.*")].first
 end
 ```
 
-These methods use **guard clauses** — early returns at the top of the method that handle the edge cases before the main logic. `return cover_url if cover_url` returns the explicit URL if one was provided in the front matter. `return nil unless isbn` handles the case where no ISBN was supplied. The remainder of the method only runs when the ISBN is known, at which point it constructs Open Library CDN URLs. Guard clauses keep the main path unindented and avoid nested conditionals.
+`cover_src` is what templates actually call, and it never reaches the network — it just looks for `assets/books/<slug>.*` on disk (`local_cover_path`, a **guard clause** again: `return nil unless path` stops immediately if nothing's there) and returns a self-hosted URL if it finds one. This is a deliberate split from an earlier version of this method, which built an OpenLibrary or `cover_url` link directly and handed it straight to the browser — a live hotlink to a third party on every page view. OpenLibrary's cover CDN turned out to be unreliable enough that covers would silently fail to load. `source_cover_url` keeps the exact same guard-clause logic (`return cover_url if cover_url`, `return nil unless isbn`) that `cover_src` used to have, but it's now just a *source to fetch from once*, used by `update_book_covers.rb` — a separate script, not `build.rb` — to populate `assets/books/` ahead of time. By the time the site actually builds, `cover_src` is reading a file that's already there; nothing at build or page-load time depends on a third-party host being up.
 
 ---
 
@@ -905,13 +910,9 @@ source "$( dirname "${BASH_SOURCE[0]}" )/config.sh"
 
 `${BASH_SOURCE[0]}` is the path to the currently-executing script file. `dirname` extracts its directory. This pattern resolves the config file relative to the script's own location, so the scripts work correctly regardless of the working directory when they are called.
 
-`config.sh` defines four things used across all scripts:
+`config.sh` defines two things used across all scripts (a third — SSH connection details for the old rsync deploy target — was removed once the site moved to GitHub Pages; see "GitHub Actions Deployment Pipeline" below):
 
 ```bash
-SSH_HOST="williampickup"
-SSH_USER="will"
-REMOTE_PATH="/var/www/htdocs/williampickup.org"
-
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 
 OUT_DIR="${SSG_OUT_DIR:-/Users/will/Sites/williampickup.org/_site}"
@@ -1045,18 +1046,36 @@ fi
 
 ### deploy.sh
 
-The local deploy script does five things in sequence: build, index (Pagefind), rsync, send webmentions, check live CSP. The post-deploy CSP check is a useful sanity guard:
+The site used to deploy by rsyncing a local build straight to the Vultr box, so this script used to run the whole pipeline itself — build, index, rsync, send webmentions, then check the live Content-Security-Policy header for `wasm-unsafe-eval` (required for Pagefind's WebAssembly-based search), since that header was set server-side and a misconfiguration there wouldn't be caught by the build.
+
+Since the move to GitHub Pages, deployment itself always happens in CI, so this script only does a local build as a sanity check, then hands off to GitHub Actions:
 
 ```bash
-CSP=$(curl -sI "https://williampickup.org/" | grep -i "content-security-policy")
-if echo "$CSP" | grep -q "wasm-unsafe-eval"; then
-  echo "  ✓ CSP contains wasm-unsafe-eval"
-else
-  echo "  ⚠ WARNING: CSP missing wasm-unsafe-eval — search may not work"
+echo "→ Building site (local sanity check)..."
+cd "$PROJECT_DIR"
+ruby build.rb
+
+echo "→ Building Pagefind search index..."
+npx pagefind --site "$OUT_DIR" --exclude-selectors "nav, footer, .site-header, .skip-link, .breadcrumb"
+
+if ! command -v gh >/dev/null 2>&1; then
+  echo "⚠ gh CLI not found — trigger the deploy manually: https://github.com/wpickup/williampickup-ssg/actions/workflows/deploy.yml"
+  exit 1
 fi
+
+echo "→ Triggering GitHub Actions deploy..."
+gh workflow run deploy.yml -R wpickup/williampickup-ssg
+
+sleep 5
+RUN_ID=$(gh run list -R wpickup/williampickup-ssg --workflow=deploy.yml --limit 1 --json databaseId -q '.[0].databaseId')
+gh run watch "$RUN_ID" -R wpickup/williampickup-ssg --exit-status
 ```
 
-Pagefind's search UI requires `wasm-unsafe-eval` in the Content Security Policy because it uses WebAssembly. The CSP is set server-side (on the Vultr host, not in the static files), so a server misconfiguration would not be caught by the build. This check catches it immediately after deploy.
+`command -v gh >/dev/null 2>&1` is the standard portable way to check whether a command exists on `PATH` — it prints `gh`'s location on success, which is redirected to `/dev/null` since only the exit status is being checked. If `gh` isn't installed or authenticated, the script fails fast with a direct link rather than hanging.
+
+The `sleep 5` before listing runs is a small race-condition guard: `gh workflow run` returns as soon as the dispatch is *accepted*, not once the run actually appears in the list — without a short pause, `gh run list` could still come back empty. `gh run watch ... --exit-status` then streams the run's progress live and exits non-zero if the deploy itself fails, so a failed CI deploy shows up as a failed Nova task too, the same way a failed local build always did.
+
+The CSP check described above no longer applies here — GitHub Pages doesn't let you set custom response headers per-site the way the old Vultr `relayd` config did, so there's no server-side CSP for a build to silently break. (Pagefind's WebAssembly search still works fine on GitHub Pages regardless — it just isn't gated behind a header this build pipeline needs to verify.)
 
 ---
 
@@ -1070,9 +1089,11 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 ```
 
-`permissions: contents: write` is required because the workflow commits the updated webmention state back to the repository at the end. Without this, the default read-only permissions would cause the final git push to fail.
+`contents: write` is required because the workflow commits the updated webmention state back to the repository at the end — without it, the default read-only permissions would cause the final git push to fail. `pages: write` and `id-token: write` are what let the workflow publish to GitHub Pages directly, using GitHub's own OIDC token rather than a stored credential (see the custom-domain/publish steps below) — these two didn't exist in this workflow at all before the move off Vultr's rsync deploy.
 
 ### Step by step
 
@@ -1106,41 +1127,30 @@ permissions:
 - run: npx --yes pagefind --site _out
 ```
 
-Node is required solely to run Pagefind via `npx`. The `--yes` flag suppresses the prompt npx shows when downloading a package for the first time. The index is generated inside `_out/pagefind/` and becomes part of what rsync transfers to the server.
+Node is required solely to run Pagefind via `npx`. The `--yes` flag suppresses the prompt npx shows when downloading a package for the first time. The index is generated inside `_out/pagefind/`, which becomes part of the Pages artifact uploaded a few steps later.
 
-**SSH key setup:**
-
-```yaml
-- run: |
-    mkdir -p ~/.ssh
-    echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
-    chmod 600 ~/.ssh/deploy_key
-    ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
-```
-
-The deploy key is a private SSH key stored as a GitHub Actions secret. `chmod 600` is required — SSH refuses to use a key file that is world-readable. `ssh-keyscan` adds the server's host key to `known_hosts` before the first connection, which prevents the interactive "Are you sure you want to continue connecting?" prompt that would otherwise stall the job. The `-H` flag hashes the hostname in the output, which is a minor security measure.
-
-**rsync:**
+**Custom domain, then publish steps:**
 
 ```yaml
-rsync -avz --delete \
-  --omit-dir-times \
-  --no-perms \
-  -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
-  --exclude '.DS_Store' \
-  --exclude 'drafts/' \
-  _out/ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}"
+- name: Add custom domain file
+  run: echo "williampickup.org" > _out/CNAME
+
+- name: Configure Pages
+  uses: actions/configure-pages@v5
+
+- name: Upload Pages artifact
+  uses: actions/upload-pages-artifact@v3
+  with:
+    path: _out
+
+- name: Deploy to GitHub Pages
+  id: deployment
+  uses: actions/deploy-pages@v4
 ```
 
-Key flags:
-- `-a` (archive): preserves timestamps, symlinks, and recursive directory structure
-- `-v` (verbose): logs each transferred file
-- `-z` (compress): compresses data in transit, useful for text-heavy HTML
-- `--delete`: removes files on the server that no longer exist in `_out/`, keeping the live site in exact sync with the build output
-- `--omit-dir-times`: does not try to preserve directory modification times; many web server setups don't permit this and it would cause rsync errors
-- `--no-perms`: does not try to preserve file permissions; again, the server user may not have permission to `chmod` the files
-- `StrictHostKeyChecking=yes`: refuses to connect if the host key doesn't match `known_hosts`; protects against a man-in-the-middle during deploy
-- `--exclude 'drafts/'`: belt-and-braces exclusion — the build only writes draft files when `--drafts` is passed (which CI never does), but this ensures that even if `_out/drafts/` somehow existed, it would not be transferred to the live server
+This replaced an SSH-key-setup step and an `rsync -avz --delete` transfer to the Vultr box entirely — there's no server to SSH into anymore, and correspondingly nothing here that needs a stored private key, a known-hosts entry, or a `--delete`/`--exclude` flag to keep a remote directory in sync (`actions/upload-pages-artifact` already only ever contains exactly what `_out/` has, so there's nothing stale to delete).
+
+Writing the `CNAME` file directly in the workflow (rather than relying on the GitHub UI's "custom domain" field, or a `CNAME` file already sitting in the repo) means the custom domain survives even if that dashboard setting is ever cleared — every deploy re-asserts it. `actions/configure-pages@v5` and `actions/upload-pages-artifact@v3` prepare and package `_out/` as a Pages-compatible artifact; `actions/deploy-pages@v4` is what actually publishes it, authenticating via the `id-token: write` permission set earlier — GitHub issues a short-lived OIDC token scoped to this specific workflow run, rather than the workflow needing a long-lived secret like the old `DEPLOY_SSH_KEY` did. `id: deployment` names this step so its output (`steps.deployment.outputs.page_url`, the live URL) can be referenced elsewhere in the workflow, e.g. in the `environment: url:` field shown in the Actions UI.
 
 **Webmention sending:**
 

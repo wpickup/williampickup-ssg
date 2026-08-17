@@ -91,6 +91,7 @@ williampickup-ssg/
 ├── css/, javascript/, fonts/, assets/   Static assets, copied into output as-is
 ├── tools/           Authoring tools associated with the site (see "Authoring tools")
 ├── extract.rb       One-time migration script (Tinderbox → Markdown) — retired, kept for reference
+├── update_book_covers.rb   Populates assets/books/ (see "Cover images" under "Books") — not run by build.rb
 └── build.rb         Build script — run this to publish
 ```
 
@@ -190,7 +191,7 @@ See [Drafts](#drafts) for how draft status actually works — it's primarily abo
 
 Draft status is determined by **location**, not a front matter flag:
 
-- **`_drafts/`** — always a draft, regardless of front matter. This is where new posts should live while you're writing them. Excluded from `ruby build.rb` (production); included, with an amber "Draft" banner, when you pass `--drafts`. Never reaches the live server, even on an accidental `--drafts` deploy — the rsync step separately excludes `drafts/` too.
+- **`_drafts/`** — always a draft, regardless of front matter. This is where new posts should live while you're writing them. Excluded from `ruby build.rb` (production); included, with an amber "Draft" banner, when you pass `--drafts`. The GitHub Actions deploy workflow always builds without `--drafts`, so there's no separate exclusion step to rely on — drafts simply never get written to `_out/` in a production build.
 - **`_posts/`** — always published, unless you manually add `draft: true` to its front matter (a rarely-needed override for pulling a published post back without physically moving the file).
 
 To publish, move the file from `_drafts/` to `_posts/`:
@@ -695,11 +696,22 @@ author: "Author Name"
 status: reading        # or: read
 date_read: 2026-05-01  # leave blank if still reading
 isbn: "9780571337118"
-cover_url:              # leave blank — Open Library cover is used automatically via ISBN
+cover_url:              # optional — see "Cover images" below
 on_now_page: true      # shows in the Reading section of the /now page
 ```
 
 Books with `status: reading` appear under "Currently Reading" on `/reading.html` and on `/now.html` (if `on_now_page: true`). Books with `status: read` appear under "Read".
+
+### Cover images
+
+Covers are always self-hosted from `assets/books/<slug>.jpg` — the site never hotlinks a third-party CDN for them (OpenLibrary's cover service in particular is unreliable; hotlinking it was the original cause of covers silently not displaying). `Book#cover_src` in `build.rb` returns `nil`, and the partial renders no `<img>` at all, until that local file exists.
+
+To add or replace a cover, run `ruby update_book_covers.rb` after either:
+
+- **Dropping a photo in yourself** — save/AirDrop a photo of the book straight into `assets/books/<slug>.jpeg` (any common extension, any size — a phone photo is fine). The script auto-orients it, resizes it down to a max of 360px (covers only ever display at ≤180px), converts it to `<slug>.jpg`, and removes the raw original.
+- **Leaving it to fetch automatically** — if no local file exists, the script falls back to `cover_url` (a specific image URL) or, failing that, OpenLibrary's cover-by-ISBN lookup, then normalises whatever it downloads the same way.
+
+The script is safe to re-run any time — an already-normalised cover is skipped, and a fresh photo dropped in for an existing book is picked up and reprocessed. It's not part of the regular `build.rb` — the build never touches the network, so a flaky or unreachable image host can't break a deploy.
 
 ---
 
@@ -831,48 +843,53 @@ Then open `http://localhost:4567` in your browser. The Nova tasks and `.claude/l
 
 ## Deploying
 
-`deploy.sh` builds the site, generates the Pagefind search index, and (if you give it a destination) rsyncs `_out/` to the web host — all in one step:
+The site is hosted on **GitHub Pages** (`wpickup/williampickup-ssg`, public
+repo) — there's no server to SSH into or rsync a build to anymore. As of
+2026-08-17, `williampickup.org`'s DNS points directly at GitHub Pages; the
+old Vultr box's `httpd`/`relayd` blocks for this domain are still on disk
+there but no longer receive any traffic. (This site used to deploy via
+rsync/SSH to that box — see `exit-vultr-plan.html` in the separate
+`server-config` repo, `~/Documents/Personal/Web-Development/server-config`,
+for the full migration history if that context is ever needed.)
+
+`deploy.sh` now only builds locally, as a sanity check before pushing —
+actual deployment always happens in CI:
 
 ```bash
 cd ~/dev/williampickup-ssg
-
-# Build + index only, no deploy:
-./deploy.sh
-
-# Build, index, and deploy:
-DEPLOY_DEST=williampickup:/var/www/htdocs/williampickup.org/ ./deploy.sh
+./deploy.sh          # build + Pagefind index, local only
+./deploy.sh --drafts # same, including drafts
 ```
-
-`williampickup` is the SSH config alias for the Vultr server (see `~/.ssh/config`) — it already carries the right user and deploy key. Pass `--drafts` as an extra argument to include drafts in the build (they're excluded from the rsync regardless, via `--exclude 'drafts/'`).
-
-Export `DEPLOY_DEST` once per shell session to avoid retyping it:
-
-```bash
-export DEPLOY_DEST=williampickup:/var/www/htdocs/williampickup.org/
-./deploy.sh   # now deploys every time, no env var needed
-```
-
-After a real deploy (`DEPLOY_DEST` set), `deploy.sh` also sends webmentions for any new outbound links and commits the updated state file — see [Sending webmentions](#sending-webmentions).
 
 ### Deploying via GitHub Actions
 
-`.github/workflows/deploy.yml` runs the same build → index → rsync → webmention sequence, triggered manually:
+`.github/workflows/deploy.yml` builds, indexes, publishes to Pages, and
+sends webmentions, triggered manually (it deliberately does not run on
+every push to `main` — commits and merges never trigger a production
+deploy on their own):
 
 ```bash
 gh workflow run deploy.yml
 ```
 
-It deliberately does not run on every push to `main` — commits and merges never trigger a production deploy on their own. It needs five repository secrets set under **Settings → Secrets and variables → Actions**:
+The Nova **Deploy** task (`.nova/Scripts/deploy.sh`) does the same thing
+from the editor: a local build as a sanity check, then triggers the
+workflow and watches it finish, printing a link if `gh` isn't installed or
+authenticated.
+
+Publishing itself uses `actions/upload-pages-artifact` +
+`actions/deploy-pages`, authenticated via the workflow's own
+`id-token: write` permission (GitHub's OIDC token) — **no SSH key or deploy
+secrets are needed for this at all.** The only repository secret still
+required is:
 
 | Secret | Value |
 |---|---|
-| `DEPLOY_SSH_KEY` | Private key for a dedicated deploy keypair (not your personal key — generate one scoped just to this, e.g. `ssh-keygen -t ed25519 -f deploy_key -C "github-actions"`, and add its public half to the server's `authorized_keys`) |
-| `DEPLOY_HOST` | The server's IP or hostname |
-| `DEPLOY_USER` | The SSH user on the server |
-| `DEPLOY_PATH` | The webroot path, e.g. `/var/www/htdocs/williampickup.org/` |
 | `WEBMENTION_TOKEN` | Your Telegraph token — see [Sending webmentions](#sending-webmentions) |
 
-Add these directly in the GitHub UI, never by pasting key material into chat or a file in the repo. The workflow also needs `contents: write` permission to commit the webmention state file back to the repo — already set in `deploy.yml`, nothing extra to configure.
+Add it under **Settings → Secrets and variables → Actions**. The workflow
+also needs `contents: write` permission to commit the webmention state file
+back to the repo — already set in `deploy.yml`, nothing extra to configure.
 
 Triggering the workflow from an iPad or other device without a terminal: use GitHub's REST API directly (`POST` to `.../actions/workflows/deploy.yml/dispatches` with a scoped personal access token), wrapped in an iOS Shortcut for a one-tap deploy.
 
