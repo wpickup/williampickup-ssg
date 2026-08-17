@@ -1,5 +1,7 @@
 #!/bin/bash
-# Build, index, and deploy to Vultr via rsync over SSH
+# Build locally (sanity check), then trigger the real deploy via
+# GitHub Actions -> GitHub Pages. Deployment itself always runs in CI now,
+# not from this machine — this just kicks it off and watches it finish.
 set -e
 source "$( dirname "${BASH_SOURCE[0]}" )/config.sh"
 
@@ -9,7 +11,7 @@ echo "  $(date '+%d %b %Y %H:%M')"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-echo "→ Building site..."
+echo "→ Building site (local sanity check)..."
 cd "$PROJECT_DIR"
 ruby build.rb
 
@@ -19,42 +21,25 @@ npx pagefind \
   --site "$OUT_DIR" \
   --exclude-selectors "nav, footer, .site-header, .skip-link, .breadcrumb"
 
-echo ""
-echo "→ Deploying to $SSH_HOST:$REMOTE_PATH ..."
-rsync \
-  --archive \
-  --compress \
-  --delete \
-  --human-readable \
-  --progress \
-  --omit-dir-times \
-  --no-perms \
-  --exclude='.DS_Store' \
-  --exclude='drafts/' \
-  "$OUT_DIR/" \
-  "$SSH_USER@$SSH_HOST:$REMOTE_PATH/"
-
 touch "$PROJECT_DIR/.last-build"
+echo "  ✓ Local build OK"
+
+if ! command -v gh >/dev/null 2>&1; then
+  echo ""
+  echo "  ⚠ gh CLI not found — can't trigger the deploy workflow from here."
+  echo "    Install it (brew install gh), run 'gh auth login', or trigger"
+  echo "    the deploy manually: https://github.com/wpickup/williampickup-ssg/actions/workflows/deploy.yml"
+  exit 1
+fi
 
 echo ""
-echo "  ✓ Deploy complete"
+echo "→ Triggering GitHub Actions deploy..."
+gh workflow run deploy.yml -R wpickup/williampickup-ssg
 
-echo "→ Sending webmentions for new outbound links..."
-ruby "$PROJECT_DIR/send_webmentions.rb" || echo "  (non-fatal — deploy already succeeded)"
-
-if ! git -C "$PROJECT_DIR" diff --quiet -- _data/webmentions_sent.json 2>/dev/null; then
-  git -C "$PROJECT_DIR" add _data/webmentions_sent.json
-  git -C "$PROJECT_DIR" commit -m "Update webmention state" -q
-  echo "  → Committed updated webmention state (not pushed)"
-fi
-
-echo "→ Checking live CSP headers..."
-CSP=$(curl -sI "https://williampickup.org/" | grep -i "content-security-policy")
-if echo "$CSP" | grep -q "wasm-unsafe-eval"; then
-  echo "  ✓ CSP contains wasm-unsafe-eval"
-else
-  echo "  ⚠ WARNING: CSP missing wasm-unsafe-eval — search may not work"
-fi
+echo "→ Waiting for it to start..."
+sleep 5
+RUN_ID=$(gh run list -R wpickup/williampickup-ssg --workflow=deploy.yml --limit 1 --json databaseId -q '.[0].databaseId')
+gh run watch "$RUN_ID" -R wpickup/williampickup-ssg --exit-status
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

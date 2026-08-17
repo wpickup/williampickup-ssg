@@ -5,10 +5,19 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,25 +39,20 @@ jobs:
       - name: Build search index
         run: npx --yes pagefind --site _out
 
-      - name: Generate gzip-static siblings
-        run: find _out -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.json' -o -name '*.xml' -o -name '*.svg' -o -name '*.txt' \) -exec gzip -kf9 {} \;
+      - name: Add custom domain file
+        run: echo "williampickup.org" > _out/CNAME
 
-      - name: Set up deploy key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
-      - name: Deploy via rsync
-        run: |
-          rsync -avz --delete \
-            --omit-dir-times \
-            --no-perms \
-            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
-            --exclude '.DS_Store' \
-            --exclude 'drafts/' \
-            _out/ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}"
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _out
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: Send webmentions for new outbound links
         env:
