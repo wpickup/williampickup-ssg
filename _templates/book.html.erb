@@ -29,10 +29,6 @@
 <%- if book.cover_src -%>
               <img
                 src="<%= book.cover_src %>"
-<%- if book.cover_srcset -%>
-                srcset="<%= book.cover_srcset %>"
-                sizes="(max-width: 560px) 7rem, 180px"
-<%- end -%>
                 alt="Cover of <%= h(book.title) %>"
                 class="book-cover"
                 loading="eager">

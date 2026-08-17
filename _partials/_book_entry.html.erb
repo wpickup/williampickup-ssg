@@ -3,10 +3,6 @@
 <%- if book.cover_src -%>
     <img
       src="<%= book.cover_src %>"
-<%- if book.cover_srcset -%>
-      srcset="<%= book.cover_srcset %>"
-      sizes="52px"
-<%- end -%>
       alt="<%= h(book.title) %>"
       width="180" height="270"
       loading="lazy">
