@@ -22,4 +22,4 @@ This site is a place to bring some of these interests and influences together. I
 
 Built with Ruby, then exported as static HTML. Tinderbox design inspiration from [Mark Bernstein](https://www.markbernstein.org), [Dave Rogers](https://nice-marmot.net) & [Jack Baty](https://baty.blog) while the visual design elements have drawn inspiration from [Carlos de Toro](https://www.carlosdetoro.com) & [Meandering Passage](https://meanderingpassage.com) & [Henry Desroches](https://henry.codes) to name a few.
 
-Site analytics by [GoatCounter](https://www.goatcounter.com). Book cover images from [Open Library](https://openlibrary.org) & [Google Books](https://books.google.com).
+Book cover images from [Open Library](https://openlibrary.org) & [Google Books](https://books.google.com).
