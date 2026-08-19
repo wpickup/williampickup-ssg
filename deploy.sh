@@ -3,8 +3,8 @@
 # Usage: ./deploy.sh [--drafts]
 #
 # This only builds the site locally (useful for previewing before you push).
-# Actual deployment happens via GitHub Actions -> GitHub Pages:
-#   gh workflow run deploy.yml
+# Actual deployment happens automatically in GitHub Actions on every push
+# to main. To trigger a rebuild without a new commit: gh workflow run deploy.yml
 
 set -euo pipefail
 
@@ -19,4 +19,4 @@ npx --yes pagefind --site "$OUT_DIR"
 
 echo ""
 echo "==> Done. Built to $OUT_DIR."
-echo "    To deploy: gh workflow run deploy.yml"
+echo "    Push to main to deploy (or: gh workflow run deploy.yml to rebuild without a new commit)."

@@ -66,7 +66,7 @@ The generator and its source live in `~/dev/williampickup-ssg` — deliberately 
 1. Run the **New Post** Nova task → enter a title → file opens ready to write, saved in `_drafts/`
 2. Run the **Watch** Nova task → site rebuilds automatically on every save
 3. Preview at `http://localhost:4567` (see [Previewing locally](#previewing-locally))
-4. When done: run the **Publish Draft** Nova task → pick the file → it moves to `_posts/`, then run **Deploy**
+4. When done: run the **Publish Draft** Nova task → pick the file → it moves to `_posts/`, then commit and push — deploying happens automatically
 
 ---
 
@@ -852,8 +852,8 @@ rsync/SSH to that box — see `exit-vultr-plan.html` in the separate
 `server-config` repo, `~/Documents/Personal/Web-Development/server-config`,
 for the full migration history if that context is ever needed.)
 
-`deploy.sh` now only builds locally, as a sanity check before pushing —
-actual deployment always happens in CI:
+`deploy.sh` only builds locally, as a sanity check before pushing — actual
+deployment always happens in CI:
 
 ```bash
 cd ~/dev/williampickup-ssg
@@ -864,18 +864,25 @@ cd ~/dev/williampickup-ssg
 ### Deploying via GitHub Actions
 
 `.github/workflows/deploy.yml` builds, indexes, publishes to Pages, and
-sends webmentions, triggered manually (it deliberately does not run on
-every push to `main` — commits and merges never trigger a production
-deploy on their own):
+sends webmentions. It runs automatically on every push to `main` — commit
+and push, and the live site updates on its own within a minute or so, no
+separate deploy step needed:
+
+```bash
+git push
+```
+
+`workflow_dispatch` is also still enabled, for the rare case of wanting a
+rebuild without a new commit (picking up an external change like a
+refreshed book cover image, say):
 
 ```bash
 gh workflow run deploy.yml
 ```
 
-The Nova **Deploy** task (`.nova/Scripts/deploy.sh`) does the same thing
-from the editor: a local build as a sanity check, then triggers the
-workflow and watches it finish, printing a link if `gh` isn't installed or
-authenticated.
+There's no Nova task for this anymore — it's what plain `git push` does by
+default now, so a dedicated button didn't add anything. For the
+`workflow_dispatch` case above, just run the `gh` command directly.
 
 Publishing itself uses `actions/upload-pages-artifact` +
 `actions/deploy-pages`, authenticated via the workflow's own
@@ -890,8 +897,10 @@ required is:
 Add it under **Settings → Secrets and variables → Actions**. The workflow
 also needs `contents: write` permission to commit the webmention state file
 back to the repo — already set in `deploy.yml`, nothing extra to configure.
+Its automated commit includes `[skip ci]` so it doesn't re-trigger the
+push-based deploy on itself.
 
-Triggering the workflow from an iPad or other device without a terminal: use GitHub's REST API directly (`POST` to `.../actions/workflows/deploy.yml/dispatches` with a scoped personal access token), wrapped in an iOS Shortcut for a one-tap deploy.
+Triggering a manual rebuild from an iPad or other device without a terminal: use GitHub's REST API directly (`POST` to `.../actions/workflows/deploy.yml/dispatches` with a scoped personal access token), wrapped in an iOS Shortcut for a one-tap trigger.
 
 ---
 
