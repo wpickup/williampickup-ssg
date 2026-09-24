@@ -18,6 +18,9 @@
 </head>
 <body class="page-note">
 <%= renderer.partial('header', root: root, current: 'writing') %>
+<%- if note.draft -%>
+  <div class="draft-banner">Draft — not published</div>
+<%- end -%>
   <div class="page-body">
     <main id="main-content">
 

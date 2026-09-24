@@ -138,6 +138,7 @@ DEFAULT_OG_IMAGE  = "#{SITE_URL}/assets/WP-at-Stromlo.webp"  # og:image fallback
 THEME_COLOR_LIGHT = '#f5f3ee'   # <meta name="theme-color"> and manifest.json
 THEME_COLOR_DARK  = '#1c1916'
 LISTENBRAINZ_USER = 'Wpickup'   # home page "Listening to" line; '' disables it
+REPO_URL          = 'https://github.com/wpickup/williampickup-ssg'  # footer commit link
 ```
 
 `TOPIC_LABELS` (a frozen hash of topic key → label) is the one closed vocabulary in the build. `taxonomy.rb` loads `build.rb` and uses the same constant, so the topic list only has to be maintained here.
@@ -1037,6 +1038,8 @@ The tasks are: **Authoring Guide**, **Build**, **Build with Drafts**, **Build an
 fswatch -o \
   "$PROJECT_DIR/_posts" \
   "$PROJECT_DIR/_drafts" \
+  "$PROJECT_DIR/_notes" \
+  "$PROJECT_DIR/_journeys" \
   "$PROJECT_DIR/_pages" \
   "$PROJECT_DIR/_photos" \
   "$PROJECT_DIR/_books" \
@@ -1046,12 +1049,14 @@ fswatch -o \
   "$PROJECT_DIR/build.rb" \
   "$PROJECT_DIR/css" \
   "$PROJECT_DIR/javascript" \
+  "$PROJECT_DIR/fonts" \
+  "$PROJECT_DIR/assets" \
   | while read -r count; do
       ruby build.rb --drafts && echo "  ✓ Done" || echo "  ✗ Build failed"
     done
 ```
 
-`_notes/`, `_journeys/`, `fonts/` and `assets/` aren't in the list, so edits there only show up after something that *is* watched changes. The script checks for `fswatch` with `command -v` and prints install instructions if it's missing.
+The list covers every directory `build.rb` reads from (its `*_DIR` constants and `STATIC_DIRS`), so it has to be kept in step by hand when a new one is added. `_drafts/` is gitignored and may not exist on a fresh clone, so the script runs `mkdir -p` on it first, because `fswatch` fails on a missing path. The script also checks for `fswatch` with `command -v` and prints install instructions if it's missing.
 
 `fswatch -o` outputs a count of changed events (as a number) to stdout each time one or more files change in any of the watched directories. The pipe to `while read -r count` reads each output line — each line represents a batch of changes — and triggers a rebuild. The `&&` / `||` conditional chains report success or failure without aborting the watch loop (if `set -e` were in effect inside the while loop, a build failure would kill the watcher).
 

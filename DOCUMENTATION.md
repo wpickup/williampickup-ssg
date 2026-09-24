@@ -218,7 +218,7 @@ To publish, move the file from `_drafts/` to `_posts/`:
 
 Then run `ruby build.rb` and the post appears at `posts/your-slug.html`.
 
-**Notes work differently — this is the one important exception.** Unlike posts, a note is *never* drafted by which folder it's in; `_notes/` is the only folder notes ever live in, drafted or not. Draft status for a note comes entirely from `draft: true` in its own front matter, set and later removed **in place** — there's no `_drafts/` → `_notes/` move, and no "Publish Draft" Nova task for notes (that task only scans `_drafts/` and only moves things into `_posts/`). A draft note still builds to `drafts/slug.html` and gets the same exclusion from production — `--drafts` behaves identically either way — but note that `note.html.erb` has **no** amber draft banner (only posts and journeys show one), so a draft note preview looks like a published note apart from its `drafts/` URL.
+**Notes work differently — this is the one important exception.** Unlike posts, a note is *never* drafted by which folder it's in; `_notes/` is the only folder notes ever live in, drafted or not. Draft status for a note comes entirely from `draft: true` in its own front matter, set and later removed **in place** — there's no `_drafts/` → `_notes/` move, and no "Publish Draft" Nova task for notes (that task only scans `_drafts/` and only moves things into `_posts/`). A draft note still builds to `drafts/slug.html`, with the same amber banner and the same exclusion from production — `--drafts` behaves identically either way. Only the *mechanism* for marking a note as a draft differs from a post's.
 
 The **New Note** Nova task creates files directly in `_notes/` with `draft: true` already set, for exactly this reason.
 
@@ -711,7 +711,7 @@ The body uses the same markup as posts — see [Body markup](#body-markup) and [
 
 `_journeys/melbourne-to-the-coast.md` is currently a draft sample that uses placeholder images from picsum.photos.
 
-There's no Nova task for journeys yet, and the **Watch** task doesn't watch `_journeys/`. Save any watched file (or run **Build with Drafts**) to rebuild after editing one.
+There's no Nova task for creating journeys yet — copy an existing file in `_journeys/` as a starting point. The **Watch** task rebuilds when a journey changes.
 
 ---
 
@@ -1086,7 +1086,7 @@ Each task in `.nova/Tasks/` runs a script in `.nova/Scripts/`. Every script firs
 | **Promote Note** | `promote-note.sh` | Moves a note to `_posts/` and adds blank post fields — see [Promoting a note to a post](#promoting-a-note-to-a-post) |
 | **Taxonomy Cheatsheet** | `taxonomy-cheatsheet.sh` | Runs `taxonomy.rb` and opens `taxonomy.md` |
 
-**Watch** watches `_posts`, `_drafts`, `_pages`, `_photos`, `_books`, `_data`, `_templates`, `_partials`, `build.rb`, `css` and `javascript`. It doesn't watch `_notes`, `_journeys`, `fonts` or `assets`, so changes there wait for the next rebuild of a watched file.
+**Watch** watches every build input: all the content folders (`_posts`, `_drafts`, `_notes`, `_journeys`, `_pages`, `_photos`, `_books`), `_data`, `_templates`, `_partials`, `build.rb`, and the static folders `css`, `javascript`, `fonts` and `assets`. If you add a new content or static folder to `build.rb`, add it to `watch.sh` too.
 
 The note slug written by **New Note** includes the date (`slug: 2026-06-29-title`), so the note's URL does too. The post slug written by **New Post** doesn't.
 
@@ -1110,7 +1110,7 @@ Check it before inventing a new category or tag.
 
 **Dates** — ISO 8601 format (`2026-06-18`). Posts sorted newest-first throughout the site. Archive pages group by year automatically.
 
-**Build footer stamp** — every page footer shows a UTC build timestamp and short git commit SHA (`built 21 Jun '26, 03:53 UTC  e39d8bf`), generated in `build.rb` from `git rev-parse --short HEAD`. It's useful for confirming that a deploy reflects what was pushed. The "built …" text links to `colophon.html` only when the colophon page is part of the build (`renderer.page_built?('colophon')`); while the colophon is a draft it's plain text in production, so it never links to a 404. The SHA isn't linked to GitHub. That choice dates from when the repo was private; it's public now, so a commit link would work.
+**Build footer stamp** — every page footer shows a UTC build timestamp and short git commit SHA (`built 21 Jun '26, 03:53 UTC  e39d8bf`), generated in `build.rb` from `git rev-parse --short HEAD`. It's useful for confirming that a deploy reflects what was pushed. The "built …" text links to `colophon.html` only when the colophon page is part of the build (`renderer.page_built?('colophon')`); while the colophon is a draft it's plain text in production, so it never links to a 404. The SHA links to that commit on GitHub (`REPO_URL` in `build.rb`). In a local build of a commit you haven't pushed yet, that link will 404 until you push; published builds always come from CI, so their commit is always on GitHub.
 
 **Adding a new template** — `_partials/_head.html.erb` is just the contents of `<head>`: `<meta>` and `<link>` tags only, no `<html>` wrapper. Every template is responsible for writing `<!DOCTYPE html><html lang="en"><head>` itself, rendering the `head` partial inside it, then closing `</head>` before `<body>`. Consistent across every existing template (copy the pattern from any file in `_templates/`), but manual — forgetting to close `</head>` before `<body>` in a new template is a silent bug, not something the builder catches.
 
