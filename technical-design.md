@@ -1,7 +1,7 @@
 # Technical Design — williampickup.org Static Site Generator
 
-**Version:** July 2026  
-**File:** `build.rb` (~550 lines), ERB templates, YAML data
+**Version:** September 2026  
+**File:** `build.rb` (~830 lines), ERB templates, YAML data
 
 ---
 
@@ -21,6 +21,8 @@
   - [The css_classes method](#the-css_classes-method)
   - [reading_time](#reading_time)
   - [Book cover URLs](#book-cover-urls)
+  - [Journey](#journey)
+- [Markdown Rendering](#markdown-rendering)
 - [The Renderer Class](#the-renderer-class)
   - [render and partial](#render-and-partial)
   - [make_binding](#make_binding)
@@ -37,6 +39,7 @@
   - [Hash with a default block](#hash-with-a-default-block)
   - [select with Symbol#to_proc](#select-with-symbolto_proc)
   - [The sitemap template as data builder](#the-sitemap-template-as-data-builder)
+  - [Generated text files](#generated-text-files)
   - [The guard at the bottom](#the-guard-at-the-bottom)
 - [Partial Conventions](#partial-conventions)
   - [post_card partial](#post_card-partial)
@@ -58,6 +61,7 @@
   - [watch.sh](#watchsh)
   - [new-post.sh and new-note.sh](#new-postsh-and-new-notesh)
   - [promote-note.sh](#promote-notesh)
+  - [publish-draft.sh, pagefind.sh, taxonomy-cheatsheet.sh](#publish-draftsh-pagefindsh-taxonomy-cheatsheetsh)
   - [deploy.sh](#deploysh)
 - [GitHub Actions Deployment Pipeline](#github-actions-deployment-pipeline)
   - [Step by step](#step-by-step)
@@ -85,27 +89,35 @@ The design is deliberately conservative. Ruby is used as a scripting language, n
 williampickup-ssg/
 ├── build.rb                  # The entire build pipeline
 ├── send_webmentions.rb       # Post-build webmention dispatch (reuses build.rb models)
-├── extract.rb                # One-time Tinderbox migration tool
-├── Gemfile                   # Three gems: kramdown, nokogiri (extract only), rake
+├── update_book_covers.rb     # Fetches/normalises book covers into assets/books/ (reuses build.rb models)
+├── taxonomy.rb               # Writes taxonomy.md, a categories/tags cheatsheet (standalone)
+├── deploy.sh                 # Local build + Pagefind index (deploys happen in CI)
+├── extract.rb                # One-time Tinderbox migration tool — retired
+├── Gemfile                   # One gem: kramdown
 │
 ├── _posts/                   # Published long-form posts (Markdown + YAML front matter)
 ├── _drafts/                  # Draft posts — only included when --drafts flag is passed
 ├── _notes/                   # Short-form notes
+├── _journeys/                # Undated photo essays
 ├── _photos/                  # Photo metadata files
 ├── _books/                   # Book records
 ├── _pages/                   # Static pages (bio, colophon, search, blogroll)
 │
 ├── _templates/               # One .html.erb file per page type
 ├── _partials/                # Reusable ERB fragments (prefixed with _)
-├── _data/                    # YAML data files (nav.yml, now.yml, blogroll.yml)
+├── _data/                    # nav.yml, now.yml, blogroll.yml, series.yml, webmentions_sent.json
 │
 ├── css/                      # Copied verbatim to output
 ├── javascript/               # Copied verbatim to output
 ├── fonts/                    # Copied verbatim to output
-└── assets/                   # Copied verbatim to output
+├── assets/                   # Copied verbatim to output
+│
+├── worker/                   # Cloudflare Worker feed proxy for the blogroll (deployed separately)
+├── .github/workflows/        # deploy.yml — CI build and GitHub Pages deploy
+└── .nova/                    # Nova editor tasks and scripts
 ```
 
-The output goes to `_out/` by default, overridable by the `SSG_OUT_DIR` environment variable. That override is what allows CI to write to a different location than a local development server without needing separate configuration files.
+The output goes to `_out/` by default, overridable by the `SSG_OUT_DIR` environment variable. CI always uses the default `_out/`. The override exists for local builds: the Nova tasks set it so builds write to a local web server folder (`~/Sites/williampickup.org/_site`) without CI needing to know that path.
 
 ---
 
@@ -116,10 +128,18 @@ At the top of `build.rb`, a set of Ruby constants defines all site-level values:
 ```ruby
 SITE_URL       = 'https://williampickup.org'
 SITE_TITLE     = 'William Pickup'
+SITE_DESC      = 'A personal notebook of making, reading, travelling, photography, and simpler ways of living.'
 AUTHOR_NAME    = 'William Pickup'
 AUTHOR_EMAIL   = 'will@williampickup.org'
 COPYRIGHT_YEAR = Date.today.year
+
+DEFAULT_OG_IMAGE  = "#{SITE_URL}/assets/WP-at-Stromlo.webp"  # og:image fallback
+THEME_COLOR_LIGHT = '#f5f3ee'   # <meta name="theme-color"> and manifest.json
+THEME_COLOR_DARK  = '#1c1916'
+LISTENBRAINZ_USER = 'Wpickup'   # home page "Listening to" line; '' disables it
 ```
+
+`TOPIC_LABELS` (a frozen hash of topic key → label) is the one closed vocabulary in the build. `taxonomy.rb` reads it straight out of the `build.rb` source text, so the topic list only has to be maintained here.
 
 These are Ruby **constants** (names beginning with a capital letter), which means Ruby will emit a warning if anything tries to re-assign them. Using constants rather than variables makes it immediately clear that these values are fixed for the lifetime of the build and safe to reference from anywhere — templates, models, helper methods — without being passed as arguments.
 
@@ -172,7 +192,7 @@ topics:
 Body text begins here...
 ```
 
-The parsing function uses a **regular expression with named capture groups** applied via `=~`:
+The parsing function uses a **regular expression with two numbered capture groups** applied via `=~`:
 
 ```ruby
 def parse_frontmatter(path)
@@ -203,7 +223,7 @@ Several things worth examining here:
 
 ## The Dateable Module
 
-All four content-bearing model classes (Post, Note, Photo, Book) need to coerce dates from YAML into Ruby `Date` objects. Rather than copying the method into each class, it is extracted into a module:
+The five content-bearing model classes (Post, Note, Photo, Book, Journey) need to coerce dates from YAML into Ruby `Date` objects. Rather than copying the method into each class, it is extracted into a module:
 
 ```ruby
 module Dateable
@@ -227,7 +247,7 @@ The early-return `return val if val.is_a?(Date)` handles the common case where Y
 
 ## Model Classes
 
-There are five model classes: `Post`, `Note`, `Photo`, `Book`, and `Page`. They follow a consistent pattern: the constructor receives a file path, calls `parse_frontmatter`, and assigns all front matter fields to instance variables. Computed properties are expressed as methods.
+There are six model classes: `Post`, `Note`, `Photo`, `Book`, `Journey`, and `Page` (the only one without dates, so it doesn't include `Dateable`). They follow a consistent pattern: the constructor receives a file path, calls `parse_frontmatter`, and assigns all front matter fields to instance variables. Computed properties are expressed as methods.
 
 ### attr_reader
 
@@ -345,6 +365,37 @@ end
 
 `cover_src` is what templates actually call, and it never reaches the network — it just looks for `assets/books/<slug>.*` on disk (`local_cover_path`, a **guard clause** again: `return nil unless path` stops immediately if nothing's there) and returns a self-hosted URL if it finds one. This is a deliberate split from an earlier version of this method, which built an OpenLibrary or `cover_url` link directly and handed it straight to the browser — a live hotlink to a third party on every page view. OpenLibrary's cover CDN turned out to be unreliable enough that covers would silently fail to load. `source_cover_url` keeps the exact same guard-clause logic (`return cover_url if cover_url`, `return nil unless isbn`) that `cover_src` used to have, but it's now just a *source to fetch from once*, used by `update_book_covers.rb` — a separate script, not `build.rb` — to populate `assets/books/` ahead of time. By the time the site actually builds, `cover_src` is reading a file that's already there; nothing at build or page-load time depends on a third-party host being up.
 
+### Journey
+
+`Journey` looks like a stripped-down `Post`: it has `title`, `description`, `lede`, hero-image fields, `layout` and `draft`, but no `date`, topics, categories, tags or series. It has an `updated` date instead, shown as "Last updated July 2026". Two defaults differ from `Post`:
+
+```ruby
+@layout = fm['layout'] || 'photo-essay'
+@draft  = fm['draft'] == true          # no force_draft — there's no _drafts/ equivalent
+```
+
+`load_journeys` doesn't sort, so `/journeys.html` lists journeys in whatever order `Dir[]` returns their files. Journeys are kept out of the blog listing, archives and feeds simply because they're never added to the `posts` array.
+
+---
+
+## Markdown Rendering
+
+```ruby
+def md_to_html(text)
+  return '' if text.nil? || text.empty?
+  text = text.gsub(/~~(.+?)~~/m, '<del>\1</del>')
+  text = text.gsub(/==(.+?)==/m, '<mark>\1</mark>')
+  html = Kramdown::Document.new(text, input: :kramdown, smart_quotes: 'lsquo,rsquo,ldquo,rdquo', hard_wrap: false).to_html
+  apply_smallcaps(html)
+end
+```
+
+Every Markdown body (posts, notes, journeys, photos, books and pages) passes through this function. There are three stages:
+
+1. **Pre-processing.** Two regex substitutions add syntax Kramdown doesn't have: `~~text~~` becomes `<del>` and `==text==` becomes `<mark>`. They run on the raw Markdown before parsing, so they also apply inside code spans and would change a `~~~` code fence. In practice this means fenced code blocks can't be used (see "Code blocks" in DOCUMENTATION.md).
+2. **Kramdown** with its native `kramdown` input format, not GFM. So ```` ``` ```` fences, GFM tables and autolinked bare URLs aren't supported, while Kramdown extras such as `{: .class}` attribute lists are. `smart_quotes` sets the curly-quote characters to use.
+3. **`apply_smallcaps`** wraps runs of two or more capital letters in `<span class="acr">` so CSS can set them in small caps. It avoids changing `<pre>`/`<code>` contents by first swapping each of those blocks for a numbered placeholder, then running the substitution only on text between `>` and `<`, which skips tag attributes, and finally restoring the protected blocks.
+
 ---
 
 ## The Renderer Class
@@ -402,7 +453,9 @@ This is the mechanism by which ERB templates access their data. `binding` is a R
 
 `b.local_variable_set(k, v)` injects each key-value pair from the `locals` hash into that binding as a named local variable. So when `render('post', post: post, root: '../')` is called, the template can reference `post` and `root` directly as variables — not as hash lookups, but as genuine locals in scope.
 
-The final `b.local_variable_set(:renderer, self)` injects the `Renderer` instance itself into the binding as `renderer`. This is how templates call `renderer.partial(...)`, `renderer.topic_label(...)`, and `renderer.h(...)` — the template has a reference to the object that rendered it, giving it access to all of the Renderer's public methods. It also means that `publit_srcset` and `h` can be called in templates without a receiver — they are actually delegated through `renderer` via the binding.
+The final `b.local_variable_set(:renderer, self)` injects the `Renderer` instance itself into the binding as `renderer`. This is how templates call `renderer.partial(...)`, `renderer.topic_label(...)`, and `renderer.breadcrumb_ld(...)`, so each template has a reference to the object that rendered it.
+
+Templates can also call `h(...)` and `publit_srcset(...)` without a receiver. That works because `binding` is called inside a `Renderer` instance method, so the captured binding's `self` *is* the renderer, and a bare method call in the template resolves against it. The explicit `renderer` local makes those calls read clearly, but it isn't what makes them work. Top-level constants (`SITE_URL`, `BUILD_SHA`, …) are visible in every template for the same reason.
 
 ### Helper methods on Renderer
 
@@ -423,7 +476,9 @@ def publit_width(url, w) = url.sub(%r{(publit\.io/file/)}, "\\1w_#{w}/")
 
 `%r{...}` is Ruby's **regex literal** using braces as delimiters instead of the more common `/…/`. Braces are used here because the URL contains forward slashes, which would need escaping if `/…/` delimiters were used. The capture group `(publit\.io/file/)` matches the CDN path fragment, and `"\\1w_#{w}/"` replaces it with the same fragment followed by the width variant. `\\1` in the replacement string is a **backreference** to the first capture group; the double backslash is needed because the replacement string is a Ruby string literal where `\1` would otherwise be interpreted as an escape sequence.
 
-`topic_label` uses a **fallback chain**: if the topic ID exists in `TOPIC_LABELS`, return its human label; otherwise, construct a label by replacing hyphens with spaces, splitting into words, capitalising each word with `map(&:capitalize)`, and joining back with spaces. This means new topics work without editing the hash.
+`topic_label` uses a **fallback chain**: if the topic ID exists in `TOPIC_LABELS`, return its human label; otherwise, construct a label by replacing hyphens with spaces, splitting into words, capitalising each word with `map(&:capitalize)`, and joining back with spaces. An unknown topic therefore still renders a sensible label. It gets no card colour, though, because that comes from a `.cat--*` rule in the CSS.
+
+`breadcrumb_ld(items)` returns a `<script type="application/ld+json">` tag containing a schema.org `BreadcrumbList`, built from an ordered array of `[name, url]` pairs. The last pair (the current page) passes `nil` as its URL, matching the unlinked last crumb in the visible breadcrumb. `each_with_index.map do |(name, url), i|` uses **block parameter destructuring**: the parentheses unpack each two-element pair into `name` and `url`, and `i` is the index. Topic, category, series, journey, photo and gallery-highlights templates call it.
 
 ---
 
@@ -528,11 +583,12 @@ The `_head.html.erb` partial includes a mechanism for optional extra stylesheets
 
 ```
 1. Wipe and recreate OUT_DIR
-2. Load all content into model objects
+2. Load all content (posts, notes, photos, books, journeys, pages) and data files
 3. Construct one Renderer
-4. Render each content item, writing to file
-5. Render all index and listing pages
-6. Render feeds, sitemap, robots.txt
+4. Render each content item, writing to file (drafts to drafts/ only with --drafts)
+5. Render all index and listing pages (blog, notes, gallery, reading, now,
+   journeys, home, archive, topics, categories, series, static pages, 404)
+6. Render feeds, sitemap, robots.txt, llms.txt, .well-known/security.txt, manifest.json
 7. Copy static assets
 ```
 
@@ -599,11 +655,24 @@ The `sitemap.html.erb` template is notable because it builds its data structure 
   posts.each { |p| urls << [p.url, (p.date || Date.today).iso8601] }
   notes.each { |n| urls << [n.url, (n.date || Date.today).iso8601] }
   ...
-  %w[blog notes gallery reading now archive].each { |slug| urls << ["#{SITE_URL}/#{slug}.html", nil] }
+  journeys.each { |j| urls << [j.url, j.updated_iso.empty? ? nil : j.updated_iso] }
+
+  %w[blog notes gallery reading now archive journeys].each { |slug| urls << ["#{SITE_URL}/#{slug}.html", nil] }
 -%>
 ```
 
 This builds an array of `[url, lastmod]` pairs before the XML output begins, then iterates over it. The two-element array pairs are a lightweight alternative to a struct — they work well here because the sitemap only needs two things about each URL.
+
+`build()` passes the sitemap `posts.reject(&:draft)`, `notes.reject(&:draft)` and `journeys.reject(&:draft)`. That filter is redundant in a production build, which never loads drafts, but it keeps drafts out of the sitemap even in a `--drafts` build. `pages` is not filtered this way, so a `--drafts` build's sitemap does include draft pages.
+
+### Generated text files
+
+After the sitemap, `build()` writes four more files, all rebuilt on every build:
+
+- **`robots.txt`**, a heredoc that disallows `/drafts/` and explicitly allows a list of named AI crawlers.
+- **`llms.txt`**, assembled line by line into an array and joined with `"\n"`. It lists the 20 newest published posts, every topic from `TOPIC_LABELS`, published journeys (the section is skipped if there are none) and fixed links to the site's index pages.
+- **`.well-known/security.txt`**, whose `Expires` value is `Date.today >> 12`. `Date#>>` adds months, so every build moves the expiry to a year ahead and it never lapses.
+- **`manifest.json`**, a Ruby hash written out with `JSON.pretty_generate`.
 
 ### The guard at the bottom
 
@@ -617,7 +686,9 @@ build if __FILE__ == $0
 require_relative 'build'
 ```
 
-...and gain access to `Post`, `load_posts`, `Note`, `load_notes`, and all the helper functions, without triggering a full site build as a side effect. It is the standard Ruby pattern for a file that is both a standalone script and a reusable library.
+...and gain access to `Post`, `load_posts`, `Note`, `load_notes`, and all the helper functions, without triggering a full site build as a side effect. `update_book_covers.rb` uses the same pattern to call `load_books` and `Book#source_cover_url`. It is the standard Ruby pattern for a file that is both a standalone script and a reusable library.
+
+`taxonomy.rb` is the exception. It doesn't require `build.rb`: it has its own copy of `parse_frontmatter`, and it gets `TOPIC_LABELS` by matching that constant in `build.rb`'s source with a regex and `eval`-ing the result. Its comments say this avoids triggering a build, which predates the guard. Today it could `require_relative 'build'` safely.
 
 ---
 
@@ -656,6 +727,8 @@ The space before `aria-current` is significant — it is inside the string liter
 ```
 
 The `data-category`, `data-tags`, and `data-featured` attributes are **data attributes** read by `main.js` to implement client-side filtering. The semicolon-joined strings (`post.topics.join(';')`) are a simple encoding that JavaScript can split on to get an array of values.
+
+The featured flag matters on `/blog.html`: `main.js` hides `data-featured="true"` cards in `.blog-list`, because featured posts are listed in the home page's "Start here" card instead.
 
 `" cat--#{primary_topic}" if primary_topic` uses string interpolation inside a conditional — the entire interpolated string (including the leading space) is only produced if `primary_topic` is truthy. When it is `nil`, the expression returns `nil`, and `<%= nil %>` emits an empty string.
 
@@ -721,21 +794,31 @@ end
 OUT_DIR = ENV['SSG_OUT_DIR'] || File.join(__dir__, '_out')
 ```
 
-`ENV` is Ruby's representation of the process environment — it behaves like a hash where the keys are environment variable names. `ENV['SSG_OUT_DIR']` returns the value of that variable, or `nil` if it is not set. The `||` then falls back to the default `_out` path. This is the standard Ruby pattern for environment-configurable defaults and is what allows the GitHub Actions workflow to write to a different location than a local development run.
+`ENV` is Ruby's representation of the process environment — it behaves like a hash where the keys are environment variable names. `ENV['SSG_OUT_DIR']` returns the value of that variable, or `nil` if it is not set. The `||` then falls back to the default `_out` path. This is the standard Ruby pattern for environment-configurable defaults. Here it lets the Nova tasks write to a local web server folder while CI, which doesn't set the variable, writes to `_out/`.
+
+Because `build()` starts with `FileUtils.rm_rf(OUT_DIR)`, whatever folder `SSG_OUT_DIR` names is deleted in full on every build. It must be a folder used only for build output.
 
 ---
 
 ## Dependency Summary
 
-The Gemfile declares three gems:
+The Gemfile declares a single gem:
 
 ```ruby
-gem 'kramdown'          # Markdown-to-HTML conversion
-gem 'nokogiri'          # XML parsing — used only by extract.rb
-gem 'rake'              # Optional task runner (not used by build.rb directly)
+gem "kramdown", "~> 2.5"   # Markdown-to-HTML conversion
 ```
 
-`build.rb` itself requires only `kramdown` at runtime. Everything else (`erb`, `date`, `fileutils`, `yaml`, `cgi`) is part of Ruby's standard library and needs no installation. This means the build has a minimal, stable dependency footprint — the only external code running on every build is Kramdown.
+`Gemfile.lock` pins kramdown 2.5.2 plus its one dependency, `rexml`. Everything else `build.rb` uses (`erb`, `date`, `fileutils`, `yaml`, `cgi`, `json`) is part of Ruby's standard library, as are `net/http` and `uri` in the helper scripts. The only external code running on every build is Kramdown.
+
+Some tools run outside Bundler and aren't in the Gemfile:
+
+- **`extract.rb`**, the retired Tinderbox importer, needs `nokogiri`.
+- **`start-ruby-language-servers.sh`** runs `bundle exec ruby-lsp`, `rubocop --lsp` and `erb_lint --lsp`, so those gems would have to be added to the Gemfile before it can work.
+- **`update_book_covers.rb`** calls ImageMagick's `magick` command.
+- **Pagefind** is run through `npx`, which needs Node.
+- **`watch.sh`** needs `fswatch`.
+
+Ruby versions: `.ruby-version` pins 4.0.6 for local development, and CI uses Ruby 3.3.
 
 ---
 
@@ -743,14 +826,17 @@ gem 'rake'              # Optional task runner (not used by build.rb directly)
 
 ```
 _posts/*.md      ─┐
+_drafts/*.md     ─┤
 _notes/*.md      ─┤
-_photos/*.md     ─┤── parse_frontmatter()  ──►  Model objects (Post, Note, ...)
+_journeys/*.md   ─┤── parse_frontmatter()  ──►  Model objects (Post, Note, ...)
+_photos/*.md     ─┤
 _books/*.md      ─┤
 _pages/*.md      ─┘
 
-_data/nav.yml    ─┐
-_data/now.yml    ─┤── YAML.safe_load()     ──►  Plain Ruby hashes
-_data/blogroll.yml─┘
+_data/nav.yml      ─┐
+_data/now.yml      ─┤
+_data/blogroll.yml ─┤── YAML.safe_load()   ──►  Plain Ruby hashes
+_data/series.yml   ─┘
 
 Model objects + hashes
         │
@@ -910,7 +996,7 @@ source "$( dirname "${BASH_SOURCE[0]}" )/config.sh"
 
 `${BASH_SOURCE[0]}` is the path to the currently-executing script file. `dirname` extracts its directory. This pattern resolves the config file relative to the script's own location, so the scripts work correctly regardless of the working directory when they are called.
 
-`config.sh` defines two things used across all scripts (a third — SSH connection details for the old rsync deploy target — was removed once the site moved to GitHub Pages; see "GitHub Actions Deployment Pipeline" below):
+`config.sh` sets up two things for all scripts (a third — SSH connection details for the old rsync deploy target — was removed once the site moved to GitHub Pages; see "GitHub Actions Deployment Pipeline" below):
 
 ```bash
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
@@ -931,7 +1017,9 @@ if [ -z "${WEBMENTION_TOKEN:-}" ] && [ -f "$PROJECT_DIR/.webmention-token" ]; th
 fi
 ```
 
-The token is read from a gitignored `.webmention-token` file in the project root. This solves the same Nova environment inheritance problem for secrets — the token cannot be in `config.sh` because that file is committed to Git, and it cannot be relied upon from a shell profile export for the same GUI-launch reason.
+The token is read from a gitignored `.webmention-token` file in the project root. This solves the same Nova environment inheritance problem for secrets — the token cannot be in `config.sh` because that file is committed to Git, and it cannot be relied upon from a shell profile export for the same GUI-launch reason. Webmentions are now sent only from CI, so no current task uses the token; this block is left over from the rsync-deploy days.
+
+The tasks are: **Authoring Guide**, **Build**, **Build with Drafts**, **Build and Index**, **Watch**, **New Post**, **New Note**, **Publish Draft**, **Promote Note** and **Taxonomy Cheatsheet**. Each `.nova/Tasks/*.json` file just points its `build` action at a script. None of them deploys; see "deploy.sh" below.
 
 ### build.sh and build-drafts.sh
 
@@ -945,13 +1033,21 @@ The token is read from a gitignored `.webmention-token` file in the project root
 fswatch -o \
   "$PROJECT_DIR/_posts" \
   "$PROJECT_DIR/_drafts" \
-  ...
+  "$PROJECT_DIR/_pages" \
+  "$PROJECT_DIR/_photos" \
+  "$PROJECT_DIR/_books" \
+  "$PROJECT_DIR/_data" \
+  "$PROJECT_DIR/_templates" \
+  "$PROJECT_DIR/_partials" \
+  "$PROJECT_DIR/build.rb" \
   "$PROJECT_DIR/css" \
   "$PROJECT_DIR/javascript" \
   | while read -r count; do
       ruby build.rb --drafts && echo "  ✓ Done" || echo "  ✗ Build failed"
     done
 ```
+
+`_notes/`, `_journeys/`, `fonts/` and `assets/` aren't in the list, so edits there only show up after something that *is* watched changes. The script checks for `fswatch` with `command -v` and prints install instructions if it's missing.
 
 `fswatch -o` outputs a count of changed events (as a number) to stdout each time one or more files change in any of the watched directories. The pipe to `while read -r count` reads each output line — each line represents a batch of changes — and triggers a rebuild. The `&&` / `||` conditional chains report success or failure without aborting the watch loop (if `set -e` were in effect inside the while loop, a build failure would kill the watcher).
 
@@ -1000,6 +1096,8 @@ categories:
 FRONTMATTER
 ```
 
+The two scripts name files differently. `new-post.sh` writes `_drafts/${TODAY}-${SLUG}.md` with `slug: $SLUG`, so the date is in the filename but not the URL. `new-note.sh` writes `_notes/${TODAY}-${SLUG}.md` with `slug: ${TODAY}-${SLUG}`, so the date is in the note's URL too. The title is optional for notes: an empty one gives the slug `untitled` and no `title:` line. The note is written in two heredocs so the `title:` line can be added conditionally between them, and it ends with `draft: true`.
+
 `<< FRONTMATTER` is a **here-document** — it feeds all text until the matching `FRONTMATTER` delimiter to `cat` as stdin. Variables inside the heredoc are expanded because the delimiter is unquoted (quoting the delimiter, e.g. `<< 'FRONTMATTER'`, would suppress expansion). The `cat > "$FILE"` redirects the output to the new file.
 
 ### promote-note.sh
@@ -1044,54 +1142,56 @@ fi
 
 `git ls-files --error-unmatch` exits non-zero if the file is not tracked. Using `git mv` rather than `mv` preserves the file's Git history through the rename, so `git log --follow` on the post file shows its entire history including when it was a note.
 
+### publish-draft.sh, pagefind.sh, taxonomy-cheatsheet.sh
+
+`publish-draft.sh` works like `promote-note.sh`: it lists `_drafts/*.md` in a `choose from list` dialog, refuses to overwrite a file already in `_posts/`, and moves the chosen file with `git mv` if Git tracks it, otherwise with `mv`. Posts need no front matter changes when published, so it doesn't add any fields. `_drafts/` is gitignored, so in practice the plain `mv` branch is the one that runs.
+
+`pagefind.sh` (the **Build and Index** task) runs a production `ruby build.rb` and then `npx pagefind --site "$OUT_DIR" --exclude-selectors "nav, footer, .site-header, .skip-link, .breadcrumb"`. It's the only place that passes `--exclude-selectors`; CI and `deploy.sh` index everything.
+
+`taxonomy-cheatsheet.sh` runs `ruby taxonomy.rb` and opens the resulting `taxonomy.md` in Nova. `authoring-guide.sh` just opens `DOCUMENTATION.md`.
+
 ### deploy.sh
 
-The site used to deploy by rsyncing a local build straight to the Vultr box, so this script used to run the whole pipeline itself — build, index, rsync, send webmentions, then check the live Content-Security-Policy header for `wasm-unsafe-eval` (required for Pagefind's WebAssembly-based search), since that header was set server-side and a misconfiguration there wouldn't be caught by the build.
+`deploy.sh` lives at the project root, not in `.nova/Scripts/`, and no Nova task runs it. The site used to deploy by rsyncing a local build to the Vultr box, so this script once ran the whole pipeline: build, index, rsync, send webmentions, and then check the live Content-Security-Policy header for `wasm-unsafe-eval`, which Pagefind's WebAssembly search needs. An intermediate version triggered the GitHub Actions workflow with `gh workflow run` and watched the run.
 
-Since the move to GitHub Pages, deployment itself always happens in CI, so this script only does a local build as a sanity check, then hands off to GitHub Actions:
+Now that every push to `main` deploys, the script only builds locally so you can preview first:
 
 ```bash
-echo "→ Building site (local sanity check)..."
-cd "$PROJECT_DIR"
-ruby build.rb
+set -euo pipefail
 
-echo "→ Building Pagefind search index..."
-npx pagefind --site "$OUT_DIR" --exclude-selectors "nav, footer, .site-header, .skip-link, .breadcrumb"
+OUT_DIR="${SSG_OUT_DIR:-_out}"
 
-if ! command -v gh >/dev/null 2>&1; then
-  echo "⚠ gh CLI not found — trigger the deploy manually: https://github.com/wpickup/williampickup-ssg/actions/workflows/deploy.yml"
-  exit 1
-fi
-
-echo "→ Triggering GitHub Actions deploy..."
-gh workflow run deploy.yml -R wpickup/williampickup-ssg
-
-sleep 5
-RUN_ID=$(gh run list -R wpickup/williampickup-ssg --workflow=deploy.yml --limit 1 --json databaseId -q '.[0].databaseId')
-gh run watch "$RUN_ID" -R wpickup/williampickup-ssg --exit-status
+ruby build.rb "$@"
+npx --yes pagefind --site "$OUT_DIR"
 ```
 
-`command -v gh >/dev/null 2>&1` is the standard portable way to check whether a command exists on `PATH` — it prints `gh`'s location on success, which is redirected to `/dev/null` since only the exit status is being checked. If `gh` isn't installed or authenticated, the script fails fast with a direct link rather than hanging.
+`"$@"` passes the script's arguments through, so `./deploy.sh --drafts` builds with drafts. `set -euo pipefail` stops on the first failing command (`-e`), treats unset variables as errors (`-u`), and makes a pipeline fail if any stage fails (`pipefail`). `${SSG_OUT_DIR:-_out}` uses the same default as `build.rb`, so Pagefind indexes the folder the build just wrote.
 
-The `sleep 5` before listing runs is a small race-condition guard: `gh workflow run` returns as soon as the dispatch is *accepted*, not once the run actually appears in the list — without a short pause, `gh run list` could still come back empty. `gh run watch ... --exit-status` then streams the run's progress live and exits non-zero if the deploy itself fails, so a failed CI deploy shows up as a failed Nova task too, the same way a failed local build always did.
-
-The CSP check described above no longer applies here — GitHub Pages doesn't let you set custom response headers per-site the way the old Vultr `relayd` config did, so there's no server-side CSP for a build to silently break. (Pagefind's WebAssembly search still works fine on GitHub Pages regardless — it just isn't gated behind a header this build pipeline needs to verify.)
+The CSP check no longer applies. GitHub Pages doesn't allow custom response headers the way the old Vultr `relayd` config did, so there's no server-side CSP for a build to break. Pagefind's search works on GitHub Pages without it.
 
 ---
 
 ## GitHub Actions Deployment Pipeline
 
-The `deploy.yml` workflow mirrors the local `deploy.sh` script but runs on GitHub's infrastructure. It is triggered only by `workflow_dispatch` — a manual button in the GitHub Actions UI — rather than on every push. This is deliberate: the site is a personal publication and deploys should be intentional acts, not automatic consequences of saving a file.
+The `deploy.yml` workflow builds, indexes and publishes the site on GitHub's infrastructure. It runs on **every push to `main`**, so committing and pushing is the deploy step. `workflow_dispatch` is kept so a rebuild can be triggered without a new commit (`gh workflow run deploy.yml`, or the button in the Actions UI). The workflow used to be manual-only, from when a deploy meant a deliberate rsync to the Vultr box. Once the site moved to GitHub Pages there was no reason to keep the manual step. Drafts sit in the gitignored `_drafts/` folder, so pushing can't publish one.
 
 ```yaml
 on:
+  push:
+    branches: [main]
   workflow_dispatch: {}
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 permissions:
   contents: write
   pages: write
   id-token: write
 ```
+
+`concurrency: group: pages` runs one deploy at a time. With `cancel-in-progress: false`, a push that arrives mid-deploy waits for the current run to finish instead of cancelling it, so the webmention-state commit at the end of a run isn't cut off.
 
 `contents: write` is required because the workflow commits the updated webmention state back to the repository at the end — without it, the default read-only permissions would cause the final git push to fail. `pages: write` and `id-token: write` are what let the workflow publish to GitHub Pages directly, using GitHub's own OIDC token rather than a stored credential (see the custom-domain/publish steps below) — these two didn't exist in this workflow at all before the move off Vultr's rsync deploy.
 
@@ -1178,7 +1278,9 @@ The token is injected via environment variable from a GitHub Actions secret rath
 
 `git diff --quiet` exits 0 if there are no changes and 1 if there are. The `if !` inverts this, so the block only runs when the state file was actually modified (i.e., webmentions were sent). Committing an unchanged file would create a spurious empty commit.
 
-`[skip ci]` in the commit message is a convention recognised by GitHub Actions: it prevents the push from triggering a new workflow run. Without it, this commit would trigger another deploy, which would trigger another commit, and so on indefinitely.
+`[skip ci]` in the commit message is a convention recognised by GitHub Actions: it prevents the push from triggering a new workflow run. This matters now that the workflow runs on every push to `main`. Without it, the state commit would trigger another deploy, which could make another state commit, and so on. (A push made with the workflow's own `GITHUB_TOKEN` doesn't start a new run anyway, so the two safeguards overlap.)
+
+One consequence: that bot commit lands on `main` after your push, so pull before your next local commit or your push will be rejected as behind.
 
 `git config user.name "github-actions[bot]"` sets the commit author for this one run. GitHub Actions runners have no global Git identity configured, so the identity must be set before any commit. The `github-actions[bot]` email is the conventional identity for bot commits on GitHub and causes the commit to be attributed to the Actions bot user in the repository history.
 
@@ -1186,7 +1288,7 @@ The token is injected via environment variable from a GitHub Actions secret rath
 
 ## CSS Architecture
 
-`site.css` is a single file of roughly 2 700 lines. It is structured in a consistent layered order: font declarations, design tokens, reset and base styles, layout primitives, component styles, and theme overrides. The layering is not enforced by tooling — it is maintained by convention.
+`site.css` is a single file of roughly 3,650 lines. The blogroll page also loads `blogroll.css` (~200 lines) via the head partial's `extra_css`. It is structured in a consistent layered order: font declarations, design tokens, reset and base styles, layout primitives, component styles, and theme overrides. The layering is not enforced by tooling — it is maintained by convention.
 
 ### Design tokens
 
@@ -1252,14 +1354,16 @@ This creates a wider gutter specifically for post pages, relative to the base gu
 
 ### Theme switching
 
-The site defaults to dark. The light theme activates through two separate mechanisms, and both must be handled:
+The CSS defaults to dark: the `:root` tokens are the dark palette. In practice `main.js` always sets `data-theme` on `<html>` when a page loads, using the saved `localStorage` choice or, if there isn't one, the system `prefers-color-scheme` setting. So a first-time visitor sees whichever theme their system prefers. The media-query rule below covers the moment before the script runs, and visitors with JavaScript turned off.
+
+The light values themselves are defined once, as `--light-*` tokens on `:root`, and both light-theme rules point at them with `var(--light-…)` so the two can't drift apart. The light theme can be switched on in two ways, and both have to be handled:
 
 ```css
 /* Mechanism 1 — system preference, no explicit user override */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --warm-white:   #f5f3ee;
-    --warm-gray:    #3d3a37;
+    --warm-white:   var(--light-warm-white);
+    --warm-gray:    var(--light-warm-gray);
     --bg:           var(--warm-white);
     --ink:          var(--warm-black);
     --accent:       var(--clay);
@@ -1269,8 +1373,8 @@ The site defaults to dark. The light theme activates through two separate mechan
 
 /* Mechanism 2 — user explicitly selected light */
 html[data-theme="light"] {
-  --warm-white:   #f5f3ee;
-  --warm-gray:    #3d3a37;
+  --warm-white:   var(--light-warm-white);
+  --warm-gray:    var(--light-warm-gray);
   --bg:           var(--warm-white);
   --ink:          var(--warm-black);
   /* ... */
@@ -1297,14 +1401,14 @@ The logic in full:
 | light | `"dark"` | `html[data-theme="dark"]` (`:not([dark])` excludes media query) — dark |
 | either | `"dark"` | `html[data-theme="dark"]` — dark |
 
-`data-theme` is set on `<html>` by `main.js`, which reads from `localStorage` on page load. The toggle button in `_header.html.erb` triggers the JavaScript that cycles the attribute and persists the choice.
+The toggle button in `_header.html.erb` switches the attribute between `dark` and `light` and saves the choice to `localStorage`.
 
 The theme toggle icon is handled purely in CSS:
 
 ```css
-/* Default (dark theme): show moon icon */
-.theme-toggle .icon-sun  { display: none; }
-.theme-toggle .icon-moon { display: block; }
+/* Default (dark theme): show sun icon */
+.theme-toggle .icon-sun  { display: block; }
+.theme-toggle .icon-moon { display: none; }
 
 /* Light theme: show sun icon */
 html[data-theme="light"] .theme-toggle .icon-sun  { display: none; }
@@ -1320,23 +1424,25 @@ The icon that is shown is the one the user would switch *to*, not the one curren
 
 ### Category colour palette
 
-Six topic categories each have a named colour:
+Each of the six topics has a named colour. Five come from a dedicated category palette; `learning-making` reuses the site accent, `--clay`:
 
 ```css
---sage:         #7ab68a;  /* books-ideas */
---slate-blue:   #5e9cb8;  /* places-experiences */
---violet-muted: #a48fd0;  /* learning-making */
---ochre:        #c4a84a;  /* simple-living */
+--sage:         #7ab68a;  /* simple-living */
+--slate-blue:   #5e9cb8;  /* books-ideas */
+--violet-muted: #a48fd0;  /* systems-thinking */
+--ochre:        #c4a84a;  /* places-experiences */
 --dusty-rose:   #cc7a9e;  /* health-wellbeing */
+--clay:         #c07a4a;  /* learning-making (also the site accent) */
 ```
 
 These are applied via the `cat--{topic-id}` class the builder adds to each post card and post article:
 
 ```css
-.cat--books-ideas        { --cat-color: var(--sage); }
-.cat--places-experiences { --cat-color: var(--slate-blue); }
-.cat--learning-making    { --cat-color: var(--violet-muted); }
-.cat--simple-living      { --cat-color: var(--ochre); }
+.cat--simple-living      { --cat-color: var(--sage); }
+.cat--books-ideas        { --cat-color: var(--slate-blue); }
+.cat--learning-making    { --cat-color: var(--clay); }
+.cat--systems-thinking   { --cat-color: var(--violet-muted); }
+.cat--places-experiences { --cat-color: var(--ochre); }
 .cat--health-wellbeing   { --cat-color: var(--dusty-rose); }
 ```
 
