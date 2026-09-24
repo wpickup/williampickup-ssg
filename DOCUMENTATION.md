@@ -707,7 +707,7 @@ layout: photo-essay          # Default for journeys (posts default to standard)
 draft: true                  # In-place draft flag, like notes — remove it to publish
 ```
 
-The body uses the same markup as posts — see [Body markup](#body-markup) and [Photo essay layout](#photo-essay-layout). The card on `/journeys.html` shows the `lede` (or `description` if there's no lede). A `featured` field is read but not used by any template yet.
+The body uses the same markup as posts — see [Body markup](#body-markup) and [Photo essay layout](#photo-essay-layout). `/journeys.html` lists journeys most recently `updated` first (undated ones last); each card shows the `lede`, or the `description` if there's no lede.
 
 `_journeys/melbourne-to-the-coast.md` is currently a draft sample that uses placeholder images from picsum.photos.
 
@@ -924,7 +924,7 @@ python3 -m http.server 4567 --directory ~/Sites/williampickup.org/_site
 
 Then open `http://localhost:4567` in your browser. The Nova tasks write to `~/Sites/williampickup.org/_site` by default (set in `.nova/Scripts/config.sh`).
 
-`.claude/launch.json` defines an `ssg-preview` server on the same port 4567, but it serves `~/dev/williampickup-ssg/_out`, the default output of a plain `ruby build.rb` or `./deploy.sh`, not the Nova folder. Serve whichever folder your last build actually wrote to.
+`.claude/launch.json` defines the same server (`ssg-preview`, port 4567, serving `~/Sites/williampickup.org/_site`). A plain `ruby build.rb` or `./deploy.sh` without `SSG_OUT_DIR` writes to `_out/` instead; to preview that, serve `_out/` (`python3 -m http.server 4567 --directory _out`).
 
 ---
 
@@ -970,8 +970,6 @@ gh workflow run deploy.yml
 There's no Nova task for this anymore — it's what plain `git push` does by
 default now, so a dedicated button didn't add anything. For the
 `workflow_dispatch` case above, just run the `gh` command directly.
-(`.nova/Publishing/Vultr.json`, Nova's old remote-publishing config for the
-Vultr box, is still in the repo but is no longer part of the deploy.)
 
 In CI the site is built with `bundle exec ruby build.rb` on Ruby 3.3, then
 indexed with `npx --yes pagefind --site _out`. A `CNAME` file for
@@ -1013,8 +1011,6 @@ After a successful deploy, the GitHub Actions workflow runs `send_webmentions.rb
 ```bash
 WEBMENTION_TOKEN=your-token-here bundle exec ruby send_webmentions.rb
 ```
-
-`.nova/Scripts/config.sh` also loads the token from a gitignored `.webmention-token` file into Nova task environments, a holdover from when Nova tasks deployed the site. No current Nova task uses it.
 
 Without a token set, `send_webmentions.rb` prints a notice and exits — it never blocks a deploy.
 
@@ -1071,7 +1067,7 @@ After editing a template or CSS file, just run `ruby build.rb` again.
 
 ### Nova tasks
 
-Each task in `.nova/Tasks/` runs a script in `.nova/Scripts/`. Every script first sources `config.sh`, which sets `SSG_OUT_DIR` (default `~/Sites/williampickup.org/_site`) and loads `.webmention-token` if it exists.
+Each task in `.nova/Tasks/` runs a script in `.nova/Scripts/`. Every script first sources `config.sh`, which sets `PROJECT_DIR` and `SSG_OUT_DIR` (default `~/Sites/williampickup.org/_site`).
 
 | Task | Script | What it does |
 |---|---|---|

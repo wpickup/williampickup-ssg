@@ -341,7 +341,7 @@ class Journey
 
   attr_reader :slug, :title, :description, :lede,
               :image_url, :image_focal_point, :use_featured_image,
-              :layout, :updated, :featured, :draft,
+              :layout, :updated, :draft,
               :content_md, :content_html, :path
 
   def initialize(path)
@@ -357,7 +357,6 @@ class Journey
     @use_featured_image = fm['use_featured_image'] == true
     @layout             = fm['layout'] || 'photo-essay'
     @updated            = coerce_date(fm['updated'])
-    @featured           = fm['featured'] == true
     @draft              = fm['draft'] == true
     @content_html       = md_to_html(@content_md)
   end
@@ -500,6 +499,7 @@ def load_journeys
   Dir[File.join(JOURNEYS_DIR, '*.md')]
     .map  { |p| Journey.new(p) rescue (warn "Error loading #{p}: #{$!}"; nil) }
     .compact.reject { |j| j.draft && !DRAFTS }
+    .sort_by { |j| [j.updated || Date.new(1970), j.title] }.reverse
 end
 
 def load_pages
