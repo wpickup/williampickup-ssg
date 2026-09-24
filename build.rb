@@ -33,11 +33,14 @@ THEME_COLOR_DARK  = '#1c1916'
 # until Apple Music is scrobbling there — the widget silently no-ops without it.
 LISTENBRAINZ_USER = 'Wpickup'
 
+# Public source repo — the footer links BUILD_SHA to its commit page here.
+REPO_URL = 'https://github.com/wpickup/williampickup-ssg'
+
 # UTC, not system local time — local builds (Sydney) and CI builds
 # (GitHub Actions runners) would otherwise show different times for the
-# same moment. The git SHA pins this to an exact, verifiable commit
-# (intentionally not linked in the footer — the repo is private, so a
-# link to GitHub would 404 for every visitor except the owner).
+# same moment. The git SHA pins this to an exact, verifiable commit. (A
+# local build of an unpushed commit links to a commit GitHub doesn't have
+# yet — harmless, since only CI builds are ever published.)
 BUILD_STAMP = Time.now.utc.strftime("%-d %b '%y, %H:%M UTC")
 BUILD_SHA   = begin
   sha = `git rev-parse --short HEAD 2>/dev/null`.strip
