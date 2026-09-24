@@ -376,7 +376,7 @@ end
 @draft  = fm['draft'] == true          # no force_draft — there's no _drafts/ equivalent
 ```
 
-`load_journeys` doesn't sort, so `/journeys.html` lists journeys in whatever order `Dir[]` returns their files. Journeys are kept out of the blog listing, archives and feeds simply because they're never added to the `posts` array.
+`load_journeys` sorts by `[updated, title]` descending, so `/journeys.html` shows the most recently updated journey first. An undated journey gets `Date.new(1970)`, which sorts it last, and the title breaks ties so the order doesn't depend on the order `Dir[]` returns files in. Journeys are kept out of the blog listing, archives and feeds simply because they're never added to the `posts` array.
 
 ---
 
@@ -1001,7 +1001,7 @@ source "$( dirname "${BASH_SOURCE[0]}" )/config.sh"
 
 `${BASH_SOURCE[0]}` is the path to the currently-executing script file. `dirname` extracts its directory. This pattern resolves the config file relative to the script's own location, so the scripts work correctly regardless of the working directory when they are called.
 
-`config.sh` sets up two things for all scripts (a third — SSH connection details for the old rsync deploy target — was removed once the site moved to GitHub Pages; see "GitHub Actions Deployment Pipeline" below):
+`config.sh` sets up two things for all scripts. (It once also held SSH details for the old rsync deploy target and loaded a webmention token from a gitignored `.webmention-token` file; both went once deploys and webmention sending moved to GitHub Actions — see "GitHub Actions Deployment Pipeline" below.)
 
 ```bash
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
@@ -1013,18 +1013,6 @@ export SSG_OUT_DIR="$OUT_DIR"
 `PROJECT_DIR` is resolved by navigating two levels up from the Scripts directory (`../..` from `.nova/Scripts/` lands at the project root) and calling `pwd` to get the absolute path. This is the standard Bash pattern for finding a project root relative to a known file location.
 
 `${SSG_OUT_DIR:-/Users/will/Sites/williampickup.org/_site}` is Bash **parameter expansion with a default**: use `$SSG_OUT_DIR` if it is set and non-empty; otherwise use the fallback path. The comment in the file explains the Nova-specific context: because Nova launches tasks through a GUI process rather than an interactive shell, shell profile exports (`export SSG_OUT_DIR=...` in `.zshrc`) are not reliably inherited. Defining the value in `config.sh` and re-exporting it ensures all child processes in the task see it.
-
-Similarly for the webmention token:
-
-```bash
-if [ -z "${WEBMENTION_TOKEN:-}" ] && [ -f "$PROJECT_DIR/.webmention-token" ]; then
-  export WEBMENTION_TOKEN="$(cat "$PROJECT_DIR/.webmention-token")"
-fi
-```
-
-The token is read from a gitignored `.webmention-token` file in the project root. This solves the same Nova environment inheritance problem for secrets — the token cannot be in `config.sh` because that file is committed to Git, and it cannot be relied upon from a shell profile export for the same GUI-launch reason. Webmentions are now sent only from CI, so no current task uses the token; this block is left over from the rsync-deploy days.
-
-The tasks are: **Authoring Guide**, **Build**, **Build with Drafts**, **Build and Index**, **Watch**, **New Post**, **New Note**, **Publish Draft**, **Promote Note** and **Taxonomy Cheatsheet**. Each `.nova/Tasks/*.json` file just points its `build` action at a script. None of them deploys; see "deploy.sh" below.
 
 ### build.sh and build-drafts.sh
 
