@@ -1,0 +1,43 @@
+<%# encoding: utf-8 %>
+<%# Default template for a _pages/*.md file with no `template:` in its front
+    matter — a plain titled page: title, optional description as the lede,
+    then the Markdown body. Pages needing custom layout (bio, blogroll,
+    colophon, search) have their own templates. -%>
+<%
+  page_title    = "#{page.title} — #{SITE_TITLE}"
+  description   = page.description
+  canonical_url = page.url
+  og_type       = 'website'
+  og_title      = page.title
+  og_image      = nil; date_iso = nil
+-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%= renderer.partial('head',
+      page_title: page_title, description: description,
+      canonical_url: canonical_url, og_type: og_type, og_title: og_title,
+      og_image: og_image, date_iso: date_iso, root: root) %>
+</head>
+<body>
+<%= renderer.partial('header', root: root, current: page.slug) %>
+  <div class="page-body">
+    <main id="main-content">
+
+      <header class="page-hero container">
+        <h1 class="page-hero__title"><%= h(page.title) %></h1>
+<%- if page.description -%>
+        <p class="page-hero__lede"><%= h(page.description) %></p>
+<%- end -%>
+      </header>
+
+      <div class="page-prose container">
+        <%= page.content_html %>
+      </div>
+
+    </main>
+<%= renderer.partial('footer', root: root, current: page.slug) %>
+  </div>
+  <script defer src="<%= root %>javascript/main.js"></script>
+</body>
+</html>

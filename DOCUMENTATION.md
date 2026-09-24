@@ -103,6 +103,7 @@ williampickup-ssg/
 ├── deploy.sh        Local build + Pagefind index, for previewing before a push
 ├── send_webmentions.rb   Sends outbound webmentions — run by CI after each deploy
 ├── update_book_covers.rb Populates assets/books/ (see "Cover images" under "Books") — not run by build.rb
+├── pagefind.yml     Pagefind search-index settings (see "Search")
 ├── taxonomy.rb      Writes taxonomy.md, a cheatsheet of categories/tags in use (see "Taxonomy cheatsheet")
 ├── extract.rb       One-time migration script (Tinderbox → Markdown) — retired, kept for reference
 └── start-ruby-language-servers.sh   Starts ruby-lsp / rubocop / erb_lint language servers for the editor
@@ -392,21 +393,19 @@ with the citation styled distinctly from a plain `— Author Name` blockquote. I
 
 ### Code blocks
 
-**Fenced code blocks don't currently work.** `md_to_html` uses Kramdown's own `kramdown` parser, not GFM, so:
+Fenced code blocks with a language tag get syntax highlighting via [Prism](https://prismjs.com), themed to match light/dark mode:
 
-- ```` ``` ```` backtick fences aren't recognised — the block renders as one inline `<code>` run inside a paragraph.
-- `~~~` tilde fences (Kramdown's native fence syntax) get broken by the `~~strikethrough~~` pre-processing step, which runs before Kramdown and turns the tildes into `<del>` tags.
-
-What does work is an **indented code block** (four spaces), with an optional Kramdown attribute list to set the language class:
-
-```markdown
-    def hello
-      puts "hi"
-    end
-{: .language-ruby}
+````markdown
+```ruby
+def hello
+  puts "hi"
+end
 ```
+````
 
-That renders `<pre><code class="language-ruby">`. `site.css` imports the Prism "Tomorrow" theme from cdnjs (with a light-mode override), so blocks carrying a `language-*` class get Prism's block styling. **No Prism JavaScript is loaded anywhere**, though, so there's no token-level syntax colouring. No post currently contains a code block.
+Both ```` ``` ```` (GitHub-style) and `~~~` (Kramdown-style) fences work, with or without a language. The language becomes a `language-ruby` class on the `<code>` element. Code is set aside before the `==highlight==`/`~~strikethrough~~` handling runs, so `==` and `~~` inside a code block or an inline `` `code span` `` are left alone. Indented (four-space) code blocks also work but can't carry a language.
+
+Prism's stylesheet and scripts (from cdnjs, via `_partials/_prism.html.erb`) are only added to posts and journeys whose body contains a language-tagged block, so other pages don't load them. Prism's autoloader fetches each language's grammar on demand, so any language Prism supports works without extra setup.
 
 ### Epigraphs and new-thought
 
@@ -674,7 +673,7 @@ Notes render into a different HTML wrapper (`.note-single__body` / `.notes-list_
 
 **Works in notes:** standard Markdown, `==highlighted==`/`~~strikethrough~~`, [quotebacks](#quotebacks), [pull quotes](#pull-quotes-part-labels-pilcrow), epigraphs, new-thought, the pilcrow, and [scroll-reveal](#scroll-reveal-animations) (`reveal`, `reveal--*`).
 
-**Post-only, not available in notes:** figure size modifiers, photo pairs, Prism code-block styling, the [editorial grid](#editorial-grid-layout) (notes have no `layout` field at all), and sidenotes (the CSS isn't strictly blocked, but the numbering counter never initializes for a note, so a hand-written sidenote would render with broken numbering).
+**Post-only, not available in notes:** figure size modifiers, photo pairs, Prism syntax highlighting (fenced code blocks still render in notes, just uncoloured), the [editorial grid](#editorial-grid-layout) (notes have no `layout` field at all), and sidenotes (the CSS isn't strictly blocked, but the numbering counter never initializes for a note, so a hand-written sidenote would render with broken numbering).
 
 Quotebacks and pull quotes render identically whether a note is viewed on its own permalink page or inline on the `/notes.html` listing — both surfaces show a note's full body, so both get the same styling.
 
@@ -786,9 +785,9 @@ sidebar_blurb: "Maker, runner, reader, photographer, traveller."   # bio only �
 draft: true         # optional — see "Drafts"
 ```
 
-`bio`, `blogroll`, `colophon`, and `search` each have a dedicated template. **`template:` is effectively required.** Without it the builder looks for `_templates/page.html.erb`, which doesn't exist, and the whole build stops with an error. Adding a new static page means both a `_pages/*.md` file and a matching `_templates/*.html.erb` file — see [Builder behaviours and gotchas](#builder-behaviours-and-gotchas) for what every template needs to include.
+`bio`, `blogroll`, `colophon`, and `search` each have a dedicated template. **Omit `template:`** for an ordinary text page: it then uses `_templates/page.html.erb`, which shows the title, the `description` as a lede, and the Markdown body (styled by `.page-prose`, shared with the colophon). A page that needs its own layout needs both a `_pages/*.md` file and a matching `_templates/*.html.erb` file — see [Builder behaviours and gotchas](#builder-behaviours-and-gotchas) for what every template needs to include. Pages don't appear in the navigation automatically; add a link in `_data/nav.yml` if you want one.
 
-`colophon.md` is currently `draft: true` (an outline), so `/colophon.html` isn't built in production. The build stamp in every page footer links to it — see [Builder behaviours and gotchas](#builder-behaviours-and-gotchas).
+`colophon.md` is currently `draft: true` (an outline), so `/colophon.html` isn't built in production — and the footer build stamp only links to it once it is (see [Builder behaviours and gotchas](#builder-behaviours-and-gotchas)).
 
 ---
 
@@ -907,10 +906,10 @@ CI (the GitHub Actions deploy workflow) never sets this — it always uses the d
 
 ### Search index (Pagefind)
 
-`build.rb` does not build the Pagefind search index — the CSS theming for the search UI (`#search`, `.pagefind-ui__*` in `site.css`, and `_templates/search.html.erb`) is wired up, but indexing is a separate step:
+`build.rb` does not build the Pagefind search index — the CSS theming for the search UI (`#search`, `.pagefind-ui__*` in `site.css`, and `_templates/search.html.erb`) is wired up, but indexing is a separate step, run from the project root (so Pagefind picks up `pagefind.yml`):
 
 ```bash
-npx pagefind --site _out
+npx --yes pagefind --site _out
 ```
 
 `deploy.sh` already runs this for you — manual indexing is only needed if you build without it.
@@ -1050,7 +1049,7 @@ Generated automatically on every build — no separate maintenance step, always 
 
 Client-side search via [Pagefind](https://pagefind.app), on `/search.html`. The index is built separately from the main site build — see [Search index (Pagefind)](#search-index-pagefind) above. Without an index (e.g. after a plain `ruby build.rb`), the search page loads but finds nothing.
 
-The indexing command differs between places. The **Build and Index** Nova task passes `--exclude-selectors "nav, footer, .site-header, .skip-link, .breadcrumb"`, so navigation text isn't indexed. CI and `deploy.sh` run plain `pagefind --site …` without that option, so the live index includes navigation text.
+Indexing options live in `pagefind.yml` in the project root, which Pagefind reads automatically from its working directory. CI, `deploy.sh` and the **Build and Index** Nova task all run from the root, so they all produce the same index. It currently excludes site chrome (`nav`, `footer`, `.site-header`, `.skip-link`, `.breadcrumb`) so navigation words don't match every page. Change indexing behaviour there, not with command-line flags.
 
 ---
 
@@ -1079,7 +1078,7 @@ Each task in `.nova/Tasks/` runs a script in `.nova/Scripts/`. Every script firs
 | **Authoring Guide** | `authoring-guide.sh` | Opens this file in Nova |
 | **Build** | `build.sh` | `ruby build.rb` |
 | **Build with Drafts** | `build-drafts.sh` | `ruby build.rb --drafts` |
-| **Build and Index** | `pagefind.sh` | Production build, then a Pagefind index (with nav/footer excluded) |
+| **Build and Index** | `pagefind.sh` | Production build, then a Pagefind index (settings from `pagefind.yml`) |
 | **Watch** | `watch.sh` | Builds with `--drafts`, then rebuilds on every change. Needs `fswatch` (`brew install fswatch`) |
 | **New Post** | `new-post.sh` | Asks for a title and writes `_drafts/YYYY-MM-DD-slug.md` with a full front matter scaffold |
 | **New Note** | `new-note.sh` | Asks for an optional title and writes `_notes/YYYY-MM-DD-slug.md` (or `…-untitled.md`) with `draft: true` |
@@ -1095,7 +1094,7 @@ The note slug written by **New Note** includes the date (`slug: 2026-06-29-title
 
 `ruby taxonomy.rb` (or the **Taxonomy Cheatsheet** Nova task) writes `taxonomy.md`, which is gitignored and regenerated each time. It lists:
 
-- the six topics, read from `TOPIC_LABELS` in `build.rb`
+- the six topics, from `TOPIC_LABELS` in `build.rb` (the script loads `build.rb` as a library, so it always matches)
 - every category and tag in use across `_posts/` and `_drafts/`, with counts
 - warnings for values that differ only in case, e.g. "Photography" vs "photography"
 
@@ -1111,7 +1110,7 @@ Check it before inventing a new category or tag.
 
 **Dates** — ISO 8601 format (`2026-06-18`). Posts sorted newest-first throughout the site. Archive pages group by year automatically.
 
-**Build footer stamp** — every page footer shows a UTC build timestamp and short git commit SHA (`built 21 Jun '26, 03:53 UTC  e39d8bf`), generated in `build.rb` from `git rev-parse --short HEAD`. It's useful for confirming that a deploy reflects what was pushed. The "built …" text links to `colophon.html`. The colophon page is currently a draft, so that link returns a 404 on the live site until the colophon is published. The SHA isn't linked to GitHub. That choice dates from when the repo was private; it's public now, so a commit link would work.
+**Build footer stamp** — every page footer shows a UTC build timestamp and short git commit SHA (`built 21 Jun '26, 03:53 UTC  e39d8bf`), generated in `build.rb` from `git rev-parse --short HEAD`. It's useful for confirming that a deploy reflects what was pushed. The "built …" text links to `colophon.html` only when the colophon page is part of the build (`renderer.page_built?('colophon')`); while the colophon is a draft it's plain text in production, so it never links to a 404. The SHA isn't linked to GitHub. That choice dates from when the repo was private; it's public now, so a commit link would work.
 
 **Adding a new template** — `_partials/_head.html.erb` is just the contents of `<head>`: `<meta>` and `<link>` tags only, no `<html>` wrapper. Every template is responsible for writing `<!DOCTYPE html><html lang="en"><head>` itself, rendering the `head` partial inside it, then closing `</head>` before `<body>`. Consistent across every existing template (copy the pattern from any file in `_templates/`), but manual — forgetting to close `</head>` before `<body>` in a new template is a silent bug, not something the builder catches.
 

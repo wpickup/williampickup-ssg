@@ -90,7 +90,8 @@ williampickup-ssg/
 ├── build.rb                  # The entire build pipeline
 ├── send_webmentions.rb       # Post-build webmention dispatch (reuses build.rb models)
 ├── update_book_covers.rb     # Fetches/normalises book covers into assets/books/ (reuses build.rb models)
-├── taxonomy.rb               # Writes taxonomy.md, a categories/tags cheatsheet (standalone)
+├── taxonomy.rb               # Writes taxonomy.md, a categories/tags cheatsheet (reuses build.rb)
+├── pagefind.yml              # Pagefind indexing settings, shared by CI and local runs
 ├── deploy.sh                 # Local build + Pagefind index (deploys happen in CI)
 ├── extract.rb                # One-time Tinderbox migration tool — retired
 ├── Gemfile                   # One gem: kramdown
@@ -139,7 +140,7 @@ THEME_COLOR_DARK  = '#1c1916'
 LISTENBRAINZ_USER = 'Wpickup'   # home page "Listening to" line; '' disables it
 ```
 
-`TOPIC_LABELS` (a frozen hash of topic key → label) is the one closed vocabulary in the build. `taxonomy.rb` reads it straight out of the `build.rb` source text, so the topic list only has to be maintained here.
+`TOPIC_LABELS` (a frozen hash of topic key → label) is the one closed vocabulary in the build. `taxonomy.rb` loads `build.rb` and uses the same constant, so the topic list only has to be maintained here.
 
 These are Ruby **constants** (names beginning with a capital letter), which means Ruby will emit a warning if anything tries to re-assign them. Using constants rather than variables makes it immediately clear that these values are fixed for the lifetime of the build and safe to reference from anywhere — templates, models, helper methods — without being passed as arguments.
 
@@ -392,8 +393,8 @@ end
 
 Every Markdown body (posts, notes, journeys, photos, books and pages) passes through this function. There are three stages:
 
-1. **Pre-processing.** Two regex substitutions add syntax Kramdown doesn't have: `~~text~~` becomes `<del>` and `==text==` becomes `<mark>`. They run on the raw Markdown before parsing, so they also apply inside code spans and would change a `~~~` code fence. In practice this means fenced code blocks can't be used (see "Code blocks" in DOCUMENTATION.md).
-2. **Kramdown** with its native `kramdown` input format, not GFM. So ```` ``` ```` fences, GFM tables and autolinked bare URLs aren't supported, while Kramdown extras such as `{: .class}` attribute lists are. `smart_quotes` sets the curly-quote characters to use.
+1. **Pre-processing.** Two regex substitutions add syntax Kramdown doesn't have: `~~text~~` becomes `<del>` and `==text==` becomes `<mark>`. Before they run, code is set aside so they can't touch it. `FENCED_CODE_RE` matches ```` ``` ```` or `~~~` fenced blocks; each is rewritten as a Kramdown `~~~` fence, since Kramdown doesn't understand backtick fences. The new fence is one tilde longer than the longest tilde run in the code, so code containing `~~~` can't close it early. `INLINE_CODE_RE` matches `` `code spans` ``. Each piece of code is stored in an array and replaced with a `"\u0000N\u0000"` placeholder (a NUL character can't appear in normal Markdown), the substitutions run, and the placeholders are swapped back. The `guard` lambda keeps the store-and-replace step in one place for both regexes.
+2. **Kramdown** with its native `kramdown` input format, not GFM. GFM tables and autolinked bare URLs aren't supported, while Kramdown extras such as `{: .class}` attribute lists are. `smart_quotes` sets the curly-quote characters to use. `syntax_highlighter: nil` makes Kramdown emit plain `<code class="language-x">` even if the Rouge gem is installed, leaving highlighting to Prism in the browser. `has_code_blocks?(html)` checks the output for that class, and the post and journey templates use it to include `_partials/_prism.html.erb` only when needed.
 3. **`apply_smallcaps`** wraps runs of two or more capital letters in `<span class="acr">` so CSS can set them in small caps. It avoids changing `<pre>`/`<code>` contents by first swapping each of those blocks for a numbered placeholder, then running the substitution only on text between `>` and `<`, which skips tag attributes, and finally restoring the protected blocks.
 
 ---
@@ -402,17 +403,18 @@ Every Markdown body (posts, notes, journeys, photos, books and pages) passes thr
 
 ```ruby
 class Renderer
-  def initialize(all_posts, nav_data = {})
-    @all_posts = all_posts
-    @nav_data  = nav_data
+  def initialize(all_posts, nav_data = {}, pages = [])
+    @all_posts  = all_posts
+    @nav_data   = nav_data
+    @page_slugs = pages.map(&:slug)
   end
   ...
 end
 ```
 
-`nav_data = {}` is a **default parameter** — if `Renderer.new` is called with only one argument, `nav_data` defaults to an empty hash rather than raising an `ArgumentError`. This makes the class slightly more flexible without requiring callers to always supply navigation data.
+`nav_data = {}` and `pages = []` are **default parameters** — if `Renderer.new` is called with fewer arguments, they default to empty collections rather than raising an `ArgumentError`. This makes the class slightly more flexible without requiring callers to always supply every piece of data.
 
-The `Renderer` is constructed once at the start of `build()` and shared across the entire build. It holds two pieces of state: the full post list (used for cross-linking between posts) and the navigation data (used by every header and footer partial). Everything else is passed in as locals per render call.
+The `Renderer` is constructed once at the start of `build()` (`Renderer.new(posts, nav_data, pages)`) and shared across the entire build. It holds three pieces of state: the full post list (used for cross-linking between posts), the navigation data (used by every header and footer partial), and the slugs of the static pages being built this run (so templates can check a page exists before linking to it). Everything else is passed in as locals per render call.
 
 ### render and partial
 
@@ -477,6 +479,8 @@ def publit_width(url, w) = url.sub(%r{(publit\.io/file/)}, "\\1w_#{w}/")
 `%r{...}` is Ruby's **regex literal** using braces as delimiters instead of the more common `/…/`. Braces are used here because the URL contains forward slashes, which would need escaping if `/…/` delimiters were used. The capture group `(publit\.io/file/)` matches the CDN path fragment, and `"\\1w_#{w}/"` replaces it with the same fragment followed by the width variant. `\\1` in the replacement string is a **backreference** to the first capture group; the double backslash is needed because the replacement string is a Ruby string literal where `\1` would otherwise be interpreted as an escape sequence.
 
 `topic_label` uses a **fallback chain**: if the topic ID exists in `TOPIC_LABELS`, return its human label; otherwise, construct a label by replacing hyphens with spaces, splitting into words, capitalising each word with `map(&:capitalize)`, and joining back with spaces. An unknown topic therefore still renders a sensible label. It gets no card colour, though, because that comes from a `.cat--*` rule in the CSS.
+
+`page_built?(slug)` reports whether a static page is part of this build. `load_pages` has already dropped draft pages from a production build, so this is false for a draft page. The footer partial uses it to link the build stamp to `colophon.html` only when that page exists, rather than linking to a 404.
 
 `breadcrumb_ld(items)` returns a `<script type="application/ld+json">` tag containing a schema.org `BreadcrumbList`, built from an ordered array of `[name, url]` pairs. The last pair (the current page) passes `nil` as its URL, matching the unlinked last crumb in the visible breadcrumb. `each_with_index.map do |(name, url), i|` uses **block parameter destructuring**: the parentheses unpack each two-element pair into `name` and `url`, and `i` is the index. Topic, category, series, journey, photo and gallery-highlights templates call it.
 
@@ -688,7 +692,7 @@ require_relative 'build'
 
 ...and gain access to `Post`, `load_posts`, `Note`, `load_notes`, and all the helper functions, without triggering a full site build as a side effect. `update_book_covers.rb` uses the same pattern to call `load_books` and `Book#source_cover_url`. It is the standard Ruby pattern for a file that is both a standalone script and a reusable library.
 
-`taxonomy.rb` is the exception. It doesn't require `build.rb`: it has its own copy of `parse_frontmatter`, and it gets `TOPIC_LABELS` by matching that constant in `build.rb`'s source with a regex and `eval`-ing the result. Its comments say this avoids triggering a build, which predates the guard. Today it could `require_relative 'build'` safely.
+`taxonomy.rb` does the same, reusing `parse_frontmatter`, `POSTS_DIR`/`DRAFTS_DIR`, `SRC_DIR` and `TOPIC_LABELS`. (An earlier version avoided loading `build.rb`, keeping its own copy of the parser and `eval`-ing `TOPIC_LABELS` out of the source text.)
 
 ---
 
@@ -841,7 +845,7 @@ _data/series.yml   ─┘
 Model objects + hashes
         │
         ▼
-  Renderer.new(all_posts, nav_data)
+  Renderer.new(all_posts, nav_data, pages)
         │
         ├── render('post',  post: p, prev_post: ..., root: '../')
         ├── render('home',  posts: ..., featured_posts: ..., root: '')
@@ -1146,7 +1150,7 @@ fi
 
 `publish-draft.sh` works like `promote-note.sh`: it lists `_drafts/*.md` in a `choose from list` dialog, refuses to overwrite a file already in `_posts/`, and moves the chosen file with `git mv` if Git tracks it, otherwise with `mv`. Posts need no front matter changes when published, so it doesn't add any fields. `_drafts/` is gitignored, so in practice the plain `mv` branch is the one that runs.
 
-`pagefind.sh` (the **Build and Index** task) runs a production `ruby build.rb` and then `npx pagefind --site "$OUT_DIR" --exclude-selectors "nav, footer, .site-header, .skip-link, .breadcrumb"`. It's the only place that passes `--exclude-selectors`; CI and `deploy.sh` index everything.
+`pagefind.sh` (the **Build and Index** task) runs a production `ruby build.rb` and then `npx --yes pagefind --site "$OUT_DIR"` from the project root. Indexing options aren't passed on the command line; Pagefind reads them from `pagefind.yml` in its working directory, so the Nova task, `deploy.sh` and CI all build the same index.
 
 `taxonomy-cheatsheet.sh` runs `ruby taxonomy.rb` and opens the resulting `taxonomy.md` in Nova. `authoring-guide.sh` just opens `DOCUMENTATION.md`.
 
@@ -1159,13 +1163,15 @@ Now that every push to `main` deploys, the script only builds locally so you can
 ```bash
 set -euo pipefail
 
+cd "$(dirname "$0")"
+
 OUT_DIR="${SSG_OUT_DIR:-_out}"
 
 ruby build.rb "$@"
 npx --yes pagefind --site "$OUT_DIR"
 ```
 
-`"$@"` passes the script's arguments through, so `./deploy.sh --drafts` builds with drafts. `set -euo pipefail` stops on the first failing command (`-e`), treats unset variables as errors (`-u`), and makes a pipeline fail if any stage fails (`pipefail`). `${SSG_OUT_DIR:-_out}` uses the same default as `build.rb`, so Pagefind indexes the folder the build just wrote.
+`cd "$(dirname "$0")"` moves to the script's own directory (the project root) first, so Pagefind finds `pagefind.yml` wherever the script is run from. `"$@"` passes the script's arguments through, so `./deploy.sh --drafts` builds with drafts. `set -euo pipefail` stops on the first failing command (`-e`), treats unset variables as errors (`-u`), and makes a pipeline fail if any stage fails (`pipefail`). `${SSG_OUT_DIR:-_out}` uses the same default as `build.rb`, so Pagefind indexes the folder the build just wrote.
 
 The CSP check no longer applies. GitHub Pages doesn't allow custom response headers the way the old Vultr `relayd` config did, so there's no server-side CSP for a build to break. Pagefind's search works on GitHub Pages without it.
 
@@ -1227,7 +1233,7 @@ permissions:
 - run: npx --yes pagefind --site _out
 ```
 
-Node is required solely to run Pagefind via `npx`. The `--yes` flag suppresses the prompt npx shows when downloading a package for the first time. The index is generated inside `_out/pagefind/`, which becomes part of the Pages artifact uploaded a few steps later.
+Node is required solely to run Pagefind via `npx`. The `--yes` flag suppresses the prompt npx shows when downloading a package for the first time. Steps run from the repository root, so Pagefind reads `pagefind.yml` automatically. The index is generated inside `_out/pagefind/`, which becomes part of the Pages artifact uploaded a few steps later.
 
 **Custom domain, then publish steps:**
 

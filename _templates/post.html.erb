@@ -40,6 +40,7 @@
 <%- end -%>
   }
   </script>
+<%= renderer.partial('prism') if has_code_blocks?(post.content_html) -%>
 </head>
 <body>
 <%= renderer.partial('header', root: root, current: 'writing') %>
