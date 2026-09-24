@@ -15,9 +15,10 @@ ruby build.rb
 
 echo ""
 echo "→ Building Pagefind search index..."
-npx pagefind \
-  --site "$OUT_DIR" \
-  --exclude-selectors "nav, footer, .site-header, .skip-link, .breadcrumb"
+# Indexing options (excluded selectors etc.) come from pagefind.yml in the
+# project root — Pagefind reads it from the working directory, which the
+# `cd` above already set.
+npx --yes pagefind --site "$OUT_DIR"
 
 echo ""
 echo "  ✓ Search index written to $OUT_DIR/pagefind/"

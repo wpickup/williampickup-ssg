@@ -1,7 +1,6 @@
 /* TOKENS */
-/* Fonts are self-hosted. woff2 files are in /fonts/.
-   To revert to Google Fonts CDN, comment out the @font-face block below
-   and restore the three Google Fonts <link> lines in /Boilerplate/core-head-links. */
+/* Fonts are self-hosted — woff2 files live in fonts/ (see fonts/README.md
+   for the file list and how to update them). No font CDN is used. */
 
 @font-face {
   font-family: 'Cormorant Garamond';
@@ -2384,11 +2383,16 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
 .book-find-link:hover { color: var(--accent); }
 
 /* SYNTAX HIGHLIGHTING — Prism.js */
-/* Load Tomorrow Night via CDN; override key colours to match site tokens */
-@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css');
+/* The Prism Tomorrow Night theme and scripts are loaded per page by
+   _partials/_prism.html.erb, only where a post or journey contains a
+   language-tagged code block. (An @import here never worked: browsers
+   ignore @import anywhere but the top of a stylesheet.) These rules
+   adjust that theme to the site's fonts and light/dark tokens. */
 
 .post-body pre,
-.post-body code {
+.post-body code,
+.post-body pre[class*="language-"],
+.post-body code[class*="language-"] {
   font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
   font-size: 0.82rem;
 }
@@ -3558,13 +3562,15 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   border-color: var(--accent);
 }
 
-/* ── Colophon ─────────────────────────────────────────────────────────────── */
-.colophon-body {
+/* ── Colophon + generic pages (page.html.erb) ─────────────────────────────── */
+.colophon-body,
+.page-prose {
   max-width: 42rem;
   padding-top: 3rem;
   padding-bottom: 5rem;
 }
-.colophon-body h2 {
+.colophon-body h2,
+.page-prose h2 {
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 500;
@@ -3574,22 +3580,27 @@ html[data-theme="light"] .post-body code[class*="language-"] {
   margin: 3rem 0 0.75rem;
 }
 .colophon-body p,
-.colophon-body ul {
+.page-prose p,
+.colophon-body ul,
+.page-prose ul {
   font-size: 1rem;
   line-height: 1.75;
   color: var(--ink);
   margin-top: 0.75rem;
 }
-.colophon-body ul {
+.colophon-body ul,
+.page-prose ul {
   padding-left: 1.25rem;
   list-style: disc;
 }
-.colophon-body a {
+.colophon-body a,
+.page-prose a {
   color: var(--ink);
   border-bottom: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
   text-decoration: none;
 }
-.colophon-body a:hover {
+.colophon-body a:hover,
+.page-prose a:hover {
   color: var(--accent);
   border-color: var(--accent);
 }

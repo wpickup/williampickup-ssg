@@ -8,6 +8,10 @@
 
 set -euo pipefail
 
+# Run from the project root regardless of where this was invoked from —
+# Pagefind reads its settings from pagefind.yml in the working directory.
+cd "$(dirname "$0")"
+
 OUT_DIR="${SSG_OUT_DIR:-_out}"
 
 echo "==> Building site..."

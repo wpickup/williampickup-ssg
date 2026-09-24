@@ -17,6 +17,7 @@
       canonical_url: canonical_url, og_type: og_type, og_title: og_title,
       og_image: og_image, date_iso: date_iso, root: root) %>
 <%= renderer.breadcrumb_ld([[SITE_TITLE, SITE_URL], ['Journeys', "#{SITE_URL}/journeys.html"], [journey.title, nil]]) %>
+<%= renderer.partial('prism') if has_code_blocks?(journey.content_html) -%>
 </head>
 <body>
 <%= renderer.partial('header', root: root, current: 'journeys') %>
