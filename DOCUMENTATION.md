@@ -852,7 +852,7 @@ entries:
 
 `feed` is the site's RSS/Atom URL. `javascript/blogroll.js` uses it to show each blog's most recent post. Most feeds don't send CORS headers, so the browser fetches them through a small Cloudflare Worker, `wp-feed-proxy.williampickup.workers.dev`, whose source is in `worker/`. The Worker returns just the latest entry as JSON and caches it for two hours. It's deployed separately with `wrangler` (see `worker/README.md`), not by the site's deploy workflow. The page also loads its own stylesheet, `css/blogroll.css`.
 
-The `/blogroll.html` page is rendered from `blogroll.yml`, not from the body of `_pages/blogroll.md`. That file still contains an older hand-written Markdown list of links, which isn't shown.
+The `/blogroll.html` page is rendered entirely from `blogroll.yml`. `_pages/blogroll.md` holds only the page's front matter (title, description, template), so add or edit blogs in the yml, not the Markdown file.
 
 ---
 
