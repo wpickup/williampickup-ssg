@@ -288,7 +288,7 @@ Drafts follow the same rule as everywhere else: a series made up entirely of `_d
 
 ### Pairing with `layout: photo-essay`
 
-Series and layout are independent front-matter fields, but a multi-part trip or project write-up is often exactly the kind of content that also wants the two-column photo grid — see [Photo essay layout](#photo-essay-layout). Combine both:
+Series and layout are independent front-matter fields, but a multi-part trip or project write-up is often exactly the kind of content that also wants the centred narrative rhythm of `photo-essay` — see [Photo essay layout](#photo-essay-layout). Combine both:
 
 ```yaml
 series: nullarbor-road-trip
@@ -309,7 +309,7 @@ Set with `layout:` in front matter. Default is `standard` (omit the field).
 
 **`dispatch`** — Narrower, newsletter-style column (`--post-max-w: 640px`). Date is prominent. Good for short link-posts, brief observations, or things written quickly.
 
-**`photo-essay`** — Body images run in a two-column grid on wide screens; prose and images share equal weight. See [Photo essay layout](#photo-essay-layout).
+**`photo-essay`** — A centred editorial narrative for image-led writing. Prose stays in a restrained central column, while selected figures can widen, pair, or break out for emphasis. See [Photo essay layout](#photo-essay-layout).
 
 ---
 
@@ -763,6 +763,19 @@ draft: true                  # In-place draft flag, like notes — remove it to 
 ```
 
 The body uses the same markup as posts — see [Body markup](#body-markup) and [Photo essay layout](#photo-essay-layout). `/journeys.html` lists journeys most recently `updated` first (undated ones last); each card shows the `lede`, or the `description` if there's no lede.
+
+### Style guidance
+
+Journeys work best when they read as paced visual narratives rather than as galleries with commentary attached. Think in movements: arrival, drift, detail, interruption, return, close.
+
+- Keep most prose in the standard central flow.
+- Use `figure--wide` for horizon, weather, road, or scene-setting frames.
+- Use `photo-pair` when two images genuinely belong together as one beat.
+- Use `photo-text` for signage, interiors, practical notes, or a single reflective aside tied to one image.
+- Use `figure--portrait` and `figure--half` as quieter pauses within the sequence.
+- Reserve `figure--full` for major transitions, opening scenes, or endings.
+- Avoid stacking several dramatic breakouts in a row.
+- End on a strong image or closing paragraph rather than explanatory process notes.
 
 `_journeys/melbourne-to-the-coast.md` is currently a draft sample that uses placeholder images from picsum.photos.
 
