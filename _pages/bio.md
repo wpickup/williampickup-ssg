@@ -8,9 +8,9 @@ template: bio
 
 ## Making things slowly, thinking things through
 
-These days I'm mostly interested in travel, reading, photography, and making things in the workshop. I'm drawn to work that rewards patience, attention to detail and where the final product feels larger than the parts that make it up.
+These days I'm mostly interested in travel, reading, photography, and making things in the workshop.
 
-A long-running interest of mine has been the pursuit of a simpler life through natural health, growing food, and making things yourself rather than buying everything.
+A long-running interest of mine has been the pursuit of a simpler life through natural health, growing food, and making things yourself rather than buying everything. Its an ongoing project...
 
 Before retiring, I spent many years working in IT. I began as an electronics technician working on communications gear and mini computers, then moved into software development and later into software architecture and leadership. I was lucky that I had a natural curiosity that aligned with the much work that came my way.
 
