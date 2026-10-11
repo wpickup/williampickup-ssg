@@ -7,43 +7,20 @@
 #   ruby taxonomy.rb
 #
 # Writes taxonomy.md (gitignored — it's derived from _posts/_drafts, not a
-# source of truth) and opens it in Nova.
+# source of truth); the Nova task then opens it.
 
-require 'yaml'
-require 'date'
+# Loading build.rb brings in parse_frontmatter, POSTS_DIR/DRAFTS_DIR and the
+# TOPIC_LABELS closed vocabulary without running a build (its `build` call is
+# guarded by `if __FILE__ == $0`), so none of it is duplicated here.
+require_relative 'build'
 
-ROOT       = __dir__
-POSTS_DIR  = File.join(ROOT, '_posts')
-DRAFTS_DIR = File.join(ROOT, '_drafts')
-OUT_FILE   = File.join(ROOT, 'taxonomy.md')
-
-# Same frontmatter parsing as build.rb's parse_frontmatter, kept in sync by
-# hand since this script intentionally doesn't require build.rb (which runs
-# a full site build as a side effect of loading).
-def parse_frontmatter(path)
-  raw = File.read(path, encoding: 'utf-8')
-  if raw =~ /\A---\s*\n(.*?)\n---\s*\n(.*)\z/m
-    YAML.safe_load($1, permitted_classes: [Date, Time]) || {}
-  else
-    {}
-  end
-end
-
-# Topics are a closed vocabulary defined in build.rb's TOPIC_LABELS, not
-# freely invented per-post — pulled from source rather than duplicated here
-# so it can't drift out of sync. build.rb itself isn't require'd (it runs
-# the whole build as a side effect of loading); just its constant is lifted.
-def topic_labels
-  src = File.read(File.join(ROOT, 'build.rb'), encoding: 'utf-8')
-  src =~ /^TOPIC_LABELS = (\{.*?\})\.freeze/m
-  eval($1) # rubocop:disable Security/Eval -- trusted local file, not user input
-end
+OUT_FILE = File.join(SRC_DIR, 'taxonomy.md')
 
 def tally(field)
   counts = Hash.new(0)
   paths = Dir.glob(File.join(POSTS_DIR, '*.md')) + Dir.glob(File.join(DRAFTS_DIR, '*.md'))
   paths.each do |path|
-    fm = parse_frontmatter(path)
+    fm, _body = parse_frontmatter(path)
     Array(fm[field]).reject { |v| v.nil? || v.to_s.strip.empty? }.each { |v| counts[v] += 1 }
   end
   counts
@@ -85,7 +62,7 @@ File.write(OUT_FILE, <<~MD)
 
   ## Topics (closed set — pick one of these six, don't invent new ones)
 
-  #{topic_labels.map { |id, label| "- #{id} — #{label}" }.join("\n")}
+  #{TOPIC_LABELS.map { |id, label| "- #{id} — #{label}" }.join("\n")}
 
   ## Categories (#{categories.size} in use)
   #{render_collisions('category', categories)}
@@ -97,4 +74,4 @@ File.write(OUT_FILE, <<~MD)
 MD
 
 puts "Wrote #{OUT_FILE}"
-puts "  #{topic_labels.size} topics · #{categories.size} categories · #{tags.size} tags"
+puts "  #{TOPIC_LABELS.size} topics · #{categories.size} categories · #{tags.size} tags"

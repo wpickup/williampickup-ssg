@@ -1,6 +1,8 @@
 filters:
   - bloggers
   - craft
+  - tech
+  - web
   - earth
   - photography
   - music
@@ -129,6 +131,214 @@ entries:
     category: craft
     desc: "The online journal of Jeremy Keith, an author and web developer living in Brighton"
 
+  - name: "Irwin Miller"
+    url: "http://irwinmiller.com/"
+    category: craft
+    desc: "The polymath"
+
+  - name: "Labor Limae"
+    url: "http://laborlimaetoolworks.blogspot.com/"
+    feed: "http://laborlimaetoolworks.blogspot.com/feeds/posts/default?alt=rss"
+    category: craft
+    desc: "A study of the aesthetico-political consequences of japanese saw sharpening — or something like that"
+
+  - name: "Svend Bayer Pottery"
+    url: "https://svendbayerpottery.wordpress.com"
+    feed: "https://svendbayerpottery.wordpress.com/feed/"
+    category: craft
+
+  - name: "#iHeartLutherie - Maegen Wells Guitars & Mandolins"
+    url: "http://www.maegenwellsguitars.com/iheartlutherie/"
+    feed: "http://www.maegenwellsguitars.com/iheartlutherie?format=RSS"
+    category: craft
+
+  - name: "Musings from Big Pink"
+    url: "http://musingsfrombigpink.blogspot.com/"
+    feed: "http://musingsfrombigpink.blogspot.com/feeds/posts/default?alt=rss"
+    category: craft
+
+  - name: "Rude Mechanicals Press Blog"
+    url: "https://rudemechanicalspress.com"
+    feed: "https://rudemechanicalspress.wordpress.com/feed/"
+    category: craft
+    desc: "In which 1snugthejoiner writes about woodworking, publishing, house renovations, cats and Shakespeare"
+
+  - name: "Kamaka Pottery"
+    url: "http://anagama-nz.blogspot.com/"
+    feed: "http://anagama-nz.blogspot.com/feeds/posts/default"
+    category: craft
+
+  - name: "Baldwin Maker"
+    url: "http://baldwinmaker.blogspot.com/"
+    feed: "http://baldwinmaker.blogspot.com/feeds/posts/default"
+    category: craft
+
+  - name: "The Monastery"
+    url: "http://milwaukeemonastery.blogspot.com/"
+    feed: "http://milwaukeemonastery.blogspot.com/feeds/posts/default?alt=rss"
+    category: craft
+
+  - name: "Jessica Abel"
+    url: "https://jessicaabel.com/"
+    feed: "http://jessicaabel.com/feed/"
+    category: tech
+    desc: "cartoonist, writer, educator"
+
+  - name: "IndieNews English"
+    url: "https://news.indieweb.org/en"
+    feed: "https://granary-demo.appspot.com/url?input=html&output=atom&url=https%3A%2F%2Fnews.indieweb.org%2Fen"
+    category: tech
+
+  - name: "Collin Donnell"
+    url: "https://collin.blog"
+    feed: "http://collindonnell.com/feed/"
+    category: tech
+    desc: "Freelance software developer from Portland, Oregon"
+
+  - name: "Secret life of synthesizers"
+    url: "https://secretlifeofsynthesizers.com"
+    feed: "http://secretlifeofsynthesizers.com/feed/"
+    category: tech
+
+  - name: "Welcome to Sherwood"
+    url: "https://welcometosherwood.wordpress.com"
+    feed: "http://welcometosherwood.wordpress.com/feed/"
+    category: tech
+    desc: "\"May your trails be crooked, winding, lonesome, dangerous, leading to the most amazing view. May your mountains rise into and above the clouds.\" - Edward Abbey"
+
+  - name: "Ryan Mulligan"
+    url: "https://ryanmulligan.dev"
+    feed: "https://ryanmulligan.dev/feed.xml"
+    category: tech
+
+  - name: "High Scalability"
+    url: "http://highscalability.com/blog/"
+    feed: "http://feeds.feedburner.com/HighScalability"
+    category: tech
+
+  - name: "The Code Whisperer"
+    url: "https://blog.thecodewhisperer.com/"
+    feed: "http://blog.thecodewhisperer.com/atom.xml"
+    category: tech
+
+  - name: "Colin Marshall"
+    url: "http://blog.colinmarshall.org"
+    feed: "http://blog.colinmarshall.org/?feed=rss2"
+    category: tech
+    desc: "Notebook on Cities and Culture"
+
+  - name: "All Things Distributed"
+    url: "https://www.allthingsdistributed.com/"
+    feed: "https://www.allthingsdistributed.com/index.xml"
+    category: tech
+    desc: "Werner Vogels on building scalable and robust distributed systems"
+
+  - name: "Martin Fowler"
+    url: "http://martinfowler.com/"
+    feed: "http://www.martinfowler.com/feed.atom"
+    category: tech
+
+  - name: "Finer Things in Tech"
+    url: "https://finertech.com"
+    feed: "https://finertech.com/feed/"
+    category: tech
+    desc: "obsessed with productivity and polish"
+
+  - name: "Marco.org"
+    url: "https://marco.org/"
+    feed: "http://www.marco.org/rss"
+    category: tech
+    desc: "I'm Marco Arment, creator of Overcast, technology podcaster and writer, and coffee enthusiast"
+
+  - name: "Ahmad Shadeed Blog"
+    url: "https://ishadeed.com/"
+    feed: "http://ishadeed.com/feed.xml"
+    category: tech
+    desc: "Deep-dive CSS articles, modern CSS and visual CSS explanations"
+
+  - name: "James Cridland"
+    url: "https://james.cridland.net/"
+    feed: "https://james.cridland.net/index.xml"
+    category: tech
+    desc: "radio futurologist"
+
+  - name: "AgileBits Blog"
+    url: "https://blog.1password.com/"
+    feed: "https://blog.agilebits.com/feed/"
+    category: tech
+
+  - name: "Sebastiaan de With's blog"
+    url: "http://dewith.com"
+    feed: "http://dewith.com/feed/"
+    category: tech
+    desc: "I'm a creative director, designer and design speaker, photographer and motorcycle traveler – originally from the Netherlands, now living in San Francisco, California"
+
+  - name: "Writing by Bob Doto"
+    url: "https://writing.bobdoto.computer"
+    feed: "https://writing.bobdoto.computer/feed/?type=rss"
+    category: tech
+
+  - name: "Abstractivate"
+    url: "https://jessitron.com"
+    feed: "http://blog.jessitron.com/feeds/posts/default"
+    category: tech
+    desc: "symmathecist, in the medium of code"
+
+  - name: "thesephist.com"
+    url: "https://thesephist.com/"
+    feed: "https://thesephist.com/index.xml"
+    category: tech
+
+  - name: "Steven Garrity Acts of Volition"
+    url: "https://actsofvolition.com"
+    feed: "https://actsofvolition.com/feed/"
+    category: tech
+
+  - name: "Matt Gemmell"
+    url: "https://mattgemmell.scot/"
+    feed: "http://mattgemmell.com/feed"
+    category: tech
+    desc: "Thriller, Horror, and Suspense author"
+
+  - name: "www.swaine.com"
+    url: "http://www.swaine.com/wordpress"
+    feed: "http://www.swaine.com/wordpress/feed/"
+    category: tech
+
+  - name: "computers are bad"
+    url: "https://computer.rip"
+    feed: "https://computer.rip/rss.xml"
+    category: tech
+    desc: "A newsletter on technology and its problems and also whatever else"
+
+  - name: "And now it's all this"
+    url: "https://leancrew.com/all-this/"
+    feed: "http://leancrew.com/all-this/feed/"
+    category: tech
+    desc: "I just said what I said and it was wrong. Or was taken wrong"
+
+  - name: "Celso Martinho"
+    url: "https://celso.io/"
+    feed: "https://celso.io/index.xml"
+    category: tech
+
+  - name: "Zach Leatherman"
+    url: "https://www.zachleat.com/web/"
+    feed: "https://www.zachleat.com/web/feed/"
+    category: tech
+    desc: "A web development blog written by @zachleat"
+
+  - name: "Beck Tench"
+    url: "https://www.becktench.com/blog/"
+    feed: "https://www.becktench.com/blog?format=rss"
+    category: tech
+    desc: "This is a blog written by Beck Tench"
+
+  - name: "Josh Collinsworth"
+    url: "https://joshcollinsworth.com"
+    feed: "https://joshcollinsworth.com/rss"
+    category: web
+
   - name: "Michael Tsai"
     url: "https://mjtsai.com/blog/"
     feed: "https://mjtsai.com/blog/feed/"
@@ -222,6 +432,93 @@ entries:
     category: bloggers
     desc: "Articles for people who make web sites"
 
+  - name: "Laura Hilliger"
+    url: "https://www.laurahilliger.com"
+    feed: "https://www.laurahilliger.com/feed/"
+    category: bloggers
+
+  - name: "starbreaker.org"
+    url: "https://starbreaker.org/grimoire/entries/index.html"
+    feed: "https://starbreaker.org/feeds/everything.xml"
+    category: bloggers
+    desc: "a full-text feed containing everything but the kitchen sink"
+
+  - name: "W. Ian O'Byrne"
+    url: "https://wiobyrne.com"
+    feed: "http://wiobyrne.com/feed/"
+    category: bloggers
+    desc: "Literacy, technology, and education"
+
+  - name: "but she's a girl..."
+    url: "https://www.rousette.org.uk/"
+    feed: "https://www.rousette.org.uk/index.xml"
+    category: bloggers
+
+  - name: "Jenny Zhang The Roof is on Phire"
+    url: "https://phirephoenix.com/"
+    feed: "https://phirephoenix.com/feed.xml"
+    category: bloggers
+
+  - name: "Daniel Siepmann - Coding is Art"
+    url: "https://daniel-siepmann.de/index.html"
+    feed: "https://daniel-siepmann.de/rss-feed/blog-posts.xml"
+    category: bloggers
+    desc: "List of blog posts at daniel-siepmann.de"
+
+  - name: "Tantek Çelik"
+    url: "https://tantek.com/"
+    feed: "https://tantek.com/updates.atom"
+    category: bloggers
+
+  - name: "Rosemary Orchard"
+    url: "https://rosemaryorchard.com/"
+    feed: "https://rosemaryorchard.com/feed.xml"
+    category: bloggers
+
+  - name: "Rebecca Toh"
+    url: "https://rebeccatoh.co"
+    feed: "https://rebeccatoh.co/feed/"
+    category: bloggers
+
+  - name: "from jason"
+    url: "https://fromjason.xyz/"
+    feed: "https://www.fromjason.xyz/feed/feed.xml"
+    category: bloggers
+
+  - name: "Jennifer Parsons Pixel•Paper•Yarn"
+    url: "http://pixelpaperyarn.rocks"
+    feed: "http://pixelpaperyarn.rocks/feed/"
+    category: bloggers
+    desc: "I Make Things"
+
+  - name: "James G"
+    url: "https://jamesg.blog/"
+    feed: "https://granary.io/url?input=html&output=rss&url=https://jamesg.blog"
+    category: bloggers
+
+  - name: "Lukas Mathis ignorethecode.net"
+    url: "http://ignorethecode.net"
+    feed: "http://feeds.feedburner.com/IgnoreTheCode"
+    category: bloggers
+    desc: "Essays on usability, programming, and other nerd topics"
+
+  - name: "Carol Gilabert's Blog"
+    url: "https://carol.gg/"
+    feed: "https://carol.gg/feed.xml"
+    category: bloggers
+    desc: "And this is my little home on the internet"
+
+  - name: "Take on Rules"
+    url: "https://takeonrules.com/"
+    feed: "https://takeonrules.com/index.xml"
+    category: bloggers
+
+  - name: "Giles Turnbull"
+    url: "https://gilest.org"
+    feed: "https://gilest.org/feed/index.xml"
+    category: bloggers
+    desc: "What's new at gilest.org"
+
   - name: "Holmgren Design"
     url: "https://holmgren.com.au"
     feed: "https://holmgren.com.au/feed/"
@@ -243,6 +540,47 @@ entries:
     url: "https://www.scatterseedproject.org"
     feed: "https://www.scatterseedproject.org/blog?format=RSS"
     category: earth
+
+  - name: "Kitchen Counter Culture"
+    url: "https://kitchencounterculture121.wordpress.com"
+    feed: "http://kitchencounterculture121.wordpress.com/feed/"
+    category: earth
+
+  - name: "Off the Grid - Living Offgrid Affordably"
+    url: "http://offgrid.weebly.com/living-offgrid-affordably"
+    feed: "http://offgrid.weebly.com/1/feed"
+    category: earth
+    desc: "Living Offgrid Affordably"
+
+  - name: "Earth Work"
+    url: "http://earthwork7.blogspot.com/"
+    feed: "http://earthwork7.blogspot.com/feeds/posts/default?alt=rss"
+    category: earth
+    desc: "This is the blog of Mark Smalley, a ceramic artist based in Cheshire, England"
+
+  - name: "Temperate Climate Permaculture"
+    url: "http://tcpermaculture.blogspot.com/"
+    feed: "http://tcpermaculture.blogspot.com/feeds/posts/default?alt=rss"
+    category: earth
+    desc: "A single resource on gardening, farming, homesteading, and self-sufficiency using Permaculture principles designed for temperate climates"
+
+  - name: "Verge Permaculture"
+    url: "https://vergepermaculture.ca/"
+    feed: "https://vergepermaculture.ca/feed/"
+    category: earth
+    desc: "Create Your Sustainable Future & Meaningful Life"
+
+  - name: "Homeplace Earth"
+    url: "https://homeplaceearth.wordpress.com"
+    feed: "http://homeplaceearth.wordpress.com/feed/"
+    category: earth
+    desc: "Education and Design for a Sustainable World"
+
+  - name: "The Contrary Farmer"
+    url: "https://thecontraryfarmer.wordpress.com"
+    feed: "http://thecontraryfarmer.wordpress.com/feed/"
+    category: earth
+    desc: "Gene Logsdon Memorial Blogsite"
 
   - name: "LensCulture"
     url: "https://www.lensculture.com"
@@ -308,6 +646,68 @@ entries:
     desc: "We live life moving forward and often only comprehend it looking back"
     sidebar: true
 
+  - name: "Cristian Sorega Photography"
+    url: "https://ricoh-gr-diary.blogspot.com/"
+    feed: "http://ricoh-gr-diary.blogspot.com/feeds/posts/default"
+    category: photography
+    desc: "One day, one picture"
+
+  - name: "Ricoh-GR-blog"
+    url: "http://ricoh-gr-d.blogspot.com/"
+    feed: "http://ricoh-gr-d.blogspot.com/feeds/posts/default"
+    category: photography
+    desc: "My little fax/copier/printer camera maker blog"
+
+  - name: "Dan Bailey's Adventure Photography Blog"
+    url: "https://danbaileyphoto.com/blog"
+    feed: "https://danbaileyphoto.com/blog/feed/"
+    category: photography
+    desc: "Exploring the World of Outdoor Photography with Tips, News, Imagery and Insight"
+
+  - name: "blog on darktable"
+    url: "https://www.darktable.org/blog/"
+    feed: "https://www.darktable.org/blog/index.xml"
+    category: photography
+
+  - name: "Roel.io"
+    url: "https://roel.io/"
+    feed: "https://roel.io/feed/"
+    category: photography
+    desc: "Learning a little every day"
+
+  - name: "Ricoh GR-Diary"
+    url: "https://ricohgrdiary.wordpress.com"
+    feed: "http://ricohgrdiary.wordpress.com/feed/"
+    category: photography
+    desc: "The news, article and review page from Ricoh GR-Diary"
+
+  - name: "Scott Davenport Photo"
+    url: "https://scottdavenportphoto.com/blog/"
+    feed: "https://scottdavenportphoto.com/blog?format=rss"
+    category: photography
+    desc: "Free photography tutorials and articles about photography from Scott Davenport"
+
+  - name: "deep groove"
+    url: "http://coolcatcartmel.blogspot.com/"
+    feed: "http://coolcatcartmel.blogspot.com/feeds/posts/default"
+    category: music
+
+  - name: "Eric Harvey"
+    url: "https://ericdharvey.com"
+    feed: "https://ericdharvey.com/feed/"
+    category: music
+
+  - name: "SuperMegaUltraGroovy"
+    url: "https://supermegaultragroovy.com"
+    feed: "http://supermegaultragroovy.com/feed/"
+    category: music
+
+  - name: "Lefsetz Letter"
+    url: "https://lefsetz.com/wordpress"
+    feed: "https://lefsetz.com/wordpress/feed/"
+    category: music
+    desc: "First in Music Analysis"
+
   - name: "ROUGH TYPE"
     url: "https://www.roughtype.com"
     feed: "https://www.roughtype.com/?feed=rss2"
@@ -351,6 +751,23 @@ entries:
     category: opinion
     desc: "Exploring the patterns of meaning that shape our world"
 
+  - name: "Japan Optimist"
+    url: "https://japanoptimist.substack.com"
+    feed: "https://japanoptimist.substack.com/feed"
+    category: opinion
+    desc: "Japan analysis and insights"
+
+  - name: "TidBITS"
+    url: "https://tidbits.com/"
+    feed: "https://tidbits.com/feed/?memberkey=c07e8347b56e3ce70473eca58011ad64"
+    category: opinion
+    desc: "Coverage of everything Apple for 35 years"
+
+  - name: "Wait But Why"
+    url: "https://waitbutwhy.com/"
+    feed: "https://waitbutwhy.com/feed"
+    category: opinion
+
   - name: "Goldmark TV"
     url: "https://www.goldmarkart.com/blogs/goldmark-tv"
     feed: "https://www.goldmarkart.com/blogs/goldmark-tv.atom"
@@ -360,6 +777,11 @@ entries:
     url: "https://www.goldmarkart.com/blogs/discover"
     feed: "https://www.goldmarkart.com/blogs/discover.atom"
     category: art
+
+  - name: "Olia Lialina"
+    url: "https://art.teleportacia.org"
+    category: art
+    desc: "Net Artist, one of net.art pioneers"
 
   - name: "Becoming Minimalist"
     url: "https://www.becomingminimalist.com"

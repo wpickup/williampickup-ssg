@@ -1,0 +1,13 @@
+# Pagefind search index configuration — read automatically by `npx pagefind`
+# when run from the project root (CI, deploy.sh, and the Nova "Build and
+# Index" task all do). Keep indexing options here rather than as CLI flags so
+# every build produces the same index.
+
+# Site chrome that shouldn't be searchable — otherwise every page matches
+# words like "Writing", "Gallery", or "Archive" from the nav and footer.
+exclude_selectors:
+  - "nav"
+  - "footer"
+  - ".site-header"
+  - ".skip-link"
+  - ".breadcrumb"

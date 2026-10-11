@@ -38,6 +38,7 @@ jobs:
         with:
           node-version: '20'
 
+      # Indexing options come from pagefind.yml in the repo root.
       - name: Build search index
         run: npx --yes pagefind --site _out
 

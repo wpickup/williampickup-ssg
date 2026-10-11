@@ -30,21 +30,25 @@ A single reference for writing content and operating the generator: front matter
 15. [Notes](#notes)
     - [Formatting available in notes](#formatting-available-in-notes)
     - [Promoting a note to a post](#promoting-a-note-to-a-post)
-16. [Photos](#photos)
-17. [Books](#books)
-18. [Static pages](#static-pages)
-19. [The /now page](#the-now-page)
-20. [Blogroll](#blogroll)
-21. [Navigation](#navigation)
-22. [Building the site](#building-the-site)
-23. [Previewing locally](#previewing-locally)
-24. [Deploying](#deploying)
-25. [Sending webmentions](#sending-webmentions)
-26. [Feeds, sitemap, and robots.txt](#feeds-sitemap-and-robotstxt)
-27. [Search](#search)
-28. [Templates and CSS](#templates-and-css)
-29. [Authoring tools](#authoring-tools)
-30. [Builder behaviours and gotchas](#builder-behaviours-and-gotchas)
+16. [Journeys](#journeys)
+17. [Photos](#photos)
+18. [Books](#books)
+19. [Static pages](#static-pages)
+20. [The home page](#the-home-page)
+21. [The /now page](#the-now-page)
+22. [Blogroll](#blogroll)
+23. [Navigation](#navigation)
+24. [Building the site](#building-the-site)
+25. [Previewing locally](#previewing-locally)
+26. [Deploying](#deploying)
+27. [Webmentions](#webmentions)
+28. [Feeds, sitemap, and robots.txt](#feeds-sitemap-and-robotstxt)
+29. [Search](#search)
+30. [Templates and CSS](#templates-and-css)
+31. [Authoring tools](#authoring-tools)
+    - [Nova tasks](#nova-tasks)
+    - [Taxonomy cheatsheet](#taxonomy-cheatsheet)
+32. [Builder behaviours and gotchas](#builder-behaviours-and-gotchas)
 
 ---
 
@@ -76,7 +80,8 @@ The generator and its source live in `~/dev/williampickup-ssg` — deliberately 
 williampickup-ssg/
 ├── _posts/          Markdown files, one per published blog post
 ├── _drafts/         Markdown files, one per draft post (see "Drafts")
-├── _notes/           Markdown files, one per short-form note
+├── _notes/          Markdown files, one per short-form note
+├── _journeys/       Markdown files, one per journey (undated photo essay — see "Journeys")
 ├── _photos/         Markdown files, one per gallery photo
 ├── _books/          Markdown files, one per book
 ├── _pages/          Markdown files for static pages (bio, blogroll, colophon, search)
@@ -84,15 +89,24 @@ williampickup-ssg/
 │   ├── now.yml        Content for the /now page
 │   ├── nav.yml        Header/footer navigation links
 │   ├── blogroll.yml   Blogroll entries and filter categories
-│   └── series.yml     Series titles and descriptions (see "Series")
+│   ├── series.yml     Series titles and descriptions (see "Series")
+│   └── webmentions_sent.json   Webmention send state (committed; see "Webmentions")
 ├── _templates/      ERB page templates
-├── _partials/       ERB partials (head, header, footer, cards)
+├── _partials/       ERB partials (head, header, footer, post/note/journey cards, book entry)
 ├── _out/            Generated site (git-ignored, do not edit directly)
 ├── css/, javascript/, fonts/, assets/   Static assets, copied into output as-is
 ├── tools/           Authoring tools associated with the site (see "Authoring tools")
+├── worker/          Cloudflare Worker feed proxy used by the blogroll (see worker/README.md)
+├── .github/workflows/deploy.yml   CI build + deploy to GitHub Pages (see "Deploying")
+├── .nova/           Nova editor tasks and their shell scripts (see "Nova tasks")
+├── build.rb         Build script — run this to generate the site
+├── deploy.sh        Local build + Pagefind index, for previewing before a push
+├── send_webmentions.rb   Sends outbound webmentions — run by CI after each deploy
+├── update_book_covers.rb Populates assets/books/ (see "Cover images" under "Books") — not run by build.rb
+├── pagefind.yml     Pagefind search-index settings (see "Search")
+├── taxonomy.rb      Writes taxonomy.md, a cheatsheet of categories/tags in use (see "Taxonomy cheatsheet")
 ├── extract.rb       One-time migration script (Tinderbox → Markdown) — retired, kept for reference
-├── update_book_covers.rb   Populates assets/books/ (see "Cover images" under "Books") — not run by build.rb
-└── build.rb         Build script — run this to publish
+└── start-ruby-language-servers.sh   Starts ruby-lsp / rubocop / erb_lint language servers for the editor
 ```
 
 CSS, JavaScript, fonts, and images all live inside this repo — edit them here, not anywhere under `~/Sites`. `build.rb` copies `css/`, `javascript/`, `fonts/`, and `assets/` into the output directory verbatim on every build.
@@ -121,10 +135,12 @@ use_featured_image: true
 Your post content in Markdown here.
 ```
 
-**Required:** `title`, `slug`, `date`
+**Required in practice:** `title`, `slug`, `date`. (The builder won't error without them — `slug` falls back to the filename, `title` to the slug, and a missing `date` sorts the post to the end — but the result looks broken.)
 **Everything else is optional** — see the full [front matter reference](#front-matter-reference) below.
 
 Run `ruby build.rb --drafts` to preview it at `drafts/your-slug.html` with a draft banner.
+
+The **New Post** Nova task names the file `YYYY-MM-DD-your-slug.md` (date-prefixed, for sorting in the file list), but writes `slug: your-slug` without the date — the URL always comes from the `slug:` field, not the filename. The filename only matters when `slug:` is missing, in which case the filename (minus `.md`) is used.
 
 ---
 
@@ -180,7 +196,8 @@ series: nullarbor-road-trip  # Optional — groups this post with others sharing
 ### Status
 
 ```yaml
-featured: true    # Appears in "Start here" on home page; hidden from blog listing
+featured: true    # Listed in the home page's "Start here" sidebar card (up to 6); hidden from the /blog.html listing
+draft: true       # Rarely needed — see "Drafts" below
 ```
 
 See [Drafts](#drafts) for how draft status actually works — it's primarily about which folder the file is in, not a front matter field.
@@ -201,9 +218,15 @@ To publish, move the file from `_drafts/` to `_posts/`:
 
 Then run `ruby build.rb` and the post appears at `posts/your-slug.html`.
 
-**Notes work differently — this is the one important exception.** Unlike posts, a note is *never* drafted by which folder it's in; `_notes/` is the only folder notes ever live in, drafted or not. Draft status for a note comes entirely from `draft: true` in its own front matter, set and later removed **in place** — there's no `_drafts/` → `_notes/` move, and no "Publish Draft" Nova task for notes (that task only scans `_drafts/` and only moves things into `_posts/`). A draft note still builds to `drafts/slug.html`, with the same banner and the same exclusion from production, `--drafts` behaves identically either way — only the *mechanism* for marking a note as a draft differs from a post's.
+**Notes work differently — this is the one important exception.** Unlike posts, a note is *never* drafted by which folder it's in; `_notes/` is the only folder notes ever live in, drafted or not. Draft status for a note comes entirely from `draft: true` in its own front matter, set and later removed **in place** — there's no `_drafts/` → `_notes/` move, and no "Publish Draft" Nova task for notes (that task only scans `_drafts/` and only moves things into `_posts/`). A draft note still builds to `drafts/slug.html`, with the same amber banner and the same exclusion from production — `--drafts` behaves identically either way. Only the *mechanism* for marking a note as a draft differs from a post's.
 
 The **New Note** Nova task creates files directly in `_notes/` with `draft: true` already set, for exactly this reason.
+
+**Journeys and static pages** use the same in-place `draft: true` flag as notes. A draft journey builds to `drafts/slug.html` with the draft banner. A draft page (e.g. `_pages/colophon.md`, currently a draft) is skipped in production; with `--drafts` it builds at its normal `/slug.html` address, with no banner.
+
+**Photos and books have no draft state** — every file in `_photos/` and `_books/` is always published.
+
+**`--drafts` builds also leak drafts into a few listings** — they're meant for local preview only: draft posts appear in `/blog.html`, the home page, archives, topic/category/series pages and the feeds, draft notes in `/notes.html`, and draft journeys in `/journeys.html`. The sitemap and `llms.txt` always exclude draft posts, notes and journeys. CI never passes `--drafts`.
 
 ---
 
@@ -215,7 +238,7 @@ Three different classification systems, each doing a different job:
 |---|---|---|---|
 | **`topics`** | Drives card accent colour; the primary classification | Fixed set — see table below | `/topics/slug.html` |
 | **`categories`** | Freeform label shown on the post | Any string | `/categories/Name.html` |
-| **`tags`** | Freeform, finer-grained | Any string | None generated currently |
+| **`tags`** | Freeform, finer-grained | Any string | None — tag links point at `/blog.html#tag`, which filters the listing client-side |
 
 A post can belong to more than one topic — list all that apply; the **first one wins** for card colour.
 
@@ -229,6 +252,8 @@ A post can belong to more than one topic — list all that apply; the **first on
 | `places-experiences` | Places and Experiences | Ochre |
 | `systems-thinking` | Systems Thinking | Violet |
 | `health-wellbeing` | Health and Wellbeing | Dusty rose |
+
+The keys and labels come from `TOPIC_LABELS` in `build.rb`; the colours from the `.cat--*` rules in `css/site.css`. An unknown topic key still builds (its label is humanised from the key and it gets a topic page), but gets no card colour. Run the **Taxonomy Cheatsheet** Nova task to see which categories and tags are already in use — see [Taxonomy cheatsheet](#taxonomy-cheatsheet).
 
 ---
 
@@ -368,7 +393,7 @@ with the citation styled distinctly from a plain `— Author Name` blockquote. I
 
 ### Code blocks
 
-Fenced code blocks with a language tag get syntax highlighting via Prism.js (loaded from a CDN, themed to match light/dark mode):
+Fenced code blocks with a language tag get syntax highlighting via [Prism](https://prismjs.com), themed to match light/dark mode:
 
 ````markdown
 ```ruby
@@ -378,7 +403,9 @@ end
 ```
 ````
 
-No post currently uses this, but the CSS and CDN import are wired up and ready — just write a normal fenced code block with a language identifier.
+Both ```` ``` ```` (GitHub-style) and `~~~` (Kramdown-style) fences work, with or without a language. The language becomes a `language-ruby` class on the `<code>` element. Code is set aside before the `==highlight==`/`~~strikethrough~~` handling runs, so `==` and `~~` inside a code block or an inline `` `code span` `` are left alone. Indented (four-space) code blocks also work but can't carry a language.
+
+Prism's stylesheet and scripts (from cdnjs, via `_partials/_prism.html.erb`) are only added to posts and journeys whose body contains a language-tagged block, so other pages don't load them. Prism's autoloader fetches each language's grammar on demand, so any language Prism supports works without extra setup.
 
 ### Epigraphs and new-thought
 
@@ -646,7 +673,7 @@ Notes render into a different HTML wrapper (`.note-single__body` / `.notes-list_
 
 **Works in notes:** standard Markdown, `==highlighted==`/`~~strikethrough~~`, [quotebacks](#quotebacks), [pull quotes](#pull-quotes-part-labels-pilcrow), epigraphs, new-thought, the pilcrow, and [scroll-reveal](#scroll-reveal-animations) (`reveal`, `reveal--*`).
 
-**Post-only, not available in notes:** figure size modifiers, photo pairs, code block syntax highlighting, the [editorial grid](#editorial-grid-layout) (notes have no `layout` field at all), and sidenotes (the CSS isn't strictly blocked, but the numbering counter never initializes for a note, so a hand-written sidenote would render with broken numbering).
+**Post-only, not available in notes:** figure size modifiers, photo pairs, Prism syntax highlighting (fenced code blocks still render in notes, just uncoloured), the [editorial grid](#editorial-grid-layout) (notes have no `layout` field at all), and sidenotes (the CSS isn't strictly blocked, but the numbering counter never initializes for a note, so a hand-written sidenote would render with broken numbering).
 
 Quotebacks and pull quotes render identically whether a note is viewed on its own permalink page or inline on the `/notes.html` listing — both surfaces show a note's full body, so both get the same styling.
 
@@ -663,6 +690,31 @@ Two things worth knowing before promoting:
 
 ---
 
+## Journeys
+
+A journey is a standalone, **undated** photo essay for a place or trip, in `_journeys/`. It's deliberately *not* a post: it has no `date`, topics, categories, tags or series, and never appears in `/blog.html`, the archives or the RSS/Atom feeds. It's meant as a living page you keep adding to across trips, not a one-off dispatch. Journeys are listed at `/journeys.html` and each one is built at `/journeys/slug.html`.
+
+```yaml
+title: "Melbourne to the coast"
+slug: melbourne-to-the-coast
+description: "One sentence for meta tags, the sitemap and llms.txt."
+lede: "Intro shown under the title and on the /journeys.html card."
+updated: 2026-07-22          # Shown as "Last updated July 2026"; also the sitemap lastmod
+image_url: https://media.publit.io/file/hero.jpg
+image_focal_point: "50% 40%"
+use_featured_image: true     # Hero image at the top of the page
+layout: photo-essay          # Default for journeys (posts default to standard)
+draft: true                  # In-place draft flag, like notes — remove it to publish
+```
+
+The body uses the same markup as posts — see [Body markup](#body-markup) and [Photo essay layout](#photo-essay-layout). `/journeys.html` lists journeys most recently `updated` first (undated ones last); each card shows the `lede`, or the `description` if there's no lede.
+
+`_journeys/melbourne-to-the-coast.md` is currently a draft sample that uses placeholder images from picsum.photos.
+
+There's no Nova task for creating journeys yet — copy an existing file in `_journeys/` as a starting point. The **Watch** task rebuilds when a journey changes.
+
+---
+
 ## Photos
 
 Each photo is a file in `_photos/`:
@@ -673,15 +725,17 @@ slug: photo-slug
 date: 2026-06-01
 image_url: https://media.publit.io/file/photo.jpg
 image_alt: "Description of the image"
-image_size: wide       # wide, full, or portrait
+image_size: wide       # wide, full, or portrait (default: standard) — applied on gallery/highlights.html
 focal_point: "50% 40%"
 location: "Sydney, Australia"
 camera: "Fujifilm X100V"
 caption: "Optional caption text."
 series: highlights     # use "highlights" to include in gallery/highlights.html
-featured: false
+featured: false        # the first featured photo becomes the home page hero image
 tags: [travel, coast]
 ```
+
+Each photo gets its own page at `/photos/slug.html`. All photos appear on `/gallery.html`. Unlike posts, photos have no draft state. A photo's `series` has nothing to do with post [series](#series); the only value the builder uses is `highlights`.
 
 ---
 
@@ -700,7 +754,9 @@ cover_url:              # optional — see "Cover images" below
 on_now_page: true      # shows in the Reading section of the /now page
 ```
 
-Books with `status: reading` appear under "Currently Reading" on `/reading.html` and on `/now.html` (if `on_now_page: true`). Books with `status: read` appear under "Read".
+Each book gets its own page at `/reading/slug.html`, with the Markdown body as its notes. `status` defaults to `read` if omitted. Books with `status: reading` appear under "Currently Reading" on `/reading.html`; books with `status: read` appear under "Read", newest `date_read` first.
+
+`on_now_page: true` puts a book in the Reading section of `/now.html` and in the home page's Now card, **whatever its `status`**. The builder doesn't check whether you're still reading it, so remove the flag when you finish the book.
 
 ### Cover images
 
@@ -709,9 +765,10 @@ Covers are always self-hosted from `assets/books/<slug>.jpg` — the site never 
 To add or replace a cover, run `ruby update_book_covers.rb` after either:
 
 - **Dropping a photo in yourself** — save/AirDrop a photo of the book straight into `assets/books/<slug>.jpeg` (any common extension, any size — a phone photo is fine). The script auto-orients it, resizes it down to a max of 360px (covers only ever display at ≤180px), converts it to `<slug>.jpg`, and removes the raw original.
+  To replace an existing `<slug>.jpg` with a new photo, drop the new one in under a *different* extension (e.g. `.jpeg`, `.png` or `.heic`) so it doesn't overwrite the old file.
 - **Leaving it to fetch automatically** — if no local file exists, the script falls back to `cover_url` (a specific image URL) or, failing that, OpenLibrary's cover-by-ISBN lookup, then normalises whatever it downloads the same way.
 
-The script is safe to re-run any time — an already-normalised cover is skipped, and a fresh photo dropped in for an existing book is picked up and reprocessed. It's not part of the regular `build.rb` — the build never touches the network, so a flaky or unreachable image host can't break a deploy.
+Requires ImageMagick 7 (the `magick` command — `brew install imagemagick`). The script is safe to re-run any time — an already-normalised cover is skipped (delete it to force a re-fetch), and a fresh photo dropped in for an existing book is picked up and reprocessed. OpenLibrary's tiny "no cover" placeholder image is detected and ignored. It's not part of the regular `build.rb` — the build never touches the network, so a flaky or unreachable image host can't break a deploy.
 
 ---
 
@@ -721,12 +778,35 @@ The script is safe to re-run any time — an already-normalised cover is skipped
 
 ```yaml
 title: "About"
-slug: bio
+slug: bio           # Output: /bio.html (pages are written at the site root)
 description: "About William Pickup."
 template: bio       # matches _templates/bio.html.erb
+sidebar_blurb: "Maker, runner, reader, photographer, traveller."   # bio only — shown in the home page's About card
+draft: true         # optional — see "Drafts"
 ```
 
-`bio`, `blogroll`, `colophon`, and `search` each have a dedicated template. Adding a new static page means both a `_pages/*.md` file and a matching `_templates/*.html.erb` file — see [Builder behaviours and gotchas](#builder-behaviours-and-gotchas) for what every template needs to include.
+`bio`, `blogroll`, `colophon`, and `search` each have a dedicated template. **Omit `template:`** for an ordinary text page: it then uses `_templates/page.html.erb`, which shows the title, the `description` as a lede, and the Markdown body (styled by `.page-prose`, shared with the colophon). A page that needs its own layout needs both a `_pages/*.md` file and a matching `_templates/*.html.erb` file — see [Builder behaviours and gotchas](#builder-behaviours-and-gotchas) for what every template needs to include. Pages don't appear in the navigation automatically; add a link in `_data/nav.yml` if you want one.
+
+`colophon.md` is currently `draft: true` (an outline), so `/colophon.html` isn't built in production — and the footer build stamp only links to it once it is (see [Builder behaviours and gotchas](#builder-behaviours-and-gotchas)).
+
+---
+
+## The home page
+
+`_templates/home.html.erb` assembles the home page from several sources. Nothing needs to be configured separately:
+
+- **Masthead**: the site name and `SITE_DESC` from `build.rb`, plus two live status lines filled in by `main.js`. Each stays hidden unless it loads:
+  - a **location ticker** showing coordinates, current temperature (from the free Open-Meteo API) and Sydney local time. The coordinates and timezone are hard-coded in `initLocationTicker` in `javascript/main.js`.
+  - a **"Listening to"** line from ListenBrainz's playing-now API, for the user in `LISTENBRAINZ_USER` in `build.rb`, re-checked every 60 seconds. Set the constant to `''` to turn it off.
+- **Hero image**: the first photo with `featured: true`, if there is one.
+- **Recent writing**: the six newest posts, as cards.
+- **Sidebar cards**, in order:
+  - **About**, from `_pages/bio.md`'s `sidebar_blurb` and `assets/WP-at-Stromlo.webp`
+  - **Now**, with `making` and `travelling` from `now.yml` and books marked `on_now_page`
+  - **Start here**, listing posts with `featured: true` (up to six)
+  - **Visual work**, with fixed links to the gallery
+  - **Blogroll**, listing entries with `sidebar: true` in `blogroll.yml`
+  - **Notes**, showing the four newest notes with an 80-character excerpt
 
 ---
 
@@ -743,7 +823,7 @@ sections:
   thinking_about: "What's on your mind."
 ```
 
-`making` and `travelling` also appear in a condensed strip on the home page; `growing` and `thinking_about` are shown on `/now.html` only. Books with `on_now_page: true` and `status: reading` appear automatically in the Reading section.
+`making` and `travelling` also appear in the home page's Now sidebar card; `growing` and `thinking_about` are shown on `/now.html` only. Books with `on_now_page: true` appear automatically in the Reading section (whatever their `status` — see [Books](#books)). Any section may be omitted; templates check before rendering.
 
 **Plain text only — no links or markdown.** Each section is passed through `h()` (HTML-escape) before output, so `[a link](https://...)` or `<a href="...">` renders as literal text, not a clickable link. This is deliberate — YAML strings are simpler to write than markdown-in-YAML — but it does mean you can't casually drop a link into a `/now` update the way you might in a post. If you want to point somewhere, write the URL out in full as plain text (`see https://example.com`), or write the news as a short note or post instead, both of which do support markdown.
 
@@ -765,9 +845,14 @@ entries:
     feed: "https://feeds.feedburner.com/brainpickings/rss"
     category: life
     desc: "Maria Popova — marginalia on the search for meaning."
+    sidebar: true      # optional — also list this entry in the home page's Blogroll card
 ```
 
-`filters` lists every category used for the page's filter buttons — a category on an entry that isn't in `filters` won't get a working filter button. `feed` is the site's RSS/Atom URL, used by client-side JS to show its most recent post (see `javascript/blogroll.js`); `desc` is optional.
+`filters` lists every category used for the page's filter buttons — a category on an entry that isn't in `filters` won't get a working filter button. `desc` and `sidebar` are optional.
+
+`feed` is the site's RSS/Atom URL. `javascript/blogroll.js` uses it to show each blog's most recent post. Most feeds don't send CORS headers, so the browser fetches them through a small Cloudflare Worker, `wp-feed-proxy.williampickup.workers.dev`, whose source is in `worker/`. The Worker returns just the latest entry as JSON and caches it for two hours. It's deployed separately with `wrangler` (see `worker/README.md`), not by the site's deploy workflow. The page also loads its own stylesheet, `css/blogroll.css`.
+
+The `/blogroll.html` page is rendered entirely from `blogroll.yml`. `_pages/blogroll.md` holds only the page's front matter (title, description, template), so add or edit blogs in the yml, not the Markdown file.
 
 ---
 
@@ -821,10 +906,10 @@ CI (the GitHub Actions deploy workflow) never sets this — it always uses the d
 
 ### Search index (Pagefind)
 
-`build.rb` does not build the Pagefind search index — the CSS theming for the search UI (`#search`, `.pagefind-ui__*` in `site.css`, and `_templates/search.html.erb`) is wired up, but indexing is a separate step:
+`build.rb` does not build the Pagefind search index — the CSS theming for the search UI (`#search`, `.pagefind-ui__*` in `site.css`, and `_templates/search.html.erb`) is wired up, but indexing is a separate step, run from the project root (so Pagefind picks up `pagefind.yml`):
 
 ```bash
-npx pagefind --site _out
+npx --yes pagefind --site _out
 ```
 
 `deploy.sh` already runs this for you — manual indexing is only needed if you build without it.
@@ -837,7 +922,9 @@ npx pagefind --site _out
 python3 -m http.server 4567 --directory ~/Sites/williampickup.org/_site
 ```
 
-Then open `http://localhost:4567` in your browser. The Nova tasks and `.claude/launch.json` in this project already point at this folder via `SSG_OUT_DIR`.
+Then open `http://localhost:4567` in your browser. The Nova tasks write to `~/Sites/williampickup.org/_site` by default (set in `.nova/Scripts/config.sh`).
+
+`.claude/launch.json` defines the same server (`ssg-preview`, port 4567, serving `~/Sites/williampickup.org/_site`). A plain `ruby build.rb` or `./deploy.sh` without `SSG_OUT_DIR` writes to `_out/` instead; to preview that, serve `_out/` (`python3 -m http.server 4567 --directory _out`).
 
 ---
 
@@ -884,6 +971,11 @@ There's no Nova task for this anymore — it's what plain `git push` does by
 default now, so a dedicated button didn't add anything. For the
 `workflow_dispatch` case above, just run the `gh` command directly.
 
+In CI the site is built with `bundle exec ruby build.rb` on Ruby 3.3, then
+indexed with `npx --yes pagefind --site _out`. A `CNAME` file for
+`williampickup.org` is written into `_out/` on every run, so the custom
+domain doesn't depend on a file in the repo.
+
 Publishing itself uses `actions/upload-pages-artifact` +
 `actions/deploy-pages`, authenticated via the workflow's own
 `id-token: write` permission (GitHub's OIDC token) — **no SSH key or deploy
@@ -892,7 +984,7 @@ required is:
 
 | Secret | Value |
 |---|---|
-| `WEBMENTION_TOKEN` | Your Telegraph token — see [Sending webmentions](#sending-webmentions) |
+| `WEBMENTION_TOKEN` | Your Telegraph token — see [Webmentions](#webmentions) |
 
 Add it under **Settings → Secrets and variables → Actions**. The workflow
 also needs `contents: write` permission to commit the webmention state file
@@ -904,21 +996,20 @@ Triggering a manual rebuild from an iPad or other device without a terminal: use
 
 ---
 
-## Sending webmentions
+## Webmentions
 
-After a successful deploy, `send_webmentions.rb` scans every published post's outbound links and sends a webmention for any that haven't been sent before, via [Telegraph](https://telegraph.p3k.io) — a third-party service that handles endpoint discovery, so the protocol doesn't need implementing directly.
+### Receiving
 
-**One-time setup:** sign in at telegraph.p3k.io with your domain to get a token, then make it available in each environment that deploys:
+Every page's `<head>` advertises [webmention.io](https://webmention.io) as its webmention (and pingback) endpoint. On post pages, `main.js` fetches that post's mentions from the webmention.io API and shows replies, likes/reposts and other mentions in the `#webmentions` section below the post, with a simple filter for obvious spam. The section stays hidden when there are none.
+
+### Sending
+
+After a successful deploy, the GitHub Actions workflow runs `send_webmentions.rb`, which scans every published post's outbound links and sends a webmention for any that haven't been sent before, via [Telegraph](https://telegraph.p3k.io) — a third-party service that handles endpoint discovery, so the protocol doesn't need implementing directly. Links to the site itself and to `media.publit.io` are skipped. `deploy.sh` and the Nova tasks don't send webmentions; CI is the only place this runs automatically.
+
+**One-time setup:** sign in at telegraph.p3k.io with your domain to get a token, and add it as the `WEBMENTION_TOKEN` repository secret for GitHub Actions. To run the script by hand locally:
 
 ```bash
-# Local terminal (deploy.sh reads this automatically):
-export WEBMENTION_TOKEN=your-token-here
-
-# Nova-triggered deploys: Nova's GUI task runner may not inherit a
-# shell-exported variable, so use a gitignored local file instead:
-echo "your-token-here" > .webmention-token
-
-# GitHub Actions: add WEBMENTION_TOKEN as a repository secret
+WEBMENTION_TOKEN=your-token-here bundle exec ruby send_webmentions.rb
 ```
 
 Without a token set, `send_webmentions.rb` prints a notice and exits — it never blocks a deploy.
@@ -941,25 +1032,30 @@ After that, only posts or links that didn't exist at seed time will ever trigger
 Generated automatically on every build — no separate maintenance step, always reflect whatever content currently exists:
 
 - `_out/feeds/rss.xml`, `_out/feeds/atom.xml` — the 20 most recent published posts
-- `_out/sitemap.xml` — every post, note, photo, book, static page, and topic/category/series archive page. Drafts are always excluded, even when building with `--drafts`
+- `_out/sitemap.xml` — every post, note, photo, book, journey, static page, index page (including `gallery/highlights.html` and `journeys.html`), and archive-year/topic/category/series page. Draft posts, notes and journeys are always excluded, even when building with `--drafts`
 - `_out/robots.txt` — disallows `/drafts/` and points crawlers at the sitemap. Also lists common AI crawlers (GPTBot, ClaudeBot, Google-Extended, PerplexityBot, etc.) by name with an explicit `Allow: /`, so the stance on AI crawling is a deliberate, visible one rather than just whatever the wildcard rule happens to imply. Flip any single bot to `Disallow: /` in `build.rb` if you change your mind about it specifically.
-- `_out/llms.txt` — a curated Markdown index for LLMs/agents, per [llmstxt.org](https://llmstxt.org): site description, the 20 most recent posts, topic links, and links to the other index surfaces (blog, notes, gallery, reading, sitemap, feed). Distinct from `sitemap.xml`, which is exhaustive; this is meant to be a smaller, high-signal summary.
+- `_out/llms.txt` — a curated Markdown index for LLMs/agents, per [llmstxt.org](https://llmstxt.org): site description, the 20 most recent posts, topic links, published journeys (if any), and links to the other index surfaces (blog, notes, gallery, reading, journeys, about, sitemap, feed). Distinct from `sitemap.xml`, which is exhaustive; this is meant to be a smaller, high-signal summary.
 - `_out/.well-known/security.txt` — [RFC 9116](https://www.rfc-editor.org/rfc/rfc9116). Contact + a rolling one-year `Expires` date computed at build time, so it never goes stale on its own.
+- `_out/404.html` — the not-found page, which GitHub Pages serves automatically.
 - `_out/manifest.json` — a minimal web app manifest (name, description, theme colours, icons) linked from every page's `<head>` via `<link rel="manifest">`. Uses `display: minimal-ui`. Icons: `favicon.svg` and `apple-touch-icon.png` for `purpose: any`, plus `assets/icon-maskable-512.png` (generated from the enneagram mark in `favicon.svg`, on the light-theme background colour, artwork scaled to ~66% of the canvas diameter to sit safely inside every platform's mask shape) for `purpose: maskable`.
 
 ---
 
 ## Search
 
-Client-side search via [Pagefind](https://pagefind.app), on `/search.html`. The index is built separately from the main site build — see [Search index (Pagefind)](#building-the-site) above.
+Client-side search via [Pagefind](https://pagefind.app), on `/search.html`. The index is built separately from the main site build — see [Search index (Pagefind)](#search-index-pagefind) above. Without an index (e.g. after a plain `ruby build.rb`), the search page loads but finds nothing.
+
+Indexing options live in `pagefind.yml` in the project root, which Pagefind reads automatically from its working directory. CI, `deploy.sh` and the **Build and Index** Nova task all run from the root, so they all produce the same index. It currently excludes site chrome (`nav`, `footer`, `.site-header`, `.skip-link`, `.breadcrumb`) so navigation words don't match every page. Change indexing behaviour there, not with command-line flags.
 
 ---
 
 ## Templates and CSS
 
 - **Templates** live in `_templates/` as `.html.erb` files, one per page type (or per generated group, like `topic.html.erb` for every topic archive page)
-- **Partials** (head, header, footer, post card, note card) live in `_partials/`
-- **CSS** is at `css/site.css` in this repo — edit here, rebuild to see changes
+- **Partials** (head, header, footer, post card, note card, journey card, book entry) live in `_partials/`
+- **CSS** is at `css/site.css` in this repo — edit here, rebuild to see changes. The blogroll page also loads `css/blogroll.css`, via the head partial's `extra_css` option.
+- **JavaScript**: `javascript/main.js` handles the theme toggle, mobile nav, scroll-reveal, quotebacks, blog filtering, webmentions and the home page status lines. `javascript/blogroll.js` handles blogroll filtering and latest-post lookups.
+- **Structured data**: the home page embeds `WebSite`/`Person` JSON-LD. Topic, category, series, journey, photo and gallery-highlights pages emit `BreadcrumbList` JSON-LD through `renderer.breadcrumb_ld([[name, url], …])`; pass `nil` as the URL for the current page.
 
 After editing a template or CSS file, just run `ruby build.rb` again.
 
@@ -968,6 +1064,37 @@ After editing a template or CSS file, just run `ruby build.rb` again.
 ## Authoring tools
 
 `tools/Publit Upload.app` — a droplet app for uploading images to publit.io; drag an image onto it, get back a URL to paste into a post's `image_url` front matter. Lives in the repo (not just on the Desktop) since it's specific to this site's authoring workflow — a Finder alias on the Desktop points into `tools/` for convenient access.
+
+### Nova tasks
+
+Each task in `.nova/Tasks/` runs a script in `.nova/Scripts/`. Every script first sources `config.sh`, which sets `PROJECT_DIR` and `SSG_OUT_DIR` (default `~/Sites/williampickup.org/_site`).
+
+| Task | Script | What it does |
+|---|---|---|
+| **Authoring Guide** | `authoring-guide.sh` | Opens this file in Nova |
+| **Build** | `build.sh` | `ruby build.rb` |
+| **Build with Drafts** | `build-drafts.sh` | `ruby build.rb --drafts` |
+| **Build and Index** | `pagefind.sh` | Production build, then a Pagefind index (settings from `pagefind.yml`) |
+| **Watch** | `watch.sh` | Builds with `--drafts`, then rebuilds on every change. Needs `fswatch` (`brew install fswatch`) |
+| **New Post** | `new-post.sh` | Asks for a title and writes `_drafts/YYYY-MM-DD-slug.md` with a full front matter scaffold |
+| **New Note** | `new-note.sh` | Asks for an optional title and writes `_notes/YYYY-MM-DD-slug.md` (or `…-untitled.md`) with `draft: true` |
+| **Publish Draft** | `publish-draft.sh` | Choose a file in `_drafts/` and move it to `_posts/` (with `git mv` if it's tracked) |
+| **Promote Note** | `promote-note.sh` | Moves a note to `_posts/` and adds blank post fields — see [Promoting a note to a post](#promoting-a-note-to-a-post) |
+| **Taxonomy Cheatsheet** | `taxonomy-cheatsheet.sh` | Runs `taxonomy.rb` and opens `taxonomy.md` |
+
+**Watch** watches every build input: all the content folders (`_posts`, `_drafts`, `_notes`, `_journeys`, `_pages`, `_photos`, `_books`), `_data`, `_templates`, `_partials`, `build.rb`, and the static folders `css`, `javascript`, `fonts` and `assets`. If you add a new content or static folder to `build.rb`, add it to `watch.sh` too.
+
+The note slug written by **New Note** includes the date (`slug: 2026-06-29-title`), so the note's URL does too. The post slug written by **New Post** doesn't.
+
+### Taxonomy cheatsheet
+
+`ruby taxonomy.rb` (or the **Taxonomy Cheatsheet** Nova task) writes `taxonomy.md`, which is gitignored and regenerated each time. It lists:
+
+- the six topics, from `TOPIC_LABELS` in `build.rb` (the script loads `build.rb` as a library, so it always matches)
+- every category and tag in use across `_posts/` and `_drafts/`, with counts
+- warnings for values that differ only in case, e.g. "Photography" vs "photography"
+
+Check it before inventing a new category or tag.
 
 ---
 
@@ -979,8 +1106,14 @@ After editing a template or CSS file, just run `ruby build.rb` again.
 
 **Dates** — ISO 8601 format (`2026-06-18`). Posts sorted newest-first throughout the site. Archive pages group by year automatically.
 
-**Build footer stamp** — every page footer shows a UTC build timestamp and short git commit SHA (`built 21 Jun '26, 03:53 UTC  e39d8bf`), generated in `build.rb` from `git rev-parse --short HEAD`. Not a clickable link — the repo is private, so a GitHub link would 404 for every visitor except the owner. Useful for confirming a given deploy actually reflects what was pushed.
+**Build footer stamp** — every page footer shows a UTC build timestamp and short git commit SHA (`built 21 Jun '26, 03:53 UTC  e39d8bf`), generated in `build.rb` from `git rev-parse --short HEAD`. It's useful for confirming that a deploy reflects what was pushed. The "built …" text links to `colophon.html` only when the colophon page is part of the build (`renderer.page_built?('colophon')`); while the colophon is a draft it's plain text in production, so it never links to a 404. The SHA links to that commit on GitHub (`REPO_URL` in `build.rb`). In a local build of a commit you haven't pushed yet, that link will 404 until you push; published builds always come from CI, so their commit is always on GitHub.
 
 **Adding a new template** — `_partials/_head.html.erb` is just the contents of `<head>`: `<meta>` and `<link>` tags only, no `<html>` wrapper. Every template is responsible for writing `<!DOCTYPE html><html lang="en"><head>` itself, rendering the `head` partial inside it, then closing `</head>` before `<body>`. Consistent across every existing template (copy the pattern from any file in `_templates/`), but manual — forgetting to close `</head>` before `<body>` in a new template is a silent bug, not something the builder catches.
 
-**Ruby dependency** — `build.rb` requires the `kramdown` gem; run via `bundle exec ruby build.rb` (or ensure `bundle install` has been run) rather than bare `ruby build.rb` if gems aren't already on the system path. `Gemfile`/`Gemfile.lock` pin the version used in CI.
+**Ruby dependency** — `build.rb` requires the `kramdown` gem (the Gemfile's only dependency); run via `bundle exec ruby build.rb` (or ensure `bundle install` has been run) rather than bare `ruby build.rb` if gems aren't already on the system path. `Gemfile`/`Gemfile.lock` pin the version used in CI. `.ruby-version` pins Ruby 4.0.6 for local use; CI runs Ruby 3.3 (set in `deploy.yml`). The code runs on both, but keep that gap in mind if you use newer Ruby syntax.
+
+**Small caps for acronyms** — `md_to_html` wraps runs of two or more capital letters (e.g. `NASA`, `ROUGH TYPE`) in `<span class="acr">` so they display as small caps. Text inside `<pre>`/`<code>` and inside tag attributes is left alone. This applies everywhere Markdown is rendered, including notes, journeys, pages and book notes.
+
+**Smart quotes** — Kramdown converts straight quotes to curly quotes in all Markdown bodies.
+
+**Missing `date` on a post** — it doesn't error, but the post sorts to the end of every list and has no archive year.

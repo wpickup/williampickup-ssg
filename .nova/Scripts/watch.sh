@@ -26,10 +26,17 @@ echo ""
 echo "  ✓ Initial build done — waiting for changes..."
 echo ""
 
-# Watch source dirs and the live site CSS/JS
+# Watch every build input: content, data, templates, the builder itself,
+# and the static dirs build.rb copies into the output. Any directory added
+# to build.rb (a new *_DIR or STATIC_DIRS entry) should be added here too.
+# _drafts/ is gitignored and may not exist on a fresh clone — create it so
+# fswatch doesn't fail on a missing path.
+mkdir -p "$PROJECT_DIR/_drafts"
 fswatch -o \
   "$PROJECT_DIR/_posts" \
   "$PROJECT_DIR/_drafts" \
+  "$PROJECT_DIR/_notes" \
+  "$PROJECT_DIR/_journeys" \
   "$PROJECT_DIR/_pages" \
   "$PROJECT_DIR/_photos" \
   "$PROJECT_DIR/_books" \
@@ -39,6 +46,8 @@ fswatch -o \
   "$PROJECT_DIR/build.rb" \
   "$PROJECT_DIR/css" \
   "$PROJECT_DIR/javascript" \
+  "$PROJECT_DIR/fonts" \
+  "$PROJECT_DIR/assets" \
   | while read -r count; do
       echo "  → Change detected — rebuilding... ($(date '+%H:%M:%S'))"
       cd "$PROJECT_DIR"
