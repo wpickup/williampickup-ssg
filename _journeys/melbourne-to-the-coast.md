@@ -26,18 +26,15 @@ Melbourne was still in that dim blue interval before the day fully declares itse
 
 The first hour was all transitions: warehouses, service stations, empty intersections, then the gradual exchange of concrete edges for paddocks and windbreaks. That handover is one of the quiet pleasures of driving out of Melbourne. The city does not end in a single gesture. It loosens its grip slowly.
 
-<div class="photo-pair">
+<div class="photo-text photo-text--left">
   <figure>
     <img src="https://picsum.photos/seed/journey-pair-01/1200/900" alt="Placeholder roadside bakery exterior" loading="lazy">
     <figcaption>A bakery stop in the first small town beyond the ring roads.</figcaption>
   </figure>
-  <figure>
-    <img src="https://picsum.photos/seed/journey-pair-02/1200/900" alt="Placeholder coffee and map detail" loading="lazy">
-    <figcaption>Coffee, map, and the unhurried business of setting the day’s direction.</figcaption>
-  </figure>
+  <div class="photo-text__body">
+    <p>At the first stop there was hot coffee, a plain table near the window, and the agreeable feeling of being among strangers who were also in transit. A man in a waxed jacket folded a paper map several times before getting it back into shape. Someone behind the counter was listening to a radio station that never announced itself. Nothing dramatic happened, which is often exactly what makes a stop memorable.</p>
+  </div>
 </div>
-
-At the first stop there was hot coffee, a plain table near the window, and the agreeable feeling of being among strangers who were also in transit. A man in a waxed jacket folded a paper map several times before getting it back into shape. Someone behind the counter was listening to a radio station that never announced itself. Nothing dramatic happened, which is often exactly what makes a stop memorable.
 
 <figure class="figure--portrait">
   <img src="https://picsum.photos/seed/journey-portrait-01/900/1300" alt="Placeholder vertical roadside sign or doorway" loading="lazy">
@@ -81,12 +78,15 @@ By the time I reached the water the day had found its pace. I wanted not spectac
 
 At the first lookout the sea looked metallic from a distance, almost still, while the foreground grass never stopped moving. A cormorant stood on a post as if it had been placed there for compositional reasons. Every few minutes the light altered slightly and the scene asked to be photographed again.
 
-<figure class="figure--half">
-  <img src="https://picsum.photos/seed/journey-half-01/1200/1200" alt="Placeholder square or near-square bench and sea scene" loading="lazy">
-  <figcaption>A quieter half-width frame — bench, light, and waiting.</figcaption>
-</figure>
-
-What interests me most in travel pages is not the list of destinations but the build-up of modest particulars: the sound of halyards against a mast, the brief sun on a timber railing, a dog nose-down in seaweed at the edge of the path. The photographs do not need to prove that a place is grand. They only need to prove that attention was paid.
+<div class="photo-text photo-text--right">
+  <figure>
+    <img src="https://picsum.photos/seed/journey-half-01/1200/1200" alt="Placeholder square or near-square bench and sea scene" loading="lazy">
+    <figcaption>A quieter coastal pause — bench, light, and waiting.</figcaption>
+  </figure>
+  <div class="photo-text__body">
+    <p>What interests me most in travel pages is not the list of destinations but the build-up of modest particulars: the sound of halyards against a mast, the brief sun on a timber railing, a dog nose-down in seaweed at the edge of the path. The photographs do not need to prove that a place is grand. They only need to prove that attention was paid.</p>
+  </div>
+</div>
 
 <div class="photo-pair">
   <figure>
@@ -114,5 +114,3 @@ The return always begins before you have turned back. It begins in the late ligh
   <img src="https://picsum.photos/seed/journey-full-02/1800/1100" alt="Placeholder dusk roadway homeward" loading="lazy">
   <figcaption>Dusk on the way back — a closing full-width frame for the page.</figcaption>
 </figure>
-
-This version is still placeholder material, but it is structured to let the photo-essay grid do the work: full-width transitions, portrait pauses, paired images, and prose blocks that reset the eye between clusters. That feels closer to the sort of long-form travel page this content type could become.

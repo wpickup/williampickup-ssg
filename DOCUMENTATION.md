@@ -476,6 +476,31 @@ Two images side by side (collapses to a single column on mobile):
 </div>
 ```
 
+### Photo with text
+
+A structured side-by-side block for one image and one short text passage. Best used in `layout: photo-essay` when a photograph and a specific paragraph belong together as a single beat.
+
+```html
+<div class="photo-text photo-text--right">
+  <figure>
+    <img src="…" alt="…">
+    <figcaption>Caption text</figcaption>
+  </figure>
+  <div class="photo-text__body">
+    <p>Short prose that should sit directly beside the image rather than above or below it.</p>
+  </div>
+</div>
+```
+
+| Class | Effect |
+|---|---|
+| `photo-text` | Stacks on mobile; becomes a side-by-side block on wide screens |
+| `photo-text--left` | Image on the left, text on the right |
+| `photo-text--right` | Image on the right, text on the left |
+| `photo-text__body` | The text column inside the component |
+
+Use this sparingly. It works best for details, pauses, signage, interiors, practical notes, or short reflective passages — not for long uninterrupted stretches of body copy.
+
 ### Sidenotes and margin notes
 
 Two separate systems for putting content in a margin — pick based on layout and purpose, not interchangeably (see the comparison table under [Editorial grid layout](#editorial-grid-layout) if the post uses `layout: editorial`).
@@ -582,19 +607,49 @@ The element occupying the earlier columns in the row must appear first in the so
 
 ## Photo essay layout
 
-For `layout: photo-essay`, images in the body run in a two-column grid. Use `figure--half` for standard portrait/landscape pairs, `figure--portrait` for tall portrait crops:
+For `layout: photo-essay`, the page now reads as a **centred editorial narrative** rather than an automatic left/right image grid. Prose sits in a restrained central column, while selected figures can widen or break out to create visual pauses.
+
+Use it when you want photographs and text to work together as a paced sequence: opening scene, movement, detail, pause, return, close.
+
+### Core behaviour
+
+- Body text stays in the central reading column for consistency and readability.
+- `h2`, `h3`, and `part-label` markers can sit a little wider, acting as scene-setting cues.
+- Standard figures sit in the same visual band as the prose.
+- `figure--wide` and `photo-pair` widen the page without going fully edge-to-edge.
+- `figure--full` is the major breakout treatment for scene-setting or closing moments.
+- `figure--portrait` and `figure--half` stay centred and work best as pauses, details, or quieter interruptions.
+
+### Figure classes in this layout
 
 ```html
-<figure class="figure--half">
+<figure class="figure--wide">
   <img src="…" alt="…">
+  <figcaption>Wider landscape frame within the essay rhythm.</figcaption>
 </figure>
 
 <figure class="figure--portrait">
   <img src="…" alt="…">
+  <figcaption>Centred portrait-format interruption.</figcaption>
+</figure>
+
+<figure class="figure--full">
+  <img src="…" alt="…">
+  <figcaption>Major transition or closing frame.</figcaption>
 </figure>
 ```
 
-Odd-numbered figures go in the left column, even-numbered in the right. `figure--wide` and `figure--full` break out of the grid entirely. `photo-pair` (see [Photo pairs](#photo-pairs)) creates a manual side-by-side within the grid if needed.
+`photo-pair` (see [Photo pairs](#photo-pairs)) is still the preferred way to place two related images side by side. Unlike the older version of this layout, images are **not** assigned to left or right columns by odd/even order.
+
+### Style guidance
+
+- Prefer a calm rhythm over a busy collage.
+- Keep most paragraphs and standard figures in the central flow.
+- Use `figure--full` sparingly — once near the opening or closing is usually enough.
+- Use `figure--wide` for weather, horizon, or scene-setting images.
+- Use `figure--portrait` or `figure--half` for intimate details, signage, interiors, or pauses in scale.
+- Use one `pullquote` at most unless the piece is unusually long.
+- Let spacing do the work; avoid stacking multiple dramatic treatments back to back.
 
 ---
 
