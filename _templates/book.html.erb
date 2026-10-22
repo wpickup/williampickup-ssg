@@ -54,7 +54,7 @@
               <span class="book-find-links__label">Find this book</span>
 <%- if book.isbn -%>
         
-              <a href="https://www.bookpile.org/b/<%= book.isbn %>" class="book-find-link" target="_blank" rel="noopener">Bookpile</a>
+              <a href="https://bookpile.org/b/<%= book.isbn %>" class="book-find-link" target="_blank" rel="noopener">Bookpile</a>
               <a href="https://www.worldcat.org/isbn/<%= h(book.isbn) %>" class="book-find-link" target="_blank" rel="noopener">WorldCat library search</a>
 <%- end -%>
             </div>
